@@ -14,14 +14,16 @@ async def main():
     clientdb = MongoClient('localhost', 27017)
     db = clientdb['Testq']
     collection = db['CollectionTest']
+    collection.delete_many({})
 
     await client.start()
     @client.on(events.NewMessage)
     async def msgHandler(event):
         nonlocal idCount
         msg = event.message.text
+        usr = event.message.sender_id
 
-        instdb = {"_id": idCount, "msg": msg}
+        instdb = {"_id": idCount, "user_id": usr,"msg": msg }
         try:
             collection.insert_one(instdb)
             print(f"Guardado en DB: {instdb}")
