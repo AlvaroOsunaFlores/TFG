@@ -1,12 +1,15 @@
 import telethon
 import pymongo
 import asyncio
-
 from pymongo import MongoClient
 from telethon import TelegramClient, events
+import spacy
+
+
 
 TELEGRAM_API_ID = 26685793
 TELEGRAM_API_HASH = "a7b8e912e96416e885da4fdba1800d11"
+nlp = spacy.load("es_core_news_sm")
 
 async def main():
     idCount = 0
@@ -17,13 +20,34 @@ async def main():
     collection.delete_many({})
 
     await client.start()
+    me = await client.get_me()
+    print(me.stringify())
+
     @client.on(events.NewMessage)
     async def msgHandler(event):
         nonlocal idCount
         msg = event.message.text
         usr = event.message.sender_id
 
-        instdb = {"_id": idCount, "user_id": usr,"msg": msg }
+
+        doc = nlp(msg)
+
+
+        tokens = [token.text for token in doc]
+        lemas = [token.lemma_ for token in doc]
+        entidades = [(ent.text, ent.label_) for ent in doc.ents]
+
+
+        instdb = {
+            "_id": idCount,
+            "user_id": usr,
+            "msg": msg,
+            "tokens": tokens,
+            "lemas": lemas,
+            "entidades": entidades
+        }
+
+
         try:
             collection.insert_one(instdb)
             print(f"Guardado en DB: {instdb}")
@@ -31,6 +55,8 @@ async def main():
             print("Error al guardar en MongoDB:", e)
 
         idCount += 1
+
     await client.run_until_disconnected()
     return
+
 asyncio.run(main())
