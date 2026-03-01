@@ -1,0 +1,30 @@
+1) Preparar proyecto
+--------------------
+unzip TFG_MVP_TelegramIA_Mongo_v3.zip -d tfg_mvp
+cd tfg_mvp/TFG_MVP_TelegramIA_Mongo_v3
+
+2) Configurar variables de entorno
+---------------------------------
+cp .env.example .env
+nano .env
+# TELEGRAM_API_ID=TU_API_ID
+# TELEGRAM_API_HASH=TU_API_HASH
+# TELEGRAM_PHONE=+34XXXXXXXXX
+# MONGO_URI=mongodb://mongo:27017/
+# HF_MODEL=alvaroosuna/distilbert_fast_fixed_labels
+# THRESHOLD=0.5
+
+3) Build + ejecución
+-------------------
+docker-compose build
+docker-compose up
+
+4) Evaluación (métricas)
+-----------------------
+docker-compose run --rm bot python evaluate.py
+
+5) Ver MongoDB
+--------------
+docker exec -it mongo mongosh
+use tfg
+db.messages.find().limit(5)

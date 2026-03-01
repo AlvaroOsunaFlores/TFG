@@ -1,0 +1,10 @@
+apiVersion: 1
+
+datasources:
+  - name: TFG-API
+    uid: tfg_api
+    type: marcusolsson-json-datasource
+    access: proxy
+    url: http://host.docker.internal:8000
+    isDefault: true
+    editable: true

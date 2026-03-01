@@ -1,0 +1,13 @@
+telethon
+pymongo
+langdetect
+spacy
+torch
+transformers
+huggingface_hub
+python-dotenv
+pandas
+scikit-learn
+fastapi
+uvicorn[standard]
+pytest

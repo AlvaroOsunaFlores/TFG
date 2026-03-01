@@ -1,0 +1,275 @@
+{
+  "id": null,
+  "uid": "tfg-mvp-cybersec",
+  "title": "TFG MVP - Telegram Ciberseguridad",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "tags": [
+    "tfg",
+    "telegram",
+    "cybersecurity",
+    "mvp"
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "title": "Volumen de mensajes (total)",
+      "type": "stat",
+      "datasource": {
+        "type": "marcusolsson-json-datasource",
+        "uid": "tfg_api"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "marcusolsson-json-datasource",
+            "uid": "tfg_api"
+          },
+          "method": "GET",
+          "queryPath": "/api/v1/messages?limit=1",
+          "urlPath": "/api/v1/messages?limit=1",
+          "fields": [
+            {
+              "name": "total",
+              "jsonPath": "$.total",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": 2,
+      "title": "Proporcion benigno/amenaza",
+      "type": "piechart",
+      "datasource": {
+        "type": "marcusolsson-json-datasource",
+        "uid": "tfg_api"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "marcusolsson-json-datasource",
+            "uid": "tfg_api"
+          },
+          "method": "GET",
+          "queryPath": "/api/v1/messages?limit=500",
+          "urlPath": "/api/v1/messages?limit=500",
+          "fields": [
+            {
+              "name": "pred",
+              "jsonPath": "$.items[*].pred",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 8,
+        "y": 0
+      }
+    },
+    {
+      "id": 3,
+      "title": "Latencia media y p95 (ms)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "marcusolsson-json-datasource",
+        "uid": "tfg_api"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "marcusolsson-json-datasource",
+            "uid": "tfg_api"
+          },
+          "method": "GET",
+          "queryPath": "/api/v1/messages?limit=500",
+          "urlPath": "/api/v1/messages?limit=500",
+          "fields": [
+            {
+              "name": "created_at_utc",
+              "jsonPath": "$.items[*].created_at_utc",
+              "type": "time"
+            },
+            {
+              "name": "latency_ms",
+              "jsonPath": "$.items[*].latency_ms",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      }
+    },
+    {
+      "id": 4,
+      "title": "Tasa de errores (ok=false)",
+      "type": "stat",
+      "datasource": {
+        "type": "marcusolsson-json-datasource",
+        "uid": "tfg_api"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "marcusolsson-json-datasource",
+            "uid": "tfg_api"
+          },
+          "method": "GET",
+          "queryPath": "/api/v1/messages?limit=500",
+          "urlPath": "/api/v1/messages?limit=500",
+          "fields": [
+            {
+              "name": "ok",
+              "jsonPath": "$.items[*].ok",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 0,
+        "y": 6
+      }
+    },
+    {
+      "id": 5,
+      "title": "Distribucion de score_1",
+      "type": "histogram",
+      "datasource": {
+        "type": "marcusolsson-json-datasource",
+        "uid": "tfg_api"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "marcusolsson-json-datasource",
+            "uid": "tfg_api"
+          },
+          "method": "GET",
+          "queryPath": "/api/v1/messages?limit=500",
+          "urlPath": "/api/v1/messages?limit=500",
+          "fields": [
+            {
+              "name": "score_1",
+              "jsonPath": "$.items[*].score_1",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 6
+      }
+    },
+    {
+      "id": 6,
+      "title": "Precision/Recall por ejecucion",
+      "type": "table",
+      "datasource": {
+        "type": "marcusolsson-json-datasource",
+        "uid": "tfg_api"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "marcusolsson-json-datasource",
+            "uid": "tfg_api"
+          },
+          "method": "GET",
+          "queryPath": "/api/v1/runs",
+          "urlPath": "/api/v1/runs",
+          "fields": [
+            {
+              "name": "run_id",
+              "jsonPath": "$.runs[*].run_id",
+              "type": "string"
+            },
+            {
+              "name": "precision_pos",
+              "jsonPath": "$.runs[*].metrics.precision_pos",
+              "type": "number"
+            },
+            {
+              "name": "recall_pos",
+              "jsonPath": "$.runs[*].metrics.recall_pos",
+              "type": "number"
+            },
+            {
+              "name": "f1_pos",
+              "jsonPath": "$.runs[*].metrics.f1_pos",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 8
+      }
+    }
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  }
+}

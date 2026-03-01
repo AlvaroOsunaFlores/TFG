@@ -1,0 +1,101 @@
+text,label
+"Gracias, lo reviso y te digo. (OK)",0
+"Gracias, lo reviso y te digo.",0
+"Te paso el acta de la reunión en el drive corporativo.",0
+"Reset your password immediately: http://password-reset.example.net",1
+"¿Te viene bien la llamada a las 17:00?",0
+"Tenemos tu contraseña filtrada. Paga en BTC o publicamos tus datos.",1
+"Your account will be suspended. Verify now: http://secure-login.example.org !!!",1
+"Recordatorio: mantenimiento del servidor a las 02:00 CET.",0
+"Instala esta actualización crítica: http://update-flash-player.example.com/setup.exe",1
+"Reset your password immediately: http://password-reset.example.net !!!",1
+"URGENTE: tu cuenta será bloqueada. Verifica ahora en http://login-seguro.example.com",1
+"Instala esta actualización crítica: http://update-flash-player.example.com/setup.exe",1
+"Necesito que me envíes tu código 2FA para completar la verificación.",1
+"Necesito tu usuario corporativo para darte permisos.",0
+"Hoy teletrabajo, estoy disponible por Teams. (OK)",0
+"Tu correo excede el límite. Aumenta cuota aquí: http://mail-quota.example.com",1
+"Actualización de seguridad requerida. Introduce tu contraseña: http://microsoft-auth.example.net",1
+"Actualización de seguridad requerida. Introduce tu contraseña: http://microsoft-auth.example.net",1
+"Please confirm you received the invoice PDF. (OK)",0
+"Reunión mañana a las 10:00. Trae el informe de ventas. (OK)",0
+"I granted you repo access. Let me know if it works.",0
+"Please confirm you received the invoice PDF.",0
+"Actualización de seguridad requerida. Introduce tu contraseña: http://microsoft-auth.example.net !!!",1
+"Por favor, confirma recepción del documento.",0
+"Hoy teletrabajo, estoy disponible por Teams.",0
+"Gracias, lo reviso y te digo. (OK)",0
+"Can you review the pull request when you have time?",0
+"Banco: actividad sospechosa. Valida tu identidad aquí: http://secure-bank.example.net",1
+"Necesito que me envíes tu código 2FA para completar la verificación.",1
+"Tu paquete no pudo entregarse. Paga 1,99€ para reprogramar: http://dhl-retry.example.org !!!",1
+"Security alert: sign-in attempt detected. Confirm at http://account-verify.example.com !!!",1
+"Update required: download attachment 'security_patch.scr' to stay protected.",1
+"Security alert: sign-in attempt detected. Confirm at http://account-verify.example.com !!!",1
+"¿Puedes revisar el PR cuando tengas un hueco?",0
+"Server maintenance is scheduled for tonight. (OK)",0
+"Server maintenance is scheduled for tonight. (OK)",0
+"Update required: download attachment 'security_patch.scr' to stay protected.",1
+"Tenemos tu contraseña filtrada. Paga en BTC o publicamos tus datos.",1
+"Security alert: sign-in attempt detected. Confirm at http://account-verify.example.com !!!",1
+"Security alert: sign-in attempt detected. Confirm at http://account-verify.example.com",1
+"Recordatorio: mantenimiento del servidor a las 02:00 CET.",0
+"Actualización de seguridad requerida. Introduce tu contraseña: http://microsoft-auth.example.net",1
+"Recordatorio: mantenimiento del servidor a las 02:00 CET. (OK)",0
+"Te he dado acceso al repositorio, confirma si lo ves.",0
+"Reset your password immediately: http://password-reset.example.net",1
+"Tenemos tu contraseña filtrada. Paga en BTC o publicamos tus datos.",1
+"Instala esta actualización crítica: http://update-flash-player.example.com/setup.exe !!!",1
+"He actualizado el calendario de guardias.",0
+"Hoy teletrabajo, estoy disponible por Teams.",0
+"Banco: actividad sospechosa. Valida tu identidad aquí: http://secure-bank.example.net !!!",1
+"Actualización de seguridad requerida. Introduce tu contraseña: http://microsoft-auth.example.net",1
+"Gracias, lo reviso y te digo.",0
+"Por favor, confirma recepción del documento.",0
+"Instala esta actualización crítica: http://update-flash-player.example.com/setup.exe",1
+"Te paso el acta de la reunión en el drive corporativo. (OK)",0
+"Tu correo excede el límite. Aumenta cuota aquí: http://mail-quota.example.com",1
+"La build ha pasado en CI, puedes hacer merge.",0
+"Por favor, confirma recepción del documento.",0
+"Reset your password immediately: http://password-reset.example.net",1
+"Hoy teletrabajo, estoy disponible por Teams. (OK)",0
+"Team meeting moved to 11:00. Please join via Teams.",0
+"Security alert: sign-in attempt detected. Confirm at http://account-verify.example.com !!!",1
+"Instala esta actualización crítica: http://update-flash-player.example.com/setup.exe !!!",1
+"Payment failed. Enter card details to avoid fees: http://billing-fix.example.com",1
+"Your account will be suspended. Verify now: http://secure-login.example.org",1
+"Necesito tu usuario corporativo para darte permisos.",0
+"Adjunto 'comprobante.docm' habilita macros para ver el contenido.",1
+"Recordatorio: mantenimiento del servidor a las 02:00 CET.",0
+"I granted you repo access. Let me know if it works.",0
+"Reunión mañana a las 10:00. Trae el informe de ventas.",0
+"Por favor, confirma recepción del documento.",0
+"Te he dado acceso al repositorio, confirma si lo ves.",0
+"Adjunto 'comprobante.docm' habilita macros para ver el contenido.",1
+"Adjunto la factura del mes en PDF.",0
+"Gracias, lo reviso y te digo.",0
+"Thanks, issue resolved. Closing the ticket.",0
+"Update required: download attachment 'security_patch.scr' to stay protected. !!!",1
+"Tenemos tu contraseña filtrada. Paga en BTC o publicamos tus datos.",1
+"Tenemos tu contraseña filtrada. Paga en BTC o publicamos tus datos. !!!",1
+"Actualización de seguridad requerida. Introduce tu contraseña: http://microsoft-auth.example.net",1
+"Te he dado acceso al repositorio, confirma si lo ves.",0
+"Thanks, issue resolved. Closing the ticket.",0
+"Your account will be suspended. Verify now: http://secure-login.example.org",1
+"¿Puedes revisar el PR cuando tengas un hueco?",0
+"Reunión mañana a las 10:00. Trae el informe de ventas.",0
+"¿Te viene bien la llamada a las 17:00?",0
+"Security alert: sign-in attempt detected. Confirm at http://account-verify.example.com !!!",1
+"Your account will be suspended. Verify now: http://secure-login.example.org",1
+"Please confirm you received the invoice PDF.",0
+"Can you review the pull request when you have time?",0
+"Can you review the pull request when you have time?",0
+"Team meeting moved to 11:00. Please join via Teams.",0
+"Adjunto 'comprobante.docm' habilita macros para ver el contenido.",1
+"Team meeting moved to 11:00. Please join via Teams.",0
+"Instala esta actualización crítica: http://update-flash-player.example.com/setup.exe !!!",1
+"URGENTE: tu cuenta será bloqueada. Verifica ahora en http://login-seguro.example.com",1
+"Te he dado acceso al repositorio, confirma si lo ves.",0
+"Tu tarjeta ha sido suspendida. Confirma CVV y caducidad para reactivarla.",1
+"Necesito que me envíes tu código 2FA para completar la verificación. !!!",1
+"Update required: download attachment 'security_patch.scr' to stay protected.",1

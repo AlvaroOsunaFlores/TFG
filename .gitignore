@@ -1,0 +1,11 @@
+.env
+session/*.session
+*.session
+reports/
+__pycache__/
+*.pyc
+.DS_Store
+dashboard-react/node_modules/
+dashboard-react/dist/
+tmp_smoke/
+docs/assets/runtime_logs/
