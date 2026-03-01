@@ -1,18 +1,24 @@
-# TELEGRAM COMO FUENTE DE INTELIGENCIA EN CIBERSEGURIDAD:
-# PROCESAMIENTO DE MENSAJES CON IA PARA LA PROTECCION DE EMPRESAS
+<div align="center">
 
-## Portada academica
+![](assets/branding/urjc_logo_oficial.png)
 
-- Autor: Alvaro Osuna Flores
-- DNI: 51555985J
-- Titulacion: Doble Grado en Ingenieria Informatica e Ingenieria de Computadores
-- Centro: URJC ETSII
-- Curso: 4 curso
-- Tutora: Liliana Patricia Santacruz Valencia
-- Lugar: Madrid
-- Fecha: pendiente
+**ESCUELA TÉCNICA SUPERIOR DE INGENIERÍA INFORMÁTICA**
 
----
+**DOBLE GRADO EN INGENIERÍA INFORMÁTICA E INGENIERÍA DE COMPUTADORES**
+
+**CURSO ACADÉMICO: 2024-2025**
+
+**TRABAJO FIN DE GRADO**
+
+**TELEGRAM COMO FUENTE DE INTELIGENCIA EN CIBERSEGURIDAD: PROCESAMIENTO DE MENSAJES CON IA PARA LA PROTECCIÓN DE EMPRESAS**
+
+**Autor: Álvaro Osuna Flores**
+
+**Tutora: Liliana Patricia Santacruz Valencia**
+
+</div>
+
+\newpage
 
 ## Resumen
 
@@ -280,6 +286,7 @@ Wolf, T., Debut, L., Sanh, V., Chaumond, J., Delangue, C., Moi, A., Cistac, P., 
 - `GET /api/v1/runs/{run_id}/thresholds`
 - `GET /api/v1/runs/{run_id}/confusion-matrix`
 - `GET /api/v1/messages`
+- `GET /api/v1/messages/stats`
 - `GET /api/v1/training/metadata`
 
 ## Anexo B. Checklist normativo

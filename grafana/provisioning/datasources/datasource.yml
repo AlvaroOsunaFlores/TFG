@@ -5,6 +5,6 @@ datasources:
     uid: tfg_api
     type: marcusolsson-json-datasource
     access: proxy
-    url: http://host.docker.internal:8000
+    url: http://api:8000
     isDefault: true
     editable: true

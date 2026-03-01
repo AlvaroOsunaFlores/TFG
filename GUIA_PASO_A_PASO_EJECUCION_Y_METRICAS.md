@@ -348,6 +348,7 @@ Endpoints:
 - `GET /api/v1/runs/{run_id}/thresholds`
 - `GET /api/v1/runs/{run_id}/confusion-matrix`
 - `GET /api/v1/messages`
+- `GET /api/v1/messages/stats`
 - `GET /api/v1/training/metadata`
 
 ## 18) Dashboard React + Chart.js

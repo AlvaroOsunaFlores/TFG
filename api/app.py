@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .contracts import (
     ConfusionMatrixResponse,
     HealthResponse,
+    MessageStatsResponse,
     MessagesResponse,
     RunsResponse,
     RunSummary,
@@ -50,7 +51,7 @@ def create_app(custom_settings: Settings | None = None) -> FastAPI:
         status = "ok" if reports_ok and mongo_ok else "degraded"
         return HealthResponse(
             status=status,
-            timestamp_utc=datetime.utcnow().isoformat(),
+            timestamp_utc=datetime.now(timezone.utc).isoformat(),
             mongo_ok=mongo_ok,
             reports_ok=reports_ok,
             details=details,
@@ -107,6 +108,22 @@ def create_app(custom_settings: Settings | None = None) -> FastAPI:
             offset=offset,
         )
         return MessagesResponse(**payload)
+
+    @app.get("/api/v1/messages/stats", response_model=MessageStatsResponse)
+    def message_stats(
+        run_id: str | None = Query(default=None),
+        date_from: datetime | None = Query(default=None),
+        date_to: datetime | None = Query(default=None),
+        limit: int = Query(default=500, ge=1, le=5000),
+    ) -> MessageStatsResponse:
+        payload = services.fetch_message_stats(
+            settings,
+            run_id=run_id,
+            date_from=date_from,
+            date_to=date_to,
+            limit=limit,
+        )
+        return MessageStatsResponse(**payload)
 
     @app.get("/api/v1/training/metadata", response_model=TrainingMetadataResponse)
     def training_metadata() -> TrainingMetadataResponse:

@@ -4,7 +4,7 @@
   "title": "TFG MVP - Telegram Ciberseguridad",
   "timezone": "browser",
   "schemaVersion": 39,
-  "version": 1,
+  "version": 2,
   "refresh": "30s",
   "tags": [
     "tfg",
@@ -29,8 +29,8 @@
             "uid": "tfg_api"
           },
           "method": "GET",
-          "queryPath": "/api/v1/messages?limit=1",
-          "urlPath": "/api/v1/messages?limit=1",
+          "queryPath": "/api/v1/messages/stats?limit=500",
+          "urlPath": "/api/v1/messages/stats?limit=500",
           "fields": [
             {
               "name": "total",
@@ -60,7 +60,7 @@
     {
       "id": 2,
       "title": "Proporcion benigno/amenaza",
-      "type": "piechart",
+      "type": "table",
       "datasource": {
         "type": "marcusolsson-json-datasource",
         "uid": "tfg_api"
@@ -73,12 +73,17 @@
             "uid": "tfg_api"
           },
           "method": "GET",
-          "queryPath": "/api/v1/messages?limit=500",
-          "urlPath": "/api/v1/messages?limit=500",
+          "queryPath": "/api/v1/messages/stats?limit=500",
+          "urlPath": "/api/v1/messages/stats?limit=500",
           "fields": [
             {
-              "name": "pred",
-              "jsonPath": "$.items[*].pred",
+              "name": "benign_count",
+              "jsonPath": "$.benign_count",
+              "type": "number"
+            },
+            {
+              "name": "threat_count",
+              "jsonPath": "$.threat_count",
               "type": "number"
             }
           ]
@@ -94,7 +99,7 @@
     {
       "id": 3,
       "title": "Latencia media y p95 (ms)",
-      "type": "timeseries",
+      "type": "table",
       "datasource": {
         "type": "marcusolsson-json-datasource",
         "uid": "tfg_api"
@@ -107,17 +112,17 @@
             "uid": "tfg_api"
           },
           "method": "GET",
-          "queryPath": "/api/v1/messages?limit=500",
-          "urlPath": "/api/v1/messages?limit=500",
+          "queryPath": "/api/v1/messages/stats?limit=500",
+          "urlPath": "/api/v1/messages/stats?limit=500",
           "fields": [
             {
-              "name": "created_at_utc",
-              "jsonPath": "$.items[*].created_at_utc",
-              "type": "time"
+              "name": "latency_avg_ms",
+              "jsonPath": "$.latency_avg_ms",
+              "type": "number"
             },
             {
-              "name": "latency_ms",
-              "jsonPath": "$.items[*].latency_ms",
+              "name": "latency_p95_ms",
+              "jsonPath": "$.latency_p95_ms",
               "type": "number"
             }
           ]
@@ -133,7 +138,7 @@
     {
       "id": 4,
       "title": "Tasa de errores (ok=false)",
-      "type": "stat",
+      "type": "table",
       "datasource": {
         "type": "marcusolsson-json-datasource",
         "uid": "tfg_api"
@@ -146,13 +151,18 @@
             "uid": "tfg_api"
           },
           "method": "GET",
-          "queryPath": "/api/v1/messages?limit=500",
-          "urlPath": "/api/v1/messages?limit=500",
+          "queryPath": "/api/v1/messages/stats?limit=500",
+          "urlPath": "/api/v1/messages/stats?limit=500",
           "fields": [
             {
-              "name": "ok",
-              "jsonPath": "$.items[*].ok",
-              "type": "string"
+              "name": "error_count",
+              "jsonPath": "$.error_count",
+              "type": "number"
+            },
+            {
+              "name": "error_rate",
+              "jsonPath": "$.error_rate",
+              "type": "number"
             }
           ]
         }
@@ -167,7 +177,7 @@
     {
       "id": 5,
       "title": "Distribucion de score_1",
-      "type": "histogram",
+      "type": "table",
       "datasource": {
         "type": "marcusolsson-json-datasource",
         "uid": "tfg_api"
@@ -180,12 +190,22 @@
             "uid": "tfg_api"
           },
           "method": "GET",
-          "queryPath": "/api/v1/messages?limit=500",
-          "urlPath": "/api/v1/messages?limit=500",
+          "queryPath": "/api/v1/messages/stats?limit=500",
+          "urlPath": "/api/v1/messages/stats?limit=500",
           "fields": [
             {
-              "name": "score_1",
-              "jsonPath": "$.items[*].score_1",
+              "name": "score_avg",
+              "jsonPath": "$.score_avg",
+              "type": "number"
+            },
+            {
+              "name": "score_p50",
+              "jsonPath": "$.score_p50",
+              "type": "number"
+            },
+            {
+              "name": "score_p95",
+              "jsonPath": "$.score_p95",
               "type": "number"
             }
           ]
@@ -252,7 +272,7 @@
     "list": []
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-30d",
     "to": "now"
   },
   "timepicker": {},

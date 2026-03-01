@@ -70,5 +70,20 @@ class MessagesResponse(BaseModel):
     warning: str | None = None
 
 
+class MessageStatsResponse(BaseModel):
+    source: str
+    total: int
+    benign_count: int
+    threat_count: int
+    error_count: int
+    error_rate: float
+    latency_avg_ms: float | None = None
+    latency_p95_ms: float | None = None
+    score_avg: float | None = None
+    score_p50: float | None = None
+    score_p95: float | None = None
+    warning: str | None = None
+
+
 class TrainingMetadataResponse(BaseModel):
     metadata: dict[str, Any]

@@ -135,3 +135,13 @@ def test_messages_endpoint_when_mongo_unavailable(tmp_path: Path) -> None:
     payload = response.json()
     assert payload["source"] == "mongo_unavailable"
     assert payload["items"] == []
+
+
+def test_message_stats_endpoint_when_mongo_unavailable(tmp_path: Path) -> None:
+    client = _client(tmp_path)
+    response = client.get("/api/v1/messages/stats", params={"run_id": "run-test-001", "limit": 500})
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["source"] == "mongo_unavailable"
+    assert payload["total"] == 0
+    assert payload["error_rate"] == 0.0

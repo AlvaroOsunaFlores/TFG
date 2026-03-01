@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 from datetime import datetime
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -210,6 +211,112 @@ def fetch_messages(
             "limit": limit,
             "offset": offset,
             "items": [],
+            "warning": str(exc),
+        }
+
+
+def _percentile(values: list[float], percentile: float) -> float | None:
+    if not values:
+        return None
+    ordered = sorted(values)
+    position = (len(ordered) - 1) * percentile
+    lower_index = int(math.floor(position))
+    upper_index = int(math.ceil(position))
+    if lower_index == upper_index:
+        return float(ordered[lower_index])
+    lower_value = ordered[lower_index]
+    upper_value = ordered[upper_index]
+    weight = position - lower_index
+    return float(lower_value + (upper_value - lower_value) * weight)
+
+
+def fetch_message_stats(
+    settings: Settings,
+    *,
+    run_id: str | None,
+    date_from: datetime | None,
+    date_to: datetime | None,
+    limit: int,
+) -> dict[str, Any]:
+    query: dict[str, Any] = {}
+    if run_id:
+        query["run_id"] = run_id
+
+    created_filter: dict[str, datetime] = {}
+    if date_from:
+        created_filter["$gte"] = date_from
+    if date_to:
+        created_filter["$lte"] = date_to
+    if created_filter:
+        query["created_at_utc"] = created_filter
+
+    projection = {
+        "_id": 0,
+        "pred": 1,
+        "score_1": 1,
+        "latency_ms": 1,
+        "ok": 1,
+    }
+
+    try:
+        client = MongoClient(settings.mongo_uri, serverSelectionTimeoutMS=1500)
+        collection = client[settings.mongo_db][settings.mongo_collection]
+
+        cursor = (
+            collection.find(query, projection)
+            .sort("created_at_utc", -1)
+            .limit(limit)
+        )
+
+        rows = list(cursor)
+        client.close()
+
+        total = len(rows)
+        benign_count = sum(1 for row in rows if row.get("pred") == 0)
+        threat_count = sum(1 for row in rows if row.get("pred") == 1)
+        error_count = sum(1 for row in rows if row.get("ok") is False)
+
+        latencies = [
+            float(row["latency_ms"])
+            for row in rows
+            if isinstance(row.get("latency_ms"), (int, float))
+        ]
+        scores = [
+            float(row["score_1"])
+            for row in rows
+            if isinstance(row.get("score_1"), (int, float))
+        ]
+
+        latency_avg = float(sum(latencies) / len(latencies)) if latencies else None
+        score_avg = float(sum(scores) / len(scores)) if scores else None
+
+        return {
+            "source": "mongo",
+            "total": total,
+            "benign_count": benign_count,
+            "threat_count": threat_count,
+            "error_count": error_count,
+            "error_rate": float(error_count / total) if total else 0.0,
+            "latency_avg_ms": latency_avg,
+            "latency_p95_ms": _percentile(latencies, 0.95),
+            "score_avg": score_avg,
+            "score_p50": _percentile(scores, 0.50),
+            "score_p95": _percentile(scores, 0.95),
+            "warning": None,
+        }
+    except Exception as exc:  # pragma: no cover - defensive for infra envs
+        return {
+            "source": "mongo_unavailable",
+            "total": 0,
+            "benign_count": 0,
+            "threat_count": 0,
+            "error_count": 0,
+            "error_rate": 0.0,
+            "latency_avg_ms": None,
+            "latency_p95_ms": None,
+            "score_avg": None,
+            "score_p50": None,
+            "score_p95": None,
             "warning": str(exc),
         }
 

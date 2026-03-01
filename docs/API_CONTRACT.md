@@ -106,5 +106,29 @@ Respuesta:
 }
 ```
 
+### `GET /api/v1/messages/stats`
+Filtros:
+- `run_id` (opcional)
+- `date_from`, `date_to` (ISO datetime)
+- `limit` (1..5000)
+
+Respuesta:
+```json
+{
+  "source": "mongo|mongo_unavailable",
+  "total": 120,
+  "benign_count": 66,
+  "threat_count": 54,
+  "error_count": 3,
+  "error_rate": 0.025,
+  "latency_avg_ms": 19.8,
+  "latency_p95_ms": 44.2,
+  "score_avg": 0.41,
+  "score_p50": 0.37,
+  "score_p95": 0.89,
+  "warning": null
+}
+```
+
 ### `GET /api/v1/training/metadata`
 Devuelve metadatos del entrenamiento documentado (`docs/training_metadata.json`).

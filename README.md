@@ -68,6 +68,7 @@ Contratos implementados:
 - `GET /api/v1/runs/{run_id}/thresholds`
 - `GET /api/v1/runs/{run_id}/confusion-matrix`
 - `GET /api/v1/messages`
+- `GET /api/v1/messages/stats`
 - `GET /api/v1/training/metadata`
 
 ## Dashboard React
@@ -93,6 +94,10 @@ VITE_API_BASE_URL=http://localhost:8000
 ## Memoria
 - Fuente principal: `docs/MEMORIA_TFG_ETSII_APA7.md`
 - Entregable DOCX: `docs/MEMORIA_TFG_ETSII_APA7.docx`
+- Regeneracion reproducible:
+```bash
+python scripts/build_memoria_docx.py
+```
 
 ## Notas de seguridad
 - No subas `.env` ni `session/*.session`.
