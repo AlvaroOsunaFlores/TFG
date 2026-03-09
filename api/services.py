@@ -13,13 +13,46 @@ from pymongo import MongoClient
 from .settings import Settings
 
 
+def _metrics_files(reports_dir: Path) -> list[Path]:
+    files: list[Path] = []
+    root_metrics = reports_dir / "metrics.json"
+    if root_metrics.exists():
+        files.append(root_metrics)
+
+    runs_dir = reports_dir / "runs"
+    if runs_dir.exists():
+        for candidate in sorted(runs_dir.glob("*/metrics.json")):
+            if candidate not in files:
+                files.append(candidate)
+
+    for candidate in sorted(reports_dir.glob("metrics_*.json")):
+        if candidate not in files:
+            files.append(candidate)
+    return files
+
+
+def _resolve_artifacts_dir(reports_dir: Path, payload: dict[str, Any], metrics_path: Path) -> Path:
+    artifacts_dir = payload.get("artifacts_dir")
+    if isinstance(artifacts_dir, str) and artifacts_dir.strip():
+        return reports_dir / Path(artifacts_dir)
+    if metrics_path.parent != reports_dir:
+        return metrics_path.parent
+    return reports_dir
+
+
 def check_reports_available(reports_dir: Path) -> tuple[bool, str | None]:
+    payloads = load_metrics_payloads(reports_dir)
+    if not payloads:
+        return False, "Missing report files: metrics.json"
+
+    latest = payloads[0]
+    artifacts_dir = Path(str(latest["_artifacts_dir"]))
     required = [
-        reports_dir / "metrics.json",
-        reports_dir / "threshold_analysis.csv",
-        reports_dir / "confusion_matrix.csv",
+        artifacts_dir / "metrics.json",
+        artifacts_dir / "threshold_analysis.csv",
+        artifacts_dir / "confusion_matrix.csv",
     ]
-    missing = [str(path) for path in required if not path.exists()]
+    missing = [str(path.relative_to(reports_dir)) for path in required if not path.exists()]
     if missing:
         return False, f"Missing report files: {', '.join(missing)}"
     return True, None
@@ -35,17 +68,6 @@ def check_mongo_connection(settings: Settings) -> tuple[bool, str | None]:
         return False, str(exc)
 
 
-def _metrics_files(reports_dir: Path) -> list[Path]:
-    files: list[Path] = []
-    default_file = reports_dir / "metrics.json"
-    if default_file.exists():
-        files.append(default_file)
-    for candidate in sorted(reports_dir.glob("metrics_*.json")):
-        if candidate not in files:
-            files.append(candidate)
-    return files
-
-
 def load_metrics_payloads(reports_dir: Path) -> list[dict[str, Any]]:
     payloads: list[dict[str, Any]] = []
     seen_run_ids: set[str] = set()
@@ -56,6 +78,9 @@ def load_metrics_payloads(reports_dir: Path) -> list[dict[str, Any]]:
         run_id = str(payload.get("run_id", "")).strip()
         if not run_id or run_id in seen_run_ids:
             continue
+
+        payload["_metrics_path"] = str(file_path)
+        payload["_artifacts_dir"] = str(_resolve_artifacts_dir(reports_dir, payload, file_path))
         seen_run_ids.add(run_id)
         payloads.append(payload)
 
@@ -83,8 +108,8 @@ def run_summary_from_payload(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def load_threshold_points(reports_dir: Path) -> list[dict[str, float]]:
-    path = reports_dir / "threshold_analysis.csv"
+def load_threshold_points(artifacts_dir: Path) -> list[dict[str, float]]:
+    path = artifacts_dir / "threshold_analysis.csv"
     rows: list[dict[str, float]] = []
 
     with path.open("r", encoding="utf-8") as fh:
@@ -103,8 +128,8 @@ def load_threshold_points(reports_dir: Path) -> list[dict[str, float]]:
     return rows
 
 
-def load_confusion_payload(reports_dir: Path) -> dict[str, Any]:
-    path = reports_dir / "confusion_matrix.csv"
+def load_confusion_payload(artifacts_dir: Path) -> dict[str, Any]:
+    path = artifacts_dir / "confusion_matrix.csv"
     frame = pd.read_csv(path, index_col=0)
 
     labels = [int(col) for col in frame.columns.tolist()]
@@ -164,7 +189,8 @@ def fetch_messages(
         "_id": 0,
         "created_at_utc": 1,
         "run_id": 1,
-        "chat_id": 1,
+        "chat_hash": 1,
+        "user_hash": 1,
         "message_id": 1,
         "msg_sha256": 1,
         "pred": 1,
@@ -179,12 +205,7 @@ def fetch_messages(
         collection = client[settings.mongo_db][settings.mongo_collection]
         total = collection.count_documents(query)
 
-        cursor = (
-            collection.find(query, projection)
-            .sort("created_at_utc", -1)
-            .skip(offset)
-            .limit(limit)
-        )
+        cursor = collection.find(query, projection).sort("created_at_utc", -1).skip(offset).limit(limit)
 
         items: list[dict[str, Any]] = []
         for doc in cursor:
@@ -261,13 +282,7 @@ def fetch_message_stats(
     try:
         client = MongoClient(settings.mongo_uri, serverSelectionTimeoutMS=1500)
         collection = client[settings.mongo_db][settings.mongo_collection]
-
-        cursor = (
-            collection.find(query, projection)
-            .sort("created_at_utc", -1)
-            .limit(limit)
-        )
-
+        cursor = collection.find(query, projection).sort("created_at_utc", -1).limit(limit)
         rows = list(cursor)
         client.close()
 
@@ -276,16 +291,8 @@ def fetch_message_stats(
         threat_count = sum(1 for row in rows if row.get("pred") == 1)
         error_count = sum(1 for row in rows if row.get("ok") is False)
 
-        latencies = [
-            float(row["latency_ms"])
-            for row in rows
-            if isinstance(row.get("latency_ms"), (int, float))
-        ]
-        scores = [
-            float(row["score_1"])
-            for row in rows
-            if isinstance(row.get("score_1"), (int, float))
-        ]
+        latencies = [float(row["latency_ms"]) for row in rows if isinstance(row.get("latency_ms"), (int, float))]
+        scores = [float(row["score_1"]) for row in rows if isinstance(row.get("score_1"), (int, float))]
 
         latency_avg = float(sum(latencies) / len(latencies)) if latencies else None
         score_avg = float(sum(scores) / len(scores)) if scores else None
@@ -347,6 +354,11 @@ def _default_training_metadata() -> dict[str, Any]:
         },
         "task": "binary_classification",
         "labels": {"0": "Seguro", "1": "Sospechoso"},
+        "privacy": {
+            "pseudonymized_identifiers": ["user_hash", "chat_hash"],
+            "optional_fields_disabled_by_default": ["msg_original", "msg_limpio", "tokens"],
+            "retention_days_default": 30,
+        },
     }
 
 

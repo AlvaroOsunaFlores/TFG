@@ -7,9 +7,16 @@ import os
 
 def _split_csv(raw: str | None) -> list[str]:
     if not raw:
-        return ["*"]
+        return ["http://localhost:5173", "http://127.0.0.1:5173"]
     items = [value.strip() for value in raw.split(",")]
     return [value for value in items if value]
+
+
+def _required_env(name: str) -> str:
+    value = os.getenv(name)
+    if value is None or not value.strip():
+        raise ValueError(f"Falta la variable de entorno obligatoria: {name}")
+    return value.strip()
 
 
 @dataclass(frozen=True)
@@ -20,6 +27,7 @@ class Settings:
     mongo_collection: str
     training_metadata_path: Path
     cors_origins: list[str]
+    api_key: str
 
 
 def load_settings() -> Settings:
@@ -33,4 +41,5 @@ def load_settings() -> Settings:
         mongo_collection=os.getenv("MONGO_COLLECTION", "messages"),
         training_metadata_path=metadata_path,
         cors_origins=_split_csv(os.getenv("API_CORS_ORIGINS")),
+        api_key=_required_env("API_KEY"),
     )

@@ -51,7 +51,8 @@ class ConfusionMatrixResponse(BaseModel):
 class MessageRecord(BaseModel):
     created_at_utc: str | None = None
     run_id: str | None = None
-    chat_id: int | None = None
+    chat_hash: str | None = None
+    user_hash: str | None = None
     message_id: int | None = None
     msg_sha256: str | None = None
     pred: int | None = None

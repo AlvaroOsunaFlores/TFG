@@ -16,6 +16,8 @@ RUN python -m spacy download es_core_news_sm  && python -m spacy download en_cor
 COPY main.py .
 COPY evaluate.py .
 COPY model_loader.py .
+COPY privacy_utils.py .
+COPY reporting.py .
 COPY api ./api
 COPY scripts ./scripts
 COPY docs ./docs

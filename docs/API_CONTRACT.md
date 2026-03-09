@@ -2,10 +2,15 @@
 
 Base URL: `http://localhost:8000`
 
+## Autenticación
+Todos los endpoints requieren:
+```http
+X-API-Key: <API_KEY>
+```
+
 ## Endpoints
 
 ### `GET /api/v1/health`
-Respuesta:
 ```json
 {
   "status": "ok|degraded",
@@ -17,7 +22,6 @@ Respuesta:
 ```
 
 ### `GET /api/v1/runs`
-Respuesta:
 ```json
 {
   "runs": [
@@ -46,32 +50,10 @@ Respuesta:
 Respuesta: `RunSummary`.
 
 ### `GET /api/v1/runs/{run_id}/thresholds`
-Respuesta:
-```json
-{
-  "run_id": "uuid",
-  "points": [
-    {
-      "threshold": 0.05,
-      "precision_pos": 0.58,
-      "recall_pos": 0.92,
-      "f1_pos": 0.71,
-      "accuracy": 0.63
-    }
-  ]
-}
-```
+Lee `threshold_analysis.csv` del directorio canónico del `run_id`.
 
 ### `GET /api/v1/runs/{run_id}/confusion-matrix`
-Respuesta:
-```json
-{
-  "run_id": "uuid",
-  "labels": [0, 1],
-  "matrix": [[31, 19], [4, 46]],
-  "normalized": [[0.62, 0.38], [0.08, 0.92]]
-}
-```
+Lee `confusion_matrix.csv` del directorio canónico del `run_id`.
 
 ### `GET /api/v1/messages`
 Filtros:
@@ -92,7 +74,8 @@ Respuesta:
     {
       "created_at_utc": "2026-03-01T18:20:00+00:00",
       "run_id": "uuid",
-      "chat_id": 12345,
+      "chat_hash": "sha256",
+      "user_hash": "sha256",
       "message_id": 999,
       "msg_sha256": "hex",
       "pred": 1,
@@ -112,23 +95,5 @@ Filtros:
 - `date_from`, `date_to` (ISO datetime)
 - `limit` (1..5000)
 
-Respuesta:
-```json
-{
-  "source": "mongo|mongo_unavailable",
-  "total": 120,
-  "benign_count": 66,
-  "threat_count": 54,
-  "error_count": 3,
-  "error_rate": 0.025,
-  "latency_avg_ms": 19.8,
-  "latency_p95_ms": 44.2,
-  "score_avg": 0.41,
-  "score_p50": 0.37,
-  "score_p95": 0.89,
-  "warning": null
-}
-```
-
 ### `GET /api/v1/training/metadata`
-Devuelve metadatos del entrenamiento documentado (`docs/training_metadata.json`).
+Devuelve metadatos del entrenamiento documentado y la política de privacidad por defecto.

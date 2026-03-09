@@ -1,20 +1,22 @@
+from __future__ import annotations
+
 import asyncio
+from datetime import datetime, timezone
+import hashlib
 import os
 import re
 import time
 import uuid
-import hashlib
-from datetime import datetime, timezone
 
 from dotenv import load_dotenv
 from langdetect import detect
-from pymongo import MongoClient
+from pymongo import ASCENDING, DESCENDING, MongoClient
 from telethon import TelegramClient, events
 import telethon
-
-import spacy
 import torch
+
 from model_loader import load_tokenizer_and_model
+from privacy_utils import env_flag, pseudonymize_identifier
 
 
 load_dotenv()
@@ -32,16 +34,22 @@ if not PHONE:
 
 TELEGRAM_API_ID = int(_api_id)
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongo:27017/")
+MONGO_DB = os.getenv("MONGO_DB", "tfg")
+MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "messages")
 HF_MODEL = os.getenv("HF_MODEL", "alvaroosuna/distilbert_fast_fixed_labels")
 THRESHOLD = float(os.getenv("THRESHOLD", "0.05"))
 RUN_ID = os.getenv("RUN_ID", str(uuid.uuid4()))
+PII_SALT = os.getenv("PII_SALT", "change-me-local-salt")
+STORE_MSG_ORIGINAL = env_flag(os.getenv("STORE_MSG_ORIGINAL"), default=False)
+STORE_MSG_NORMALIZED = env_flag(os.getenv("STORE_MSG_NORMALIZED"), default=False)
+STORE_NLP_FEATURES = env_flag(os.getenv("STORE_NLP_FEATURES"), default=False)
+RETENTION_DAYS = int(os.getenv("RETENTION_DAYS", "30"))
 
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-models = {
-    "es": spacy.load("es_core_news_sm"),
-    "en": spacy.load("en_core_web_sm"),
-    "fr": spacy.load("fr_core_news_sm"),
-}
+print("Cargando modelo desde HuggingFace...")
+tokenizer, model, MODEL_SOURCE = load_tokenizer_and_model(HF_MODEL, DEVICE)
+print(f"Modelo cargado correctamente. source={MODEL_SOURCE}")
 
 
 def preprocesar_texto(msg: str) -> str:
@@ -51,56 +59,92 @@ def preprocesar_texto(msg: str) -> str:
     return msg.strip()
 
 
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+def analizar_texto(msg: str) -> tuple[str, str]:
+    msg_limpio = preprocesar_texto(msg)
+    if not msg_limpio:
+        return msg_limpio, "desconocido"
 
-print("Cargando modelo desde HuggingFace...")
-tokenizer, model, MODEL_SOURCE = load_tokenizer_and_model(HF_MODEL, DEVICE)
-print(f"Modelo cargado correctamente. source={MODEL_SOURCE}")
-
-
-def analizar_texto(msg: str):
     try:
-        msg_limpio = preprocesar_texto(msg)
         lang = detect(msg_limpio)
-        if lang not in models:
-            lang = "es"
-
-        nlp = models[lang]
-        doc = nlp(msg_limpio)
-
-        tokens = [token.text for token in doc]
-        lemas = [token.lemma_ for token in doc]
-        entidades = [(ent.text, ent.label_) for ent in doc.ents]
-
-        return msg_limpio, tokens, lemas, entidades, lang
     except Exception:
-        return msg, [], [], [], "desconocido"
+        lang = "desconocido"
+    return msg_limpio, lang
 
 
-def clasificar_binario(msg: str):
+def clasificar_binario(msg: str) -> tuple[int, float, float]:
     msg_limpio = preprocesar_texto(msg)
 
     t0 = time.perf_counter()
     inputs = tokenizer(msg_limpio, return_tensors="pt", truncation=True, padding=True)
-    inputs = {k: v.to(DEVICE) for k, v in inputs.items()}
+    inputs = {key: value.to(DEVICE) for key, value in inputs.items()}
 
     with torch.no_grad():
         logits = model(**inputs).logits
         probs = torch.softmax(logits, dim=1)[0].tolist()
 
-    # Clase 1 = amenaza
     p1 = float(probs[1])
     pred = 1 if p1 >= THRESHOLD else 0
     latency_ms = round((time.perf_counter() - t0) * 1000, 3)
     return pred, p1, latency_ms
 
 
-async def main():
+def ensure_indexes(collection) -> None:
+    collection.create_index([("run_id", ASCENDING)], name="run_id_idx")
+    collection.create_index([("msg_sha256", ASCENDING)], name="msg_sha256_idx")
+    collection.create_index([("created_at_utc", DESCENDING)], name="created_at_utc_idx")
+    collection.create_index(
+        [("created_at_utc", ASCENDING)],
+        name="created_at_utc_ttl_idx",
+        expireAfterSeconds=max(RETENTION_DAYS, 1) * 86400,
+    )
+
+
+def build_message_document(event, msg: str, msg_limpio: str, lang: str) -> dict[str, object]:
+    user_hash = pseudonymize_identifier(event.message.sender_id, namespace="user_id", salt=PII_SALT)
+    chat_hash = pseudonymize_identifier(event.chat_id, namespace="chat_id", salt=PII_SALT)
+
+    try:
+        pred, score_1, latency_ms = clasificar_binario(msg)
+        error = None
+    except Exception as exc:
+        pred, score_1, latency_ms = None, None, None
+        error = str(exc)
+
+    payload: dict[str, object] = {
+        "run_id": RUN_ID,
+        "created_at_utc": datetime.now(timezone.utc),
+        "user_hash": user_hash,
+        "chat_hash": chat_hash,
+        "message_id": event.message.id,
+        "msg_sha256": hashlib.sha256(msg.encode("utf-8")).hexdigest(),
+        "idioma": lang,
+        "pred": pred,
+        "score_1": score_1,
+        "latency_ms": latency_ms,
+        "ok": error is None,
+        "error": error,
+        "threshold": THRESHOLD,
+        "hf_model": HF_MODEL,
+        "model_source": MODEL_SOURCE,
+        "device": str(DEVICE),
+    }
+
+    if STORE_MSG_ORIGINAL:
+        payload["msg_original"] = msg
+    if STORE_MSG_NORMALIZED:
+        payload["msg_limpio"] = msg_limpio
+    if STORE_NLP_FEATURES:
+        payload["tokens"] = msg_limpio.split()
+
+    return payload
+
+
+async def main() -> None:
     client = TelegramClient("session/study_Session", TELEGRAM_API_ID, TELEGRAM_API_HASH)
 
     mongo = MongoClient(MONGO_URI)
-    db = mongo["tfg"]
-    collection = db["messages"]
+    collection = mongo[MONGO_DB][MONGO_COLLECTION]
+    ensure_indexes(collection)
 
     await client.connect()
 
@@ -121,56 +165,30 @@ async def main():
     username = getattr(me, "username", None)
     print(f"Conectado como {me.first_name} (@{username})")
     print(f"RUN_ID={RUN_ID}")
+    print(
+        "Privacidad -> "
+        f"msg_original={STORE_MSG_ORIGINAL}, msg_limpio={STORE_MSG_NORMALIZED}, "
+        f"tokens={STORE_NLP_FEATURES}, retention_days={RETENTION_DAYS}"
+    )
 
     @client.on(events.NewMessage)
-    async def handler(event):
+    async def handler(event) -> None:
         msg = event.message.text or ""
-        usr = event.message.sender_id
-
         if not msg.strip():
             return
 
-        msg_limpio, tokens, lemas, entidades, lang = analizar_texto(msg)
-        error = None
+        msg_limpio, lang = analizar_texto(msg)
+        document = build_message_document(event, msg, msg_limpio, lang)
 
         try:
-            pred, score_1, latency_ms = clasificar_binario(msg)
-        except Exception as e:
-            pred, score_1, latency_ms = None, None, None
-            error = str(e)
-
-        instdb = {
-            "run_id": RUN_ID,
-            "created_at_utc": datetime.now(timezone.utc),
-            "user_id": usr,
-            "chat_id": event.chat_id,
-            "message_id": event.message.id,
-            "msg_original": msg,
-            "msg_limpio": msg_limpio,
-            "msg_sha256": hashlib.sha256(msg.encode("utf-8")).hexdigest(),
-            "idioma": lang,
-            "tokens": tokens,
-            "lemas": lemas,
-            "entidades": entidades,
-            "pred": pred,
-            "score_1": score_1,
-            "latency_ms": latency_ms,
-            "ok": error is None,
-            "error": error,
-            "threshold": THRESHOLD,
-            "hf_model": HF_MODEL,
-            "model_source": MODEL_SOURCE,
-            "device": str(DEVICE),
-        }
-
-        try:
-            collection.insert_one(instdb)
+            collection.insert_one(document)
             print(
                 "Guardado -> "
-                f"chat_id={event.chat_id}, message_id={event.message.id}, pred={pred}, score_1={score_1}, latency_ms={latency_ms}"
+                f"message_id={event.message.id}, pred={document.get('pred')}, "
+                f"score_1={document.get('score_1')}, latency_ms={document.get('latency_ms')}"
             )
-        except Exception as e:
-            print("Error al guardar:", e)
+        except Exception as exc:
+            print("Error al guardar:", exc)
 
     print("Bot escuchando mensajes...")
     await client.run_until_disconnected()

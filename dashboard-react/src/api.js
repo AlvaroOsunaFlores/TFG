@@ -1,7 +1,12 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+const API_KEY = import.meta.env.VITE_API_KEY || "";
 
 async function fetchJson(path) {
-  const response = await fetch(`${API_BASE_URL}${path}`);
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    headers: {
+      "X-API-Key": API_KEY,
+    },
+  });
   if (!response.ok) {
     const detail = await response.text();
     throw new Error(`API ${response.status} ${response.statusText}: ${detail}`);

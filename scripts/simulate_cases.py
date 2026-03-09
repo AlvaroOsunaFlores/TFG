@@ -8,16 +8,23 @@ import json
 import os
 from pathlib import Path
 import re
+import sys
 import time
 import uuid
 
 from dotenv import load_dotenv
 import pandas as pd
 from pymongo import MongoClient
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 import torch
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 from model_loader import load_tokenizer_and_model
+from privacy_utils import env_flag, pseudonymize_identifier
+from reporting import ensure_run_dir, mirror_latest_files, relative_report_path, write_json
 
 
 load_dotenv()
@@ -33,8 +40,7 @@ class SimulatedCase:
 
 def preprocesar_texto(msg: str) -> str:
     msg = re.sub(r"\s+", " ", str(msg))
-    msg = msg.lower().strip()
-    return msg
+    return msg.lower().strip()
 
 
 def simulated_cases() -> list[SimulatedCase]:
@@ -46,27 +52,12 @@ def simulated_cases() -> list[SimulatedCase]:
             "URGENTE: verifica tu cuenta ahora mismo en http://secure-login-check.example.net",
             1,
         ),
-        SimulatedCase(
-            "S3",
-            "Solicitud credenciales",
-            "Necesito tu codigo 2FA para finalizar la validacion del acceso.",
-            1,
-        ),
+        SimulatedCase("S3", "Solicitud credenciales", "Necesito tu codigo 2FA para finalizar la validacion del acceso.", 1),
         SimulatedCase("S4", "Multilingue", "Please send the final report by 17:00 CET.", 0),
         SimulatedCase("S5", "Mensaje vacio/simbolos", "   ...   ", 0),
-        SimulatedCase(
-            "S6",
-            "Phishing con factura",
-            "Your invoice is pending. Open now: http://invoice-security-check.example.org",
-            1,
-        ),
+        SimulatedCase("S6", "Phishing con factura", "Your invoice is pending. Open now: http://invoice-security-check.example.org", 1),
         SimulatedCase("S7", "Comunicacion interna", "Reunion de seguimiento de riesgos a las 09:00.", 0),
-        SimulatedCase(
-            "S8",
-            "Amenaza extorsion",
-            "Tenemos tu contrasena filtrada, paga en BTC o publicamos los datos.",
-            1,
-        ),
+        SimulatedCase("S8", "Amenaza extorsion", "Tenemos tu contrasena filtrada, paga en BTC o publicamos los datos.", 1),
     ]
 
 
@@ -92,7 +83,7 @@ def predict_rule_based(text: str) -> tuple[int, float, str]:
 def predict_model(text: str, tokenizer, model, threshold: float, device: torch.device) -> tuple[int, float, float]:
     clean = preprocesar_texto(text)
     inputs = tokenizer(clean, return_tensors="pt", truncation=True, padding=True)
-    inputs = {k: v.to(device) for k, v in inputs.items()}
+    inputs = {key: value.to(device) for key, value in inputs.items()}
 
     started = time.perf_counter()
     with torch.no_grad():
@@ -115,15 +106,16 @@ def main() -> None:
     parser.add_argument("--mongo-collection", default=os.getenv("MONGO_COLLECTION", "messages"))
     args = parser.parse_args()
 
-    outdir = Path(args.outdir)
-    outdir.mkdir(parents=True, exist_ok=True)
-
+    reports_dir = Path(args.outdir)
+    run_id = f"sim-{uuid.uuid4()}"
+    run_dir = ensure_run_dir(reports_dir, run_id)
     hf_model = os.getenv("HF_MODEL", "alvaroosuna/distilbert_fast_fixed_labels")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    pii_salt = os.getenv("PII_SALT", "change-me-local-salt")
+    store_msg_original = env_flag(os.getenv("STORE_MSG_ORIGINAL"), default=False)
+    store_msg_normalized = env_flag(os.getenv("STORE_MSG_NORMALIZED"), default=False)
 
-    run_id = f"sim-{uuid.uuid4()}"
-    rows: list[dict] = []
-
+    rows: list[dict[str, object]] = []
     tokenizer = model = None
     model_source = "rule_based_fallback"
     mode = "fallback"
@@ -161,12 +153,13 @@ def main() -> None:
         )
 
     frame = pd.DataFrame(rows)
-    out_csv = outdir / "simulated_cases_results.csv"
+    out_csv = run_dir / "simulated_cases_results.csv"
     frame.to_csv(out_csv, index=False)
 
     y_true = frame["expected_label"].tolist()
     y_pred = frame["pred"].tolist()
-    summary = {
+    out_json = run_dir / "e2e_evidence.json"
+    summary: dict[str, object] = {
         "run_id": run_id,
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "num_cases": int(len(frame)),
@@ -174,6 +167,7 @@ def main() -> None:
         "hf_model": hf_model,
         "model_source": model_source if mode == "model" else "rule_based_fallback",
         "threshold": args.threshold,
+        "artifacts_dir": relative_report_path(run_dir, reports_dir),
         "metrics": {
             "accuracy": float(accuracy_score(y_true, y_pred)),
             "precision_pos": float(precision_score(y_true, y_pred, pos_label=1, zero_division=0)),
@@ -181,40 +175,42 @@ def main() -> None:
             "f1_pos": float(f1_score(y_true, y_pred, pos_label=1, zero_division=0)),
         },
         "outputs": {
-            "csv": str(out_csv),
+            "csv": relative_report_path(out_csv, reports_dir),
+            "json": relative_report_path(out_json, reports_dir),
         },
     }
 
-    mongo_result: dict[str, str | int | bool] = {"enabled": bool(args.write_mongo)}
+    mongo_result: dict[str, object] = {"enabled": bool(args.write_mongo)}
     if args.write_mongo:
         try:
             client = MongoClient(args.mongo_uri, serverSelectionTimeoutMS=1500)
             collection = client[args.mongo_db][args.mongo_collection]
             docs = []
             for row in rows:
-                docs.append(
-                    {
-                        "run_id": row["run_id"],
-                        "created_at_utc": datetime.now(timezone.utc),
-                        "chat_id": 0,
-                        "message_id": int(row["scenario_id"][1:]),
-                        "user_id": 0,
-                        "msg_original": row["text"],
-                        "msg_limpio": preprocesar_texto(row["text"]),
-                        "msg_sha256": row["text_sha256"],
-                        "pred": row["pred"],
-                        "score_1": row["score_1"],
-                        "latency_ms": row["latency_ms"],
-                        "ok": True,
-                        "error": None,
-                        "threshold": row["threshold_used"],
-                        "hf_model": hf_model,
-                        "model_source": row["model_source"],
-                        "device": str(device),
-                        "scenario": row["scenario"],
-                        "expected_label": row["expected_label"],
-                    }
-                )
+                item = {
+                    "run_id": row["run_id"],
+                    "created_at_utc": datetime.now(timezone.utc),
+                    "chat_hash": pseudonymize_identifier("sim-chat", namespace="chat_id", salt=pii_salt),
+                    "user_hash": pseudonymize_identifier("sim-user", namespace="user_id", salt=pii_salt),
+                    "message_id": int(str(row["scenario_id"])[1:]),
+                    "msg_sha256": row["text_sha256"],
+                    "pred": row["pred"],
+                    "score_1": row["score_1"],
+                    "latency_ms": row["latency_ms"],
+                    "ok": True,
+                    "error": None,
+                    "threshold": row["threshold_used"],
+                    "hf_model": hf_model,
+                    "model_source": row["model_source"],
+                    "device": str(device),
+                    "scenario": row["scenario"],
+                    "expected_label": row["expected_label"],
+                }
+                if store_msg_original:
+                    item["msg_original"] = row["text"]
+                if store_msg_normalized:
+                    item["msg_limpio"] = preprocesar_texto(str(row["text"]))
+                docs.append(item)
             if docs:
                 collection.insert_many(docs)
             client.close()
@@ -223,11 +219,14 @@ def main() -> None:
             mongo_result = {"enabled": True, "ok": False, "error": str(exc)}
 
     summary["mongo"] = mongo_result
+    write_json(out_json, summary)
+    mirror_latest_files(run_dir, reports_dir, ["simulated_cases_results.csv", "e2e_evidence.json"])
 
-    out_json = outdir / "e2e_evidence.json"
-    out_json.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
-
-    print(f"OK -> {out_csv} | {out_json}")
+    print(
+        "OK -> "
+        f"{relative_report_path(out_csv, reports_dir)} | "
+        f"{relative_report_path(out_json, reports_dir)}"
+    )
 
 
 if __name__ == "__main__":

@@ -1,12 +1,17 @@
 services:
   mongo:
-    image: mongo:latest
+    image: mongo:7.0
     container_name: mongo
     restart: always
-    ports:
-      - "27017:27017"
+    expose:
+      - "27017"
     volumes:
       - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   bot:
     build: .
@@ -15,7 +20,8 @@ services:
     env_file:
       - .env
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
     volumes:
       - ./session:/app/session
       - ./data:/app/data
@@ -30,7 +36,8 @@ services:
     env_file:
       - .env
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
     volumes:
       - ./reports:/app/reports
       - ./docs:/app/docs
@@ -45,12 +52,12 @@ services:
     depends_on:
       - api
     environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_INSTALL_PLUGINS=marcusolsson-json-datasource
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
-      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      API_KEY: ${API_KEY}
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+      GF_INSTALL_PLUGINS: marcusolsson-json-datasource
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_AUTH_DISABLE_LOGIN_FORM: "false"
     ports:
       - "3000:3000"
     volumes:

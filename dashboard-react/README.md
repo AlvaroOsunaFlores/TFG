@@ -1,35 +1,37 @@
-# Dashboard React (Fase 4/5)
+# Dashboard React
 
 Frontend principal del TFG para visualizar:
-- resumen de metricas por `run_id`,
-- analisis de umbrales (precision/recall/F1),
-- matriz de confusion,
+- resumen de métricas por `run_id`,
+- análisis de umbrales,
+- matriz de confusión,
 - trazabilidad de mensajes,
-- metadata de entrenamiento.
+- metadatos de entrenamiento.
 
 ## Requisitos
 - Node.js 18+.
-- API FastAPI activa (`/api/v1/...`).
+- API FastAPI activa.
+- `X-API-Key` configurada en el entorno del frontend.
 
-## Configuracion
+## Configuración
 1. Copia `.env.example` a `.env`:
-```bash
-cp .env.example .env
+```powershell
+Copy-Item .env.example .env
 ```
 
-2. Ajusta la URL:
+2. Ajusta:
 ```env
 VITE_API_BASE_URL=http://localhost:8000
+VITE_API_KEY=<API_KEY>
 ```
 
-## Ejecucion
-```bash
+## Ejecución
+```powershell
 npm install
 npm run dev
 ```
 
 ## Build
-```bash
+```powershell
 npm run build
 npm run preview
 ```

@@ -8,3 +8,7 @@ datasources:
     url: http://api:8000
     isDefault: true
     editable: true
+    jsonData:
+      httpHeaderName1: X-API-Key
+    secureJsonData:
+      httpHeaderValue1: ${API_KEY}

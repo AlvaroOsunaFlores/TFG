@@ -4,6 +4,8 @@ langdetect
 spacy
 torch
 transformers
+protobuf
+sentencepiece
 huggingface_hub
 python-dotenv
 pandas
@@ -11,3 +13,6 @@ scikit-learn
 fastapi
 uvicorn[standard]
 pytest
+httpx
+pypandoc
+python-docx

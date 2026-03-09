@@ -26,10 +26,12 @@
 - [x] API para explotacion de resultados.
 - [x] Dashboard React + paneles Grafana MVP.
 - [x] Pruebas de integracion y E2E simuladas.
+- [x] Politica minima de seguridad y privacidad descrita.
+- [x] Justificacion del umbral operativo y de la trazabilidad minima.
 
 ## Pendiente antes de entrega
 
 - [ ] Revisar extension total final de memoria.
-- [ ] Revisar redaccion academica final por tutora.
+- [x] Revisar coherencia tecnica tras comentarios de tutoria.
 - [ ] Confirmar fecha de portada.
 - [ ] Revisar formato final del DOCX exportado en Word.
