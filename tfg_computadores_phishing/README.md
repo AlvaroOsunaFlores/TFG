@@ -1,6 +1,6 @@
 # TFG de Ingenieria de Computadores - Deteccion de Phishing en Telegram
 
-Este proyecto corresponde al TFG orientado a sistemas e integracion. El foco principal no esta solo en la clasificacion, sino en el pipeline operativo completo:
+Este directorio contiene la version final del TFG de Ingenieria de Computadores orientado a sistemas e integracion. El foco principal no esta solo en la clasificacion, sino en el pipeline operativo completo:
 
 - ingesta de mensajes de Telegram;
 - preprocesamiento e inferencia;
@@ -29,7 +29,7 @@ El proyecto se presenta como un sistema modular para la deteccion de phishing y 
 - `grafana/`: monitorizacion complementaria.
 - `scripts/simulate_cases.py`: simulacion E2E de casos operativos.
 - `scripts/run_phase5_checks.py`: runner de validacion integrada.
-- `docs/`: memoria, contrato API y documentacion de apoyo.
+- `docs/`: memoria final, contrato API, metadatos y figuras incluidas en la documentacion.
 
 ## Ejecucion basica
 
@@ -40,7 +40,7 @@ Copy-Item .env.example .env
 docker compose up --build
 ```
 
-## Entorno virtual compartido
+## Pruebas
 
 Si reutilizas el entorno virtual existente en la raiz del repo:
 
@@ -48,8 +48,6 @@ Si reutilizas el entorno virtual existente en la raiz del repo:
 ..\.venv\Scripts\python.exe -m pytest -q
 ..\.venv\Scripts\python.exe evaluate.py
 ```
-
-Si prefieres un entorno virtual propio para este TFG, puedes crearlo dentro de esta carpeta sin afectar al resto del repositorio.
 
 ## Endpoints principales
 
@@ -74,6 +72,6 @@ Los artefactos tecnicos viven en `reports/runs/<run_id>/`, mientras que la raiz 
 
 ## Memoria
 
-- fuente canonica: `docs/MEMORIA_TFG_ETSII_APA7.md`
-- DOCX generado: `docs/MEMORIA_TFG_ETSII_APA7.docx`
-- resumen rapido: `docs/GUIA_SISTEMA_PARA_DUMMIES.md`
+- memoria editable: `docs/MEMORIA_TFG_ETSII_APA7.docx`
+- memoria en PDF: `docs/MEMORIA_TFG_ETSII_APA7.pdf`
+- fuente de trabajo: `docs/MEMORIA_TFG_ETSII_APA7.md`

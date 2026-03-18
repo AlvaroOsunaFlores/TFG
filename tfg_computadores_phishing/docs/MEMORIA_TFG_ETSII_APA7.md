@@ -2,7 +2,7 @@ ESCUELA TECNICA SUPERIOR DE INGENIERIA INFORMATICA
 
 DOBLE GRADO EN INGENIERIA INFORMATICA E INGENIERIA DE COMPUTADORES
 
-CURSO ACADEMICO 2024-2025
+CURSO ACADEMICO 2025-2026
 
 TRABAJO FIN DE GRADO
 
@@ -97,7 +97,7 @@ La revision de tutoria obligo a reforzar el sistema en un aspecto importante: la
 
 Este conjunto de decisiones no convierte el sistema en una plataforma final de produccion, pero si lo hace mas coherente y defendible desde el punto de vista tecnico.
 
-## 3. Descripcion informatica
+## 3. Metodologia, requisitos y arquitectura
 
 ### 3.1 Metodologia de trabajo
 
@@ -124,7 +124,7 @@ El proyecto se ha desarrollado con una metodologia incremental. Primero se const
 | RNF-4 | La persistencia por defecto debe reducir la exposicion de datos sensibles. |
 | RNF-5 | La capa de explotacion debe incluir controles minimos de acceso. |
 
-### 3.4 Arquitectura general
+### 3.4 Arquitectura general del pipeline
 
 La arquitectura se organiza en cinco bloques:
 
@@ -170,7 +170,7 @@ El proyecto esta preparado para ejecutarse localmente mediante `docker compose`,
 
 El endurecimiento minimo introducido en `docker-compose.yml` evita la exposicion publica de MongoDB y deja la API y Grafana sujetas a controles de acceso mas razonables para un MVP defendible.
 
-## 4. Desarrollo del sistema
+## 4. Desarrollo e integracion del sistema
 
 ### 4.1 Ingesta y gestion de sesion con Telegram
 
@@ -224,7 +224,11 @@ La capa web permite consultar rapidamente el estado de las ejecuciones y el comp
 
 ![Figura 4. Vista del dashboard React para inspeccion de mensajes y trazabilidad operacional.](assets/figures/ui_react_mensajes.png)
 
-![Figura 5. Panel de Grafana configurado para monitorizacion complementaria del MVP.](assets/figures/ui_grafana_mvp.png)
+Ademas del resumen ejecutivo y la vista de mensajes, el dashboard incorpora una pantalla de rendimiento que facilita revisar la evolucion de las metricas principales y contrastarlas con los artefactos de evaluacion generados por `run_id`.
+
+![Figura 5. Vista del dashboard React orientada al seguimiento del rendimiento y las metricas del sistema.](assets/figures/ui_react_rendimiento.png)
+
+![Figura 6. Panel de Grafana configurado para monitorizacion complementaria del MVP.](assets/figures/ui_grafana_mvp.png)
 
 La coexistencia de ambas capas refuerza la idea de pipeline explotable: la API sirve como contrato tecnico comun, React se orienta a revision funcional y Grafana a observabilidad.
 
@@ -239,7 +243,7 @@ El proyecto incorpora varios niveles de verificacion:
 
 La observacion practica de tutoria sobre `pytest -q` frente a `python -m pytest -q` ha quedado resuelta con `pytest.ini`, de forma que ambas formas de ejecucion funcionan correctamente sobre el proyecto.
 
-## 5. Evaluacion de resultados
+## 5. Evaluacion y analisis de resultados
 
 ### 5.1 Metricas principales
 
@@ -254,7 +258,7 @@ La evaluacion offline mas reciente, almacenada en `reports/metrics.json`, ofrece
 
 Estos valores muestran un comportamiento coherente con la filosofia del sistema: se acepta una precision moderada para maximizar la capacidad de deteccion temprana de amenazas reales.
 
-![Figura 6. Analisis por umbral utilizado para comparar precision, recall, F1 y accuracy.](assets/figures/fig01_curva_umbral.png)
+![Figura 7. Analisis por umbral utilizado para comparar precision, recall, F1 y accuracy.](assets/figures/fig01_curva_umbral.png)
 
 ### 5.2 Interpretacion del umbral operativo
 
@@ -275,11 +279,11 @@ La matriz de confusion del ultimo `run_id` fue:
 - falsos negativos: 4
 - verdaderos positivos: 46
 
-![Figura 7. Matriz de confusion correspondiente a la evaluacion offline del sistema.](assets/figures/fig02_matriz_confusion.png)
+![Figura 8. Matriz de confusion correspondiente a la evaluacion offline del sistema.](assets/figures/fig02_matriz_confusion.png)
 
-![Figura 8. Metricas globales obtenidas en la evaluacion del modelo.](assets/figures/fig03_metricas_globales.png)
+![Figura 9. Metricas globales obtenidas en la evaluacion del modelo.](assets/figures/fig03_metricas_globales.png)
 
-![Figura 9. Distribucion de clases utilizada en la evaluacion offline.](assets/figures/fig04_distribucion_clases.png)
+![Figura 10. Distribucion de clases utilizada en la evaluacion offline.](assets/figures/fig04_distribucion_clases.png)
 
 El comportamiento es consistente con un detector sensible: el sistema recupera muchas amenazas, pero genera un volumen apreciable de revisiones adicionales.
 
@@ -304,7 +308,7 @@ Durante la evaluacion se han identificado varias limitaciones:
 4. El sistema actual clasifica de forma binaria y no diferencia subtipos de amenaza.
 5. La memoria del proyecto mejora claramente tras la reorganizacion, pero el MVP sigue siendo un sistema academico y no una plataforma productiva completa.
 
-## 6. Conclusiones
+## 6. Conclusiones y lineas futuras
 
 El trabajo desarrollado cumple su objetivo principal: construir un pipeline funcional y defendible para detectar mensajes de phishing o actividad sospechosa en Telegram desde una perspectiva de sistemas. La aportacion mas relevante no reside solo en la clasificacion, sino en la integracion ordenada de los modulos que hacen posible operar el sistema.
 
