@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any, Callable
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,6 +19,25 @@ from .contracts import (
     TrainingMetadataResponse,
 )
 from .settings import Settings, load_settings
+
+
+class LazyFastAPIApp:
+    """Delay app construction so imports do not require runtime env vars."""
+
+    def __init__(self, factory: Callable[[], FastAPI]) -> None:
+        self._factory = factory
+        self._instance: FastAPI | None = None
+
+    def _get_instance(self) -> FastAPI:
+        if self._instance is None:
+            self._instance = self._factory()
+        return self._instance
+
+    async def __call__(self, scope: dict[str, Any], receive: Any, send: Any) -> None:
+        await self._get_instance()(scope, receive, send)
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._get_instance(), name)
 
 
 def create_app(custom_settings: Settings | None = None) -> FastAPI:
@@ -139,4 +159,4 @@ def create_app(custom_settings: Settings | None = None) -> FastAPI:
 
     return app
 
-app = create_app()
+app = LazyFastAPIApp(create_app)

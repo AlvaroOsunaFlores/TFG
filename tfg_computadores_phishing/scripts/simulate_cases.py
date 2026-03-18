@@ -107,6 +107,8 @@ def main() -> None:
     args = parser.parse_args()
 
     reports_dir = Path(args.outdir)
+    if not reports_dir.is_absolute():
+        reports_dir = PROJECT_ROOT / reports_dir
     run_id = f"sim-{uuid.uuid4()}"
     run_dir = ensure_run_dir(reports_dir, run_id)
     hf_model = os.getenv("HF_MODEL", "alvaroosuna/distilbert_fast_fixed_labels")

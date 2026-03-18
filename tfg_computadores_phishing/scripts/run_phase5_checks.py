@@ -39,6 +39,8 @@ def main() -> None:
     args = parser.parse_args()
 
     reports_dir = Path(args.outdir)
+    if not reports_dir.is_absolute():
+        reports_dir = REPO_ROOT / reports_dir
     validation_id = f"phase5-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
     validation_dir = ensure_validation_dir(reports_dir, validation_id)
 

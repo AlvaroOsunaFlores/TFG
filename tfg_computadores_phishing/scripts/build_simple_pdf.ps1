@@ -48,13 +48,43 @@ function Wrap-Line {
     return $lines
 }
 
+function Normalize-MarkdownLine {
+    param([string]$Line)
+
+    if ($Line -match '^\s*\|(?:\s*:?-+:?\s*\|)+\s*$') {
+        return ""
+    }
+
+    if ($Line -match '^\s*!\[(.*?)\]\((.*?)\)\s*$') {
+        if ($Matches[1]) {
+            return "[Figura] $($Matches[1])"
+        }
+        return "[Figura]"
+    }
+
+    if ($Line -match '^\s*#{1,6}\s+(.*)$') {
+        $Line = $Matches[1].ToUpper()
+    } elseif ($Line -match '^\s*[-*]\s+(.*)$') {
+        $Line = "- $($Matches[1])"
+    } elseif ($Line -match '^\s*\d+\.\s+(.*)$') {
+        $Line = $Line.Trim()
+    } elseif ($Line.Trim().StartsWith('|')) {
+        $Line = ($Line.Trim().Trim('|') -split '\|') -join ' ; '
+    }
+
+    $Line = $Line.Replace('**', '')
+    $Line = $Line.Replace('*', '')
+    $Line = $Line.Replace('`', '')
+    return $Line
+}
+
 function Add-PdfObject {
     param(
         [System.Collections.Generic.List[byte[]]]$Objects,
         [string]$Content
     )
 
-    $encoding = [System.Text.Encoding]::GetEncoding(28591)
+    $encoding = [System.Text.Encoding]::GetEncoding(1252)
     $Objects.Add($encoding.GetBytes($Content))
     return $Objects.Count
 }
@@ -64,7 +94,8 @@ $rawLines = Get-Content -Path $inputFullPath -Encoding UTF8
 $renderLines = New-Object System.Collections.Generic.List[string]
 
 foreach ($line in $rawLines) {
-    foreach ($wrapped in (Wrap-Line -Line $line -Width $MaxCharsPerLine)) {
+    $normalizedLine = Normalize-MarkdownLine -Line $line
+    foreach ($wrapped in (Wrap-Line -Line $normalizedLine -Width $MaxCharsPerLine)) {
         $renderLines.Add($wrapped)
     }
 }
@@ -77,7 +108,7 @@ for ($index = 0; $index -lt $renderLines.Count; $index += $linesPerPage) {
 }
 
 $objects = New-Object 'System.Collections.Generic.List[byte[]]'
-$fontId = Add-PdfObject -Objects $objects -Content "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>"
+$fontId = Add-PdfObject -Objects $objects -Content "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>"
 $pagesId = 2
 $pageCount = $pages.Count
 $pageIds = @()
@@ -116,7 +147,7 @@ foreach ($page in $pages) {
     }
     $null = $contentBuilder.AppendLine("ET")
     $stream = $contentBuilder.ToString()
-    $streamBytes = [System.Text.Encoding]::GetEncoding(28591).GetBytes($stream)
+    $streamBytes = [System.Text.Encoding]::GetEncoding(1252).GetBytes($stream)
     $contentObject = "<< /Length $($streamBytes.Length) >>`nstream`n$stream`nendstream"
     $null = Add-PdfObject -Objects $objects -Content $contentObject
 }
@@ -128,7 +159,7 @@ if ($outputDir) {
     New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
 }
 
-$encoding = [System.Text.Encoding]::GetEncoding(28591)
+$encoding = [System.Text.Encoding]::GetEncoding(1252)
 $memory = New-Object System.IO.MemoryStream
 $writer = New-Object System.IO.BinaryWriter($memory, $encoding)
 $writer.Write($encoding.GetBytes("%PDF-1.4`n"))

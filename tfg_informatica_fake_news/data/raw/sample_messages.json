@@ -1,0 +1,29 @@
+[
+  {
+    "message_id": 1001,
+    "chat_id": -100111,
+    "chat_title": "Canal Noticias Salud",
+    "channel": "salud_fake_news",
+    "sender_id": 501,
+    "date_utc": "2026-03-18T09:15:00+00:00",
+    "text": "URGENTE: comparten en Telegram que una nueva vacuna provoca efectos ocultos. Mira la noticia completa en https://ejemplo.invalid/fake"
+  },
+  {
+    "message_id": 1002,
+    "chat_id": -100112,
+    "chat_title": "Verificacion Periodistica",
+    "channel": "verificacion_periodistica",
+    "sender_id": 502,
+    "date_utc": "2026-03-18T10:00:00+00:00",
+    "text": "Fact-check: el rumor sobre el cierre de hospitales es falso y se desmiente con datos oficiales."
+  },
+  {
+    "message_id": 1003,
+    "chat_id": -100113,
+    "chat_title": "International Watch",
+    "channel": "global_news_watch",
+    "sender_id": 503,
+    "date_utc": "2026-03-18T10:45:00+00:00",
+    "text": "Breaking: viral claim spreads fast across channels, but the source article was fabricated."
+  }
+]

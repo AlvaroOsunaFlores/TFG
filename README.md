@@ -1,124 +1,55 @@
-# MVP TFG - Telegram + IA + Mongo + API + Dashboard
+# TFGs Telegram - Repo Unificado
 
-Este repositorio cubre la parte operativa del TFG:
-- ingesta de mensajes de Telegram,
-- clasificación binaria de ciberseguridad (`0=benigno`, `1=amenaza`),
-- trazabilidad mínima y pseudonimizada en MongoDB,
-- evaluación offline con métricas reproducibles,
-- API FastAPI protegida por clave,
-- dashboard React,
-- panelización Grafana MVP,
-- validación E2E con casos simulados.
+Este repositorio agrupa dos Trabajos Fin de Grado diferenciados por tema y por enfoque tecnico:
 
-## Cambios clave de esta iteración
-- Mongo deja de exponerse públicamente en `docker-compose`.
-- Grafana deja de aceptar acceso anónimo.
-- La API exige `X-API-Key` en todos los endpoints.
-- CORS queda restringido a orígenes locales explícitos.
-- La persistencia por defecto minimiza datos: `user_hash`, `chat_hash`, `message_id`, `msg_sha256`, `pred`, `score_1`, `latency_ms`, `run_id`.
-- Los artefactos se versionan por ejecución en `reports/runs/<run_id>/`.
+- `tfg_computadores_phishing/`: TFG de Ingenieria de Computadores centrado en sistemas, pipeline, integracion, almacenamiento, monitorizacion y despliegue.
+- `tfg_informatica_fake_news/`: TFG de Ingenieria Informatica centrado en tratamiento de datos, preprocesamiento textual, logica de aplicacion y futura fase de entrenamiento y evaluacion.
 
-## Componentes principales
-- `main.py`: bot en tiempo real (Telethon + inferencia + Mongo).
-- `evaluate.py`: evaluación offline y generación de artefactos versionados.
-- `api/`: FastAPI con endpoints `/api/v1/...`.
-- `dashboard-react/`: frontend de visualización.
-- `scripts/simulate_cases.py`: casos simulados para Fase 5.
-- `scripts/run_phase5_checks.py`: runner de validación.
-- `grafana/`: provisioning del datasource y dashboard.
-- `docs/`: memoria, contrato API y documentación de apoyo.
+## Motivo de la separacion
 
-## Variables de entorno
-Base (`.env.example`):
-- `TELEGRAM_API_ID`, `TELEGRAM_API_HASH`, `TELEGRAM_PHONE`
-- `MONGO_URI`, `MONGO_DB`, `MONGO_COLLECTION`
-- `HF_MODEL`, `THRESHOLD`
-- `API_KEY`, `API_CORS_ORIGINS`
-- `GRAFANA_ADMIN_USER`, `GRAFANA_ADMIN_PASSWORD`
-- `PII_SALT`, `STORE_MSG_ORIGINAL`, `STORE_MSG_NORMALIZED`, `STORE_NLP_FEATURES`, `RETENTION_DAYS`
-- `HF_BASE_MODEL`, `HF_STATE_DICT_FILE`
-- `REPORTS_DIR`, `TRAINING_METADATA_PATH`
+La separacion permite reutilizar la experiencia y parte del camino tecnico del primer proyecto sin mezclar ambos enfoques academicos:
 
-## Flujo rápido
-1. Copia variables:
-```powershell
-Copy-Item .env.example .env
-```
+- Computadores prioriza arquitectura operativa extremo a extremo.
+- Informatica prioriza el trabajo con datos y el procesamiento de la informacion.
 
-2. Levanta servicios:
-```powershell
-docker compose build
-docker compose up
-```
+## Estructura del repositorio
 
-Servicios publicados:
-- API: `http://localhost:8000`
-- Grafana: `http://localhost:3000`
-
-3. Ejecuta evaluación offline:
-```powershell
-python evaluate.py
-```
-
-4. Ejecuta simulación E2E:
-```powershell
-python -m scripts.simulate_cases --write-mongo
-```
-
-5. Ejecuta validación Fase 5:
-```powershell
-python -m scripts.run_phase5_checks --write-mongo
-```
-
-## Artefactos en `reports/`
-- Último resultado compatible en raíz:
-  - `metrics.json`
-  - `predictions.csv`
-  - `confusion_matrix.csv`
-  - `threshold_analysis.csv`
-  - `simulated_cases_results.csv`
-  - `e2e_evidence.json`
-  - `phase5_validation.json`
-- Resultado canónico por ejecución:
-  - `reports/runs/<run_id>/...`
-  - `reports/validations/<validation_id>/phase5_validation.json`
-
-## API FastAPI
-Todos los endpoints requieren cabecera:
 ```text
-X-API-Key: <API_KEY>
+proyecto_principal_repo/
+|-- tfg_computadores_phishing/
+|-- tfg_informatica_fake_news/
+|-- .gitignore
+`-- README.md
 ```
 
-Contratos implementados:
-- `GET /api/v1/health`
-- `GET /api/v1/runs`
-- `GET /api/v1/runs/{run_id}/summary`
-- `GET /api/v1/runs/{run_id}/thresholds`
-- `GET /api/v1/runs/{run_id}/confusion-matrix`
-- `GET /api/v1/messages`
-- `GET /api/v1/messages/stats`
-- `GET /api/v1/training/metadata`
+## Trabajo recomendado
 
-## Dashboard React
-Dentro de `dashboard-react/`:
+### TFG de Computadores
+
 ```powershell
-npm install
-npm run dev
+Set-Location .\tfg_computadores_phishing
+Copy-Item .env.example .env
+..\.venv\Scripts\python.exe -m pytest -q
 ```
 
-Configura `dashboard-react/.env` con:
-```env
-VITE_API_BASE_URL=http://localhost:8000
-VITE_API_KEY=<API_KEY>
+Si prefieres un entorno virtual propio dentro de la carpeta, puedes crearlo de forma independiente.
+
+### TFG de Informatica
+
+```powershell
+Set-Location .\tfg_informatica_fake_news
+python main.py --use-sample
+python -m pytest -q
 ```
 
-## Memoria y documentos
-- Fuente canónica: `docs/MEMORIA_TFG_ETSII_APA7.md`
-- Contrato API: `docs/API_CONTRACT.md`
-- Resumen para lectura rápida: `docs/GUIA_SISTEMA_PARA_DUMMIES.md`
+## Documentacion de referencia
 
-## Notas de seguridad
-- No subas `.env` ni `session/*.session`.
-- No dejes `API_KEY`, `PII_SALT` ni credenciales de Grafana en valores de ejemplo.
-- `msg_original`, `msg_limpio` y `tokens` están desactivados por defecto.
-- La retención mínima por defecto es de 30 días mediante TTL en Mongo.
+La linea editorial y la estructura academica se alinean con los materiales de `documentacion_referencia` del workspace, especialmente:
+
+- la propuesta breve de fake news en Telegram;
+- la propuesta de ciberseguridad en Telegram;
+- la memoria larga ETSII usada como patron de estilo y profundidad.
+
+## GitHub
+
+Los cambios de ambos TFG se trabajan en ramas del mismo repositorio remoto para mantener una unica historia y facilitar la entrega.

@@ -1,0 +1,73 @@
+[
+  {
+    "message_id": 1001,
+    "channel": "salud_fake_news",
+    "language": "es",
+    "normalized_text": "urgente: comparten en telegram que una nueva vacuna provoca efectos ocultos. mira la noticia completa en url",
+    "tokens": [
+      "urgente",
+      "comparten",
+      "en",
+      "telegram",
+      "que",
+      "una",
+      "nueva",
+      "vacuna",
+      "provoca",
+      "efectos",
+      "ocultos",
+      "mira",
+      "la",
+      "noticia",
+      "completa",
+      "en",
+      "url"
+    ]
+  },
+  {
+    "message_id": 1002,
+    "channel": "verificacion_periodistica",
+    "language": "es",
+    "normalized_text": "fact-check: el rumor sobre el cierre de hospitales es falso y se desmiente con datos oficiales.",
+    "tokens": [
+      "fact",
+      "check",
+      "el",
+      "rumor",
+      "sobre",
+      "el",
+      "cierre",
+      "de",
+      "hospitales",
+      "es",
+      "falso",
+      "y",
+      "se",
+      "desmiente",
+      "con",
+      "datos",
+      "oficiales"
+    ]
+  },
+  {
+    "message_id": 1003,
+    "channel": "global_news_watch",
+    "language": "en",
+    "normalized_text": "breaking: viral claim spreads fast across channels, but the source article was fabricated.",
+    "tokens": [
+      "breaking",
+      "viral",
+      "claim",
+      "spreads",
+      "fast",
+      "across",
+      "channels",
+      "but",
+      "the",
+      "source",
+      "article",
+      "was",
+      "fabricated"
+    ]
+  }
+]

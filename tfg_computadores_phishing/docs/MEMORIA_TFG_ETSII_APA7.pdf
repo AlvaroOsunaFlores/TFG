@@ -1,0 +1,1161 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [ 3 0 R 4 0 R 5 0 R 6 0 R 7 0 R 8 0 R 9 0 R 10 0 R 11 0 R 12 0 R 13 0 R ] /Count 11 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 14 0 R >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 15 0 R >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 16 0 R >>
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 17 0 R >>
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 18 0 R >>
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 19 0 R >>
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 20 0 R >>
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 21 0 R >>
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 22 0 R >>
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 23 0 R >>
+endobj
+13 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 24 0 R >>
+endobj
+14 0 obj
+<< /Length 2966 >>
+stream
+BT
+/F1 11 Tf
+50 760 Td
+(ESCUELA TECNICA SUPERIOR DE INGENIERIA INFORMATICA) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(DOBLE GRADO EN INGENIERIA INFORMATICA E INGENIERIA DE COMPUTADORES) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(CURSO ACADEMICO 2024-2025) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(TRABAJO FIN DE GRADO) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(TELEGRAM COMO FUENTE DE INTELIGENCIA EN CIBERSEGURIDAD: PIPELINE DE DETECCION DE PHISHING Y) Tj
+0 -15 Td
+(MENSAJES SOSPECHOSOS PARA ENTORNOS EMPRESARIALES) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Autor: Alvaro Osuna Flores) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Tutora: Liliana Patricia Santacruz Valencia) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(RESUMEN) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Este Trabajo Fin de Grado presenta el diseno e integracion de un sistema para detectar) Tj
+0 -15 Td
+(mensajes de phishing y comunicaciones sospechosas procedentes de Telegram. El proyecto se ha) Tj
+0 -15 Td
+(planteado desde una perspectiva propia de Ingenieria de Computadores: no se limita a una) Tj
+0 -15 Td
+(tarea de clasificacion aislada, sino que organiza un pipeline operativo que cubre ingesta,) Tj
+0 -15 Td
+(preprocesado, inferencia, persistencia, exposicion de resultados, monitorizacion y) Tj
+0 -15 Td
+(validacion integrada.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(La solucion combina Telethon para la escucha de mensajes, un modelo de lenguaje basado en) Tj
+0 -15 Td
+(DistilBERT para la inferencia binaria, MongoDB para la persistencia trazable, FastAPI para) Tj
+0 -15 Td
+(la publicacion de resultados y paneles React y Grafana para la explotacion operativa. Sobre) Tj
+0 -15 Td
+(esa base, se incorporan medidas de seguridad minima para evitar exposiciones innecesarias:) Tj
+0 -15 Td
+(API protegida con X-API-Key, CORS restringido, Grafana sin acceso anonimo y minimizacion de) Tj
+0 -15 Td
+(datos almacenados por defecto.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Los artefactos de evaluacion se versionan por run_id, lo que permite relacionar de forma) Tj
+0 -15 Td
+(coherente metricas, predicciones, matriz de confusion y evidencias de validacion con una) Tj
+0 -15 Td
+(ejecucion concreta. En la evaluacion offline del sistema, realizada sobre 100 muestras) Tj
+0 -15 Td
+(balanceadas, se obtuvo accuracy=0.63, precision_pos=0.5823, recall_pos=0.92, f1_pos=0.7132,) Tj
+0 -15 Td
+(roc_auc=0.8684 y average_precision=0.8951, manteniendo THRESHOLD=0.05 para priorizar) Tj
+0 -15 Td
+(deteccion temprana.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(La principal aportacion del trabajo no es solo el modelo, sino la integracion de componentes) Tj
+0 -15 Td
+(en un flujo trazable y defendible, orientado a un escenario realista de operacion y pensado) Tj
+0 -15 Td
+(para poder desplegarse, mantenerse y auditarse como un sistema tecnico coherente.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Palabras clave: Telegram, phishing, ciberseguridad, pipeline, FastAPI, MongoDB, Grafana,) Tj
+0 -15 Td
+(trazabilidad, DistilBERT.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(1. INTRODUCCION) Tj
+ET
+
+endstream
+endobj
+15 0 obj
+<< /Length 3049 >>
+stream
+BT
+/F1 11 Tf
+50 760 Td
+() Tj
+0 -15 Td
+(1.1 MOTIVACION) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Telegram se ha convertido en un entorno de interes para la ciberseguridad por dos motivos) Tj
+0 -15 Td
+(complementarios. Por un lado, es una plataforma ampliamente utilizada para comunicacion) Tj
+0 -15 Td
+(legitima, coordinacion y difusion rapida de mensajes. Por otro, sus canales, grupos y) Tj
+0 -15 Td
+(dinamica de propagacion facilitan tambien la distribucion de enlaces fraudulentos, senuelos) Tj
+0 -15 Td
+(de phishing, credenciales comprometidas o conversaciones relevantes para la inteligencia de) Tj
+0 -15 Td
+(amenazas \(Europol, 2022; Guo et al., 2024\).) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Desde una perspectiva operacional, el problema no consiste solo en clasificar texto. El reto) Tj
+0 -15 Td
+(real es construir un sistema capaz de recibir mensajes en tiempo casi real, tratarlos de) Tj
+0 -15 Td
+(manera consistente, decidir con que evidencia se almacenan, exponer resultados a otros) Tj
+0 -15 Td
+(componentes y mantener observabilidad suficiente para su revision posterior. Esa naturaleza) Tj
+0 -15 Td
+(integrada hace que el proyecto encaje especialmente bien en Ingenieria de Computadores.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Ademas, un analisis manual continuo resulta costoso, poco escalable y propenso a errores. En) Tj
+0 -15 Td
+(consecuencia, es razonable automatizar la primera clasificacion, siempre que el sistema deje) Tj
+0 -15 Td
+(trazabilidad tecnica suficiente para justificar la salida producida y para explicar como se) Tj
+0 -15 Td
+(ha llegado a ella.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(1.2 OBJETIVOS) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Los objetivos planteados para este trabajo son los siguientes.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Objetivo general) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Desarrollar un pipeline modular para capturar, procesar y clasificar mensajes de Telegram) Tj
+0 -15 Td
+(relacionados con phishing o actividad sospechosa, integrando almacenamiento, publicacion de) Tj
+0 -15 Td
+(resultados y monitorizacion tecnica para su uso en un contexto empresarial.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Objetivos especificos) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(1. Implementar la ingesta automatica de mensajes desde Telegram mediante su API.) Tj
+0 -15 Td
+(2. Integrar un flujo de preprocesado e inferencia con un modelo binario entrenado) Tj
+0 -15 Td
+(previamente.) Tj
+0 -15 Td
+(3. Persistir evidencia tecnica suficiente en MongoDB sin almacenar por defecto mas datos) Tj
+0 -15 Td
+(sensibles de los estrictamente necesarios.) Tj
+0 -15 Td
+(4. Versionar los artefactos de evaluacion por run_id para mantener coherencia entre) Tj
+0 -15 Td
+(ejecuciones, metricas y endpoints.) Tj
+0 -15 Td
+(5. Exponer resultados mediante una API reutilizable y visualizarlos en un dashboard web y en) Tj
+0 -15 Td
+(Grafana.) Tj
+0 -15 Td
+(6. Validar el sistema con pruebas de API, evaluacion offline y casos simulados de) Tj
+0 -15 Td
+(integracion.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(1.3 ESTRUCTURA DEL DOCUMENTO) Tj
+ET
+
+endstream
+endobj
+16 0 obj
+<< /Length 3160 >>
+stream
+BT
+/F1 11 Tf
+50 760 Td
+() Tj
+0 -15 Td
+(La memoria se organiza en seis bloques. En primer lugar se presenta el contexto del problema) Tj
+0 -15 Td
+(y la justificacion tecnica del enfoque adoptado. A continuacion se describe la metodologia,) Tj
+0 -15 Td
+(la arquitectura y los requisitos. Despues se detalla el desarrollo del pipeline, la) Tj
+0 -15 Td
+(integracion entre componentes y las decisiones de almacenamiento y seguridad. Finalmente se) Tj
+0 -15 Td
+(analizan los resultados, las limitaciones detectadas y las conclusiones del trabajo.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(2. CONTEXTO) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(2.1 TELEGRAM COMO SUPERFICIE DE INTERES EN CIBERSEGURIDAD) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(La literatura reciente y los informes del sector coinciden en que Telegram se ha consolidado) Tj
+0 -15 Td
+(como una fuente dual: sirve tanto para comunicaciones legitimas como para actividades) Tj
+0 -15 Td
+(ilicitas y de coordinacion criminal \(Europol, 2022; Guo et al., 2024\). Esa dualidad lo) Tj
+0 -15 Td
+(convierte en un espacio util para la inteligencia temprana en ciberseguridad.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Para una empresa, esto tiene una consecuencia clara: conviene disponer de mecanismos que) Tj
+0 -15 Td
+(permitan observar, filtrar y priorizar mensajes potencialmente peligrosos sin depender) Tj
+0 -15 Td
+(exclusivamente de la revision manual. De forma particular, el phishing sigue siendo una de) Tj
+0 -15 Td
+(las amenazas mas frecuentes y mas efectivas, por lo que detectar indicadores tempranos en) Tj
+0 -15 Td
+(mensajes o enlaces compartidos puede reducir el tiempo de reaccion.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(2.2 NECESIDAD DE UN ENFOQUE DE SISTEMAS) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(En este trabajo no basta con responder si un mensaje parece benigno o sospechoso. La) Tj
+0 -15 Td
+(pregunta relevante es mas amplia:) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- como llega el mensaje al sistema;) Tj
+0 -15 Td
+(- como se procesa y clasifica;) Tj
+0 -15 Td
+(- que datos se conservan;) Tj
+0 -15 Td
+(- como se audita la ejecucion;) Tj
+0 -15 Td
+(- como se consumen los resultados desde otros componentes.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Estas preguntas obligan a pensar el problema como un pipeline de sistemas. Por eso, el) Tj
+0 -15 Td
+(proyecto no se ha orientado solo a la mejora de un clasificador, sino al ensamblaje de) Tj
+0 -15 Td
+(varios modulos coordinados que permitan desplegar la solucion, validarla y operarla.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(2.3 SOLUCIONES RELACIONADAS Y HUECO DEL PROYECTO) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Existen soluciones comerciales y academicas para monitorizar fuentes abiertas, orquestar) Tj
+0 -15 Td
+(indicadores o aplicar modelos de lenguaje a ciberseguridad. Sin embargo, muchas de esas) Tj
+0 -15 Td
+(soluciones son generalistas, costosas o estan poco centradas en una integracion ligera y) Tj
+0 -15 Td
+(modular sobre Telegram. El hueco que cubre este TFG consiste en demostrar una arquitectura) Tj
+0 -15 Td
+(defendible, con tecnologias accesibles y con especial atencion a:) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- portabilidad mediante Docker;) Tj
+ET
+
+endstream
+endobj
+17 0 obj
+<< /Length 2650 >>
+stream
+BT
+/F1 11 Tf
+50 760 Td
+(- almacenamiento flexible en MongoDB;) Tj
+0 -15 Td
+(- interfaz de consulta basada en API;) Tj
+0 -15 Td
+(- capa ligera de visualizacion;) Tj
+0 -15 Td
+(- trazabilidad por ejecucion.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(2.4 CRITERIO DE SEGURIDAD MINIMA) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(La revision de tutoria obligo a reforzar el sistema en un aspecto importante: la explotacion) Tj
+0 -15 Td
+(minima segura. A partir de esa revision se fijaron cinco criterios:) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(1. no publicar MongoDB al exterior por defecto;) Tj
+0 -15 Td
+(2. exigir autenticacion simple en la API;) Tj
+0 -15 Td
+(3. desactivar acceso anonimo en Grafana;) Tj
+0 -15 Td
+(4. restringir CORS a origenes concretos;) Tj
+0 -15 Td
+(5. minimizar los datos personales o textuales persistidos en MongoDB.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Este conjunto de decisiones no convierte el sistema en una plataforma final de produccion,) Tj
+0 -15 Td
+(pero si lo hace mas coherente y defendible desde el punto de vista tecnico.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(3. DESCRIPCION INFORMATICA) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(3.1 METODOLOGIA DE TRABAJO) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(El proyecto se ha desarrollado con una metodologia incremental. Primero se construyo el) Tj
+0 -15 Td
+(nucleo minimo funcional de captura, inferencia y almacenamiento. Posteriormente se anadieron) Tj
+0 -15 Td
+(la evaluacion offline, la API, el dashboard React, los paneles de Grafana y, por ultimo, los) Tj
+0 -15 Td
+(mecanismos de validacion y endurecimiento minimo. Esta forma de trabajo ha permitido) Tj
+0 -15 Td
+(mantener un MVP operativo en todo momento e ir reforzando sus puntos debiles detectados) Tj
+0 -15 Td
+(durante la tutoria.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(3.2 REQUISITOS FUNCIONALES) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Codigo ; Requisito ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(RF-1 ; Capturar mensajes de Telegram en tiempo real mediante Telethon. ) Tj
+0 -15 Td
+(RF-2 ; Preprocesar el texto y ejecutar inferencia binaria con un modelo transformer. ) Tj
+0 -15 Td
+(RF-3 ; Guardar una traza tecnica minima y pseudonimizada en MongoDB. ) Tj
+0 -15 Td
+(RF-4 ; Generar artefactos reproducibles de evaluacion por run_id. ) Tj
+0 -15 Td
+(RF-5 ; Publicar resultados mediante API y visualizarlos en React y Grafana. ) Tj
+0 -15 Td
+(RF-6 ; Validar el comportamiento con pruebas automatizadas y casos simulados. ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(3.3 REQUISITOS NO FUNCIONALES) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Codigo ; Requisito ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(RNF-1 ; La solucion debe ser modular y facil de desplegar localmente. ) Tj
+ET
+
+endstream
+endobj
+18 0 obj
+<< /Length 2703 >>
+stream
+BT
+/F1 11 Tf
+50 760 Td
+(RNF-2 ; La evaluacion debe ser reproducible y separable del flujo en tiempo real. ) Tj
+0 -15 Td
+(RNF-3 ; Los resultados deben ser trazables por ejecucion y por artefacto. ) Tj
+0 -15 Td
+(RNF-4 ; La persistencia por defecto debe reducir la exposicion de datos sensibles. ) Tj
+0 -15 Td
+(RNF-5 ; La capa de explotacion debe incluir controles minimos de acceso. ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(3.4 ARQUITECTURA GENERAL) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(La arquitectura se organiza en cinco bloques:) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(1. captura de mensajes desde Telegram;) Tj
+0 -15 Td
+(2. preprocesado e inferencia;) Tj
+0 -15 Td
+(3. persistencia y versionado de artefactos;) Tj
+0 -15 Td
+(4. publicacion y consulta mediante API;) Tj
+0 -15 Td
+(5. monitorizacion y visualizacion.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+([Figura] Figura 1. Arquitectura general del sistema con los modulos principales del) Tj
+0 -15 Td
+(pipeline.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(En terminos practicos, main.py representa la capa de entrada operativa; evaluate.py) Tj
+0 -15 Td
+(desacopla la evaluacion reproducible; api/ publica resultados; dashboard-react/ y grafana/) Tj
+0 -15 Td
+(consumen la informacion; y scripts/ automatiza la validacion integrada.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(3.5 FLUJO OPERATIVO Y TRAZABILIDAD) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(El flujo real que sigue un mensaje es el siguiente:) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(1. Telegram entrega un mensaje al cliente autenticado.) Tj
+0 -15 Td
+(2. El sistema normaliza el texto y detecta su idioma.) Tj
+0 -15 Td
+(3. El modelo calcula la probabilidad de amenaza y decide la clase final segun un umbral) Tj
+0 -15 Td
+(configurable.) Tj
+0 -15 Td
+(4. Se genera una traza con identificadores pseudonimizados, hash del mensaje, score,) Tj
+0 -15 Td
+(latencia y metadatos del modelo.) Tj
+0 -15 Td
+(5. La informacion queda disponible para consulta, auditoria y visualizacion.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+([Figura] Figura 2. Flujo de inferencia y trazabilidad aplicado a cada mensaje procesado.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Esta secuencia es precisamente la que refuerza el enfoque de sistemas del TFG. La salida del) Tj
+0 -15 Td
+(modelo no se trata como un dato aislado, sino como un evento que atraviesa varias capas del) Tj
+0 -15 Td
+(pipeline.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(3.6 HERRAMIENTAS Y TECNOLOGIAS) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Categoria ; Herramientas ; Funcion dentro del sistema ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Ingesta ; Python, Telethon ; Conexion a Telegram y recepcion de mensajes ) Tj
+0 -15 Td
+(IA ; Hugging Face Transformers, PyTorch ; Carga del modelo e inferencia binaria ) Tj
+ET
+
+endstream
+endobj
+19 0 obj
+<< /Length 3082 >>
+stream
+BT
+/F1 11 Tf
+50 760 Td
+(Persistencia ; MongoDB ; Almacenamiento flexible y TTL de evidencias ) Tj
+0 -15 Td
+(Explotacion ; FastAPI ; Publicacion de resultados por endpoints ) Tj
+0 -15 Td
+(Visualizacion ; React, Grafana ; Consulta operativa y panelizacion ) Tj
+0 -15 Td
+(Integracion ; Docker, docker compose ; Orquestacion local de componentes ) Tj
+0 -15 Td
+(Calidad ; pytest, scripts de validacion ; Verificacion tecnica del sistema ) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(3.7 INFRAESTRUCTURA Y DESPLIEGUE) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(El proyecto esta preparado para ejecutarse localmente mediante docker compose, manteniendo) Tj
+0 -15 Td
+(separados los contenedores principales y el frontend. La eleccion de esta infraestructura) Tj
+0 -15 Td
+(ligera responde a dos objetivos: facilitar la reproducibilidad del TFG y mantener un diseno) Tj
+0 -15 Td
+(modular en el que cada componente pueda evolucionar de forma independiente.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(El endurecimiento minimo introducido en docker-compose.yml evita la exposicion publica de) Tj
+0 -15 Td
+(MongoDB y deja la API y Grafana sujetas a controles de acceso mas razonables para un MVP) Tj
+0 -15 Td
+(defendible.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(4. DESARROLLO DEL SISTEMA) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(4.1 INGESTA Y GESTION DE SESION CON TELEGRAM) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(El punto de entrada operativo se encuentra en main.py. El sistema valida la presencia de) Tj
+0 -15 Td
+(TELEGRAM_API_ID, TELEGRAM_API_HASH y TELEGRAM_PHONE, crea la sesion local de Telethon y se) Tj
+0 -15 Td
+(conecta a Telegram. Si la cuenta no esta autorizada, solicita codigo y, cuando procede,) Tj
+0 -15 Td
+(segundo factor.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Una vez iniciada la sesion, el cliente queda suscrito a eventos NewMessage. Cada mensaje) Tj
+0 -15 Td
+(recibido se procesa en tiempo real y se transforma en un documento tecnico apto para) Tj
+0 -15 Td
+(almacenamiento.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(4.2 PREPROCESADO E INFERENCIA) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(El preprocesado actual incluye normalizacion basica del texto, reduccion de espacios,) Tj
+0 -15 Td
+(conversion a minusculas y limpieza de caracteres. Despues se ejecuta la inferencia con el) Tj
+0 -15 Td
+(modelo DistilBERT cargado desde Hugging Face y, cuando procede, desde un state_dict) Tj
+0 -15 Td
+(entrenado previamente.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(La salida principal del modelo es score_1, interpretado como probabilidad de amenaza. La) Tj
+0 -15 Td
+(decision binaria final se calcula aplicando THRESHOLD. En el estado actual del proyecto se) Tj
+0 -15 Td
+(mantiene THRESHOLD=0.05 para priorizar recall alto y comportarse como un sistema de) Tj
+0 -15 Td
+(deteccion temprana, aunque el analisis por umbral demuestra que hay puntos de trabajo mas) Tj
+0 -15 Td
+(equilibrados para otros contextos operativos.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(4.3 PERSISTENCIA Y MINIMIZACION DE DATOS) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(La coleccion MongoDB no guarda por defecto el texto original. El documento base incluye:) Tj
+ET
+
+endstream
+endobj
+20 0 obj
+<< /Length 2747 >>
+stream
+BT
+/F1 11 Tf
+50 760 Td
+() Tj
+0 -15 Td
+(- run_id;) Tj
+0 -15 Td
+(- created_at_utc;) Tj
+0 -15 Td
+(- user_hash y chat_hash;) Tj
+0 -15 Td
+(- message_id;) Tj
+0 -15 Td
+(- msg_sha256;) Tj
+0 -15 Td
+(- idioma;) Tj
+0 -15 Td
+(- pred, score_1 y latency_ms;) Tj
+0 -15 Td
+(- threshold, hf_model, model_source y device;) Tj
+0 -15 Td
+(- ok y error.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Esta estrategia ofrece un equilibrio util entre trazabilidad y privacidad. El sistema) Tj
+0 -15 Td
+(conserva una huella del contenido, identifica la ejecucion concreta y permite auditar la) Tj
+0 -15 Td
+(inferencia sin almacenar necesariamente texto sensible o identificadores directos.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(4.4 VERSIONADO DE ARTEFACTOS POR EJECUCION) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Una mejora estructural importante fue dejar de tratar la evaluacion como un estado global) Tj
+0 -15 Td
+(unico. A partir de la revision, evaluate.py crea artefactos en reports/runs/<run_id>/ y solo) Tj
+0 -15 Td
+(mantiene una copia rapida del ultimo resultado en la raiz de reports/.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Esta decision afecta a toda la capa de explotacion:) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- la API puede servir la matriz de confusion o el analisis por umbral correctos para un) Tj
+0 -15 Td
+(run_id concreto;) Tj
+0 -15 Td
+(- el dashboard React consulta datos coherentes con la ejecucion seleccionada;) Tj
+0 -15 Td
+(- Grafana y los scripts de validacion pueden referenciar artefactos versionados.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(4.5 API Y CAPA DE CONSULTA) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(La API FastAPI actua como interfaz intermedia entre la persistencia y las herramientas de) Tj
+0 -15 Td
+(explotacion. Expone endpoints para salud, ejecuciones, resumen de metricas, umbrales, matriz) Tj
+0 -15 Td
+(de confusion, mensajes y metadatos de entrenamiento. Para evitar una superficie de) Tj
+0 -15 Td
+(exposicion innecesaria, todos los endpoints requieren X-API-Key.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(La aplicacion utiliza una construccion perezosa \(LazyFastAPIApp\) para evitar que la) Tj
+0 -15 Td
+(importacion falle cuando aun no se han definido ciertas variables de entorno. Esa decision) Tj
+0 -15 Td
+(mejora la robustez del proyecto y facilita las pruebas automatizadas.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(4.6 DASHBOARD REACT Y GRAFANA) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(La capa web permite consultar rapidamente el estado de las ejecuciones y el comportamiento) Tj
+0 -15 Td
+(del sistema desde una interfaz mas accesible. React se utiliza como frontend operativo de) Tj
+0 -15 Td
+(detalle, mientras que Grafana se reserva para una visualizacion mas sintesis y mas orientada) Tj
+0 -15 Td
+(a monitorizacion.) Tj
+0 -15 Td
+() Tj
+ET
+
+endstream
+endobj
+21 0 obj
+<< /Length 2348 >>
+stream
+BT
+/F1 11 Tf
+50 760 Td
+([Figura] Figura 3. Vista resumida del dashboard React para exploracion de resultados por) Tj
+0 -15 Td
+(ejecucion.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+([Figura] Figura 4. Vista del dashboard React para inspeccion de mensajes y trazabilidad) Tj
+0 -15 Td
+(operacional.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+([Figura] Figura 5. Panel de Grafana configurado para monitorizacion complementaria del MVP.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(La coexistencia de ambas capas refuerza la idea de pipeline explotable: la API sirve como) Tj
+0 -15 Td
+(contrato tecnico comun, React se orienta a revision funcional y Grafana a observabilidad.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(4.7 VALIDACION INTEGRADA) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(El proyecto incorpora varios niveles de verificacion:) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- pruebas pytest para la API;) Tj
+0 -15 Td
+(- evaluacion offline reproducible;) Tj
+0 -15 Td
+(- simulacion de casos operativos con scripts/simulate_cases.py;) Tj
+0 -15 Td
+(- runner de integracion con scripts/run_phase5_checks.py.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(La observacion practica de tutoria sobre pytest -q frente a python -m pytest -q ha quedado) Tj
+0 -15 Td
+(resuelta con pytest.ini, de forma que ambas formas de ejecucion funcionan correctamente) Tj
+0 -15 Td
+(sobre el proyecto.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(5. EVALUACION DE RESULTADOS) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(5.1 METRICAS PRINCIPALES) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(La evaluacion offline mas reciente, almacenada en reports/metrics.json, ofrece los) Tj
+0 -15 Td
+(siguientes resultados sobre 100 muestras balanceadas:) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- accuracy = 0.63) Tj
+0 -15 Td
+(- precision_pos = 0.5823) Tj
+0 -15 Td
+(- recall_pos = 0.92) Tj
+0 -15 Td
+(- f1_pos = 0.7132) Tj
+0 -15 Td
+(- roc_auc = 0.8684) Tj
+0 -15 Td
+(- average_precision = 0.8951) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Estos valores muestran un comportamiento coherente con la filosofia del sistema: se acepta) Tj
+0 -15 Td
+(una precision moderada para maximizar la capacidad de deteccion temprana de amenazas reales.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+([Figura] Figura 6. Analisis por umbral utilizado para comparar precision, recall, F1 y) Tj
+0 -15 Td
+(accuracy.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(5.2 INTERPRETACION DEL UMBRAL OPERATIVO) Tj
+0 -15 Td
+() Tj
+ET
+
+endstream
+endobj
+22 0 obj
+<< /Length 2574 >>
+stream
+BT
+/F1 11 Tf
+50 760 Td
+(El analisis por umbral muestra que el mejor F1 de la evaluacion aparece en torno a 0.45 y) Tj
+0 -15 Td
+(0.50, donde precision_pos, recall_pos, f1_pos y accuracy se estabilizan en 0.82. Sin) Tj
+0 -15 Td
+(embargo, el sistema mantiene 0.05 como umbral operativo porque el objetivo del MVP no es) Tj
+0 -15 Td
+(optimizar equilibrio general, sino priorizar la deteccion temprana.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(En otras palabras:) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- con 0.05 se detectan 46 de 50 amenazas reales;) Tj
+0 -15 Td
+(- a cambio, aparecen 33 falsos positivos en la clase negativa;) Tj
+0 -15 Td
+(- esa decision es aceptable si el sistema se usa como primera criba para revisiones) Tj
+0 -15 Td
+(posteriores.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(5.3 MATRIZ DE CONFUSION Y DISTRIBUCION) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(La matriz de confusion del ultimo run_id fue:) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- verdaderos negativos: 17) Tj
+0 -15 Td
+(- falsos positivos: 33) Tj
+0 -15 Td
+(- falsos negativos: 4) Tj
+0 -15 Td
+(- verdaderos positivos: 46) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+([Figura] Figura 7. Matriz de confusion correspondiente a la evaluacion offline del sistema.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+([Figura] Figura 8. Metricas globales obtenidas en la evaluacion del modelo.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+([Figura] Figura 9. Distribucion de clases utilizada en la evaluacion offline.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(El comportamiento es consistente con un detector sensible: el sistema recupera muchas) Tj
+0 -15 Td
+(amenazas, pero genera un volumen apreciable de revisiones adicionales.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(5.4 EVIDENCIA DE VALIDACION INTEGRADA) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(La validacion consolidada en phase5_validation.json confirma que los artefactos esperados) Tj
+0 -15 Td
+(estan presentes y que el runner principal finaliza correctamente. Ademas, e2e_evidence.json) Tj
+0 -15 Td
+(recoge una bateria de 8 casos simulados con:) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- accuracy = 0.625) Tj
+0 -15 Td
+(- precision_pos = 0.5714) Tj
+0 -15 Td
+(- recall_pos = 1.0) Tj
+0 -15 Td
+(- f1_pos = 0.7273) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(En esa simulacion, la escritura en MongoDB puede fallar si la infraestructura local no esta) Tj
+0 -15 Td
+(levantada, pero el flujo tecnico del resto de componentes y la generacion de evidencias) Tj
+0 -15 Td
+(quedan verificados. Este resultado es util porque separa la validez del pipeline de la) Tj
+0 -15 Td
+(disponibilidad puntual de la base de datos.) Tj
+0 -15 Td
+() Tj
+ET
+
+endstream
+endobj
+23 0 obj
+<< /Length 2712 >>
+stream
+BT
+/F1 11 Tf
+50 760 Td
+(5.5 LIMITACIONES DETECTADAS) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Durante la evaluacion se han identificado varias limitaciones:) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(1. El umbral operativo genera un numero alto de falsos positivos.) Tj
+0 -15 Td
+(2. La validacion E2E depende del estado de la infraestructura MongoDB cuando se solicita) Tj
+0 -15 Td
+(escritura real.) Tj
+0 -15 Td
+(3. El preprocesado textual es deliberadamente sencillo y podria enriquecerse con rasgos) Tj
+0 -15 Td
+(adicionales.) Tj
+0 -15 Td
+(4. El sistema actual clasifica de forma binaria y no diferencia subtipos de amenaza.) Tj
+0 -15 Td
+(5. La memoria del proyecto mejora claramente tras la reorganizacion, pero el MVP sigue) Tj
+0 -15 Td
+(siendo un sistema academico y no una plataforma productiva completa.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(6. CONCLUSIONES) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(El trabajo desarrollado cumple su objetivo principal: construir un pipeline funcional y) Tj
+0 -15 Td
+(defendible para detectar mensajes de phishing o actividad sospechosa en Telegram desde una) Tj
+0 -15 Td
+(perspectiva de sistemas. La aportacion mas relevante no reside solo en la clasificacion,) Tj
+0 -15 Td
+(sino en la integracion ordenada de los modulos que hacen posible operar el sistema.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(El proyecto demuestra que es posible combinar:) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(- captura automatizada de mensajes;) Tj
+0 -15 Td
+(- inferencia con un modelo de lenguaje;) Tj
+0 -15 Td
+(- almacenamiento trazable y minimizado;) Tj
+0 -15 Td
+(- API reutilizable;) Tj
+0 -15 Td
+(- visualizacion operativa;) Tj
+0 -15 Td
+(- y validacion integrada por artefactos.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Ademas, la revision de tutoria ha servido para mejorar aspectos esenciales de calidad) Tj
+0 -15 Td
+(tecnica: ejecucion robusta de pruebas, menor exposicion de servicios, versionado por run_id) Tj
+0 -15 Td
+(y control de acceso en la capa de explotacion.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Como lineas de trabajo futuro, resultaria razonable:) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(1. explorar umbrales adaptativos o politicas por contexto;) Tj
+0 -15 Td
+(2. ampliar el modelo hacia categorias de amenaza mas finas;) Tj
+0 -15 Td
+(3. mejorar observabilidad y despliegue continuo;) Tj
+0 -15 Td
+(4. incorporar mecanismos mas ricos de explicabilidad.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(En su estado actual, el TFG queda mejor diferenciado respecto al futuro TFG de fake news:) Tj
+0 -15 Td
+(aqui el peso esta en la arquitectura del pipeline, la integracion de componentes y la) Tj
+0 -15 Td
+(operacion del sistema completo.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(BIBLIOGRAFIA) Tj
+0 -15 Td
+() Tj
+ET
+
+endstream
+endobj
+24 0 obj
+<< /Length 2451 >>
+stream
+BT
+/F1 11 Tf
+50 760 Td
+(Akinyele, A. R., Ajayi, O. O., Munyaneza, G., Ibecheozor, U. H., & Gopakumar, N. \(2024\).) Tj
+0 -15 Td
+(Leveraging Generative Artificial Intelligence for cybersecurity: Analyzing diffusion models) Tj
+0 -15 Td
+(in detecting and mitigating cyber threats. GSC Advanced Research and Reviews, 21\(2\), 1-14.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Chatzimarkaki, G., Karagiorgou, S., Konidi, M., Alexandrou, D., Bouras, T., & Evangelatos,) Tj
+0 -15 Td
+(S. \(2023\). Harvesting large textual and multimedia data to detect illegal activities on dark) Tj
+0 -15 Td
+(web marketplaces. IEEE International Conference on Big Data, 4046-4051.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Duggineni, S. \(2024\). AI and machine learning applications in industrial automation and) Tj
+0 -15 Td
+(cybersecurity. Journal of Artificial Intelligence & Cloud Computing, 2\(4\), 1-5.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Elbes, M., Hendawi, S., AlZu'bi, S., Kanan, T., & Mughaid, A. \(2023\). Unleashing the full) Tj
+0 -15 Td
+(potential of artificial intelligence and machine learning in cybersecurity vulnerability) Tj
+0 -15 Td
+(management. International Conference on Information Technology, 276-283.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Europol. \(2022\). Internet Organised Crime Threat Assessment \(IOCTA\) 2022. European Union) Tj
+0 -15 Td
+(Agency for Law Enforcement Cooperation.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Gartner. \(2023\). Top Strategic Technology Trends for 2023. Gartner, Inc.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Guo, Y., Wang, D., Wang, L., Fang, Y., Wang, C., Yang, M., Liu, T., & Wang, H. \(2024\).) Tj
+0 -15 Td
+(Beyond App Markets: Demystifying underground mobile app distribution via Telegram.) Tj
+0 -15 Td
+(Proceedings of the ACM on Measurement and Analysis of Computing Systems, 8\(3\), 1-25.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Hummelholm, A., Iturbe, E., Krichen, M., et al. \(2023\). Artificial intelligence and cyber) Tj
+0 -15 Td
+(threat monitoring: Emerging approaches for automated detection. Journal of Cybersecurity) Tj
+0 -15 Td
+(Engineering, 5\(2\), 45-63.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(INCIBE. \(2024\). Buenas practicas de ciberseguridad para la deteccion y gestion de phishing.) Tj
+0 -15 Td
+(Instituto Nacional de Ciberseguridad.) Tj
+0 -15 Td
+() Tj
+0 -15 Td
+(Roy, S., et al. \(2024\). Characterizing cybercriminal ecosystems on Telegram at scale.) Tj
+0 -15 Td
+(Security and Privacy Workshops, 1-12.) Tj
+ET
+
+endstream
+endobj
+25 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+xref
+0 26
+0000000000 65535 f 
+0000000009 00000 n 
+0000000106 00000 n 
+0000000230 00000 n 
+0000000357 00000 n 
+0000000484 00000 n 
+0000000611 00000 n 
+0000000738 00000 n 
+0000000865 00000 n 
+0000000992 00000 n 
+0000001119 00000 n 
+0000001247 00000 n 
+0000001375 00000 n 
+0000001503 00000 n 
+0000001631 00000 n 
+0000004650 00000 n 
+0000007752 00000 n 
+0000010965 00000 n 
+0000013668 00000 n 
+0000016424 00000 n 
+0000019559 00000 n 
+0000022359 00000 n 
+0000024760 00000 n 
+0000027387 00000 n 
+0000030152 00000 n 
+0000032656 00000 n 
+trailer
+<< /Size 26 /Root 25 0 R >>
+startxref
+32706
+%%EOF

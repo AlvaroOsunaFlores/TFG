@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from pathlib import Path
 import os
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
 
 def _split_csv(raw: str | None) -> list[str]:
     if not raw:
@@ -19,6 +21,14 @@ def _required_env(name: str) -> str:
     return value.strip()
 
 
+def _path_from_env(name: str, default_relative: str) -> Path:
+    raw = os.getenv(name, default_relative)
+    path = Path(raw)
+    if not path.is_absolute():
+        path = PROJECT_ROOT / path
+    return path
+
+
 @dataclass(frozen=True)
 class Settings:
     reports_dir: Path
@@ -31,8 +41,8 @@ class Settings:
 
 
 def load_settings() -> Settings:
-    reports_dir = Path(os.getenv("REPORTS_DIR", "reports"))
-    metadata_path = Path(os.getenv("TRAINING_METADATA_PATH", "docs/training_metadata.json"))
+    reports_dir = _path_from_env("REPORTS_DIR", "reports")
+    metadata_path = _path_from_env("TRAINING_METADATA_PATH", "docs/training_metadata.json")
 
     return Settings(
         reports_dir=reports_dir,

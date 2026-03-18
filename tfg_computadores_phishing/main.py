@@ -4,6 +4,7 @@ import asyncio
 from datetime import datetime, timezone
 import hashlib
 import os
+from pathlib import Path
 import re
 import time
 import uuid
@@ -19,7 +20,9 @@ from model_loader import load_tokenizer_and_model
 from privacy_utils import env_flag, pseudonymize_identifier
 
 
-load_dotenv()
+PROJECT_ROOT = Path(__file__).resolve().parent
+ENV_PATH = PROJECT_ROOT / ".env"
+load_dotenv(ENV_PATH if ENV_PATH.exists() else None)
 
 _api_id = os.getenv("TELEGRAM_API_ID")
 TELEGRAM_API_HASH = os.getenv("TELEGRAM_API_HASH")
@@ -140,7 +143,9 @@ def build_message_document(event, msg: str, msg_limpio: str, lang: str) -> dict[
 
 
 async def main() -> None:
-    client = TelegramClient("session/study_Session", TELEGRAM_API_ID, TELEGRAM_API_HASH)
+    session_path = PROJECT_ROOT / "session" / "study_Session"
+    session_path.parent.mkdir(parents=True, exist_ok=True)
+    client = TelegramClient(str(session_path), TELEGRAM_API_ID, TELEGRAM_API_HASH)
 
     mongo = MongoClient(MONGO_URI)
     collection = mongo[MONGO_DB][MONGO_COLLECTION]

@@ -24,12 +24,23 @@ import torch
 from model_loader import load_tokenizer_and_model
 from reporting import ensure_run_dir, mirror_latest_files, relative_report_path, write_json
 
+PROJECT_ROOT = Path(__file__).resolve().parent
+
 
 HF_MODEL = os.getenv("HF_MODEL", "alvaroosuna/distilbert_fast_fixed_labels")
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-INPUT_CSV = Path(os.getenv("EVAL_INPUT", "data/test.csv"))
-REPORTS_DIR = Path(os.getenv("EVAL_OUTDIR", "reports"))
+
+def _project_path_from_env(name: str, default_relative: str) -> Path:
+    raw = os.getenv(name, default_relative)
+    path = Path(raw)
+    if not path.is_absolute():
+        path = PROJECT_ROOT / path
+    return path
+
+
+INPUT_CSV = _project_path_from_env("EVAL_INPUT", "data/test.csv")
+REPORTS_DIR = _project_path_from_env("EVAL_OUTDIR", "reports")
 THRESHOLD = float(os.getenv("THRESHOLD", "0.05"))
 
 

@@ -1,9 +1,10 @@
 param(
-    [string]$DeliveryDate = "2026_03_13",
+    [string]$DeliveryDate = "2026_03_12",
     [string]$PreviousDelivery = "entrega_tutoria_2026_03_02"
 )
 
-$repoRoot = Split-Path -Parent $PSScriptRoot
+$projectRoot = Split-Path -Parent $PSScriptRoot
+$repoRoot = Split-Path -Parent $projectRoot
 $proyectosPrincipales = Split-Path -Parent $repoRoot
 $workspaceRoot = Split-Path -Parent $proyectosPrincipales
 $historicoRoot = Join-Path $workspaceRoot "versiones_historicas"
@@ -24,7 +25,7 @@ if (Test-Path $newDeliveryPath) {
 New-Item -ItemType Directory -Force -Path $newDeliveryPath | Out-Null
 
 $robocopyArgs = @(
-    $repoRoot,
+    $projectRoot,
     $newDeliveryPath,
     "/E",
     "/XD", ".git", ".venv", ".idea", ".pytest_cache", "dashboard-react\\node_modules", "dashboard-react\\dist", "session",
