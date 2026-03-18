@@ -4,7 +4,7 @@ DOBLE GRADO EN INGENIERIA INFORMATICA E INGENIERIA DE COMPUTADORES
 
 CURSO ACADEMICO 2025-2026
 
-TRABAJO FIN DE GRADO
+TRABAJO FIN DE GRADO INGENIERÍA DE COMPUTADORES
 
 # TELEGRAM COMO FUENTE DE INTELIGENCIA EN CIBERSEGURIDAD: PIPELINE DE DETECCION DE PHISHING Y MENSAJES SOSPECHOSOS PARA ENTORNOS EMPRESARIALES
 
@@ -221,8 +221,6 @@ La aplicacion utiliza una construccion perezosa (`LazyFastAPIApp`) para evitar q
 La capa web permite consultar rapidamente el estado de las ejecuciones y el comportamiento del sistema desde una interfaz mas accesible. React se utiliza como frontend operativo de detalle, mientras que Grafana se reserva para una visualizacion mas sintesis y mas orientada a monitorizacion.
 
 ![Figura 3. Vista resumida del dashboard React para exploracion de resultados por ejecucion.](assets/figures/ui_react_resumen.png)
-
-![Figura 4. Vista del dashboard React para inspeccion de mensajes y trazabilidad operacional.](assets/figures/ui_react_mensajes.png)
 
 Ademas del resumen ejecutivo y la vista de mensajes, el dashboard incorpora una pantalla de rendimiento que facilita revisar la evolucion de las metricas principales y contrastarlas con los artefactos de evaluacion generados por `run_id`.
 
