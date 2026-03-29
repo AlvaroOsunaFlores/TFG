@@ -1,40 +1,67 @@
 # TFG de Ingenieria Informatica - Deteccion Temprana de Fake News en Telegram
 
-Este proyecto arranca desde cero, aunque toma como inspiracion la experiencia del TFG de phishing. En esta primera fase se implementan solo los objetivos especificos 1 y 2:
+Este proyecto mantiene el foco en datos, preprocesamiento y logica de aplicacion. En el estado actual ya cubre:
 
-1. extraer mensajes desde canales y grupos de Telegram usando su API;
-2. normalizar los mensajes mediante un pipeline de preprocesamiento textual.
+1. extraccion de mensajes desde Telegram;
+2. normalizacion y deteccion de idioma;
+3. construccion de un dataset ficticio etiquetado con schema estable;
+4. preparacion de scripts reproducibles para entrenamiento y evaluacion futura.
+
+En esta entrega no se entrena todavia ningun modelo. La siguiente fase queda preparada para que, cuando dispongas del dataset real, solo haya que sustituir la fuente de datos y lanzar el pipeline.
 
 ## Diferencia respecto al TFG de Computadores
 
-Este proyecto no se centra todavia en API, dashboard, Grafana o despliegue. El foco esta en:
+Este proyecto no se centra en API, dashboard, Grafana ni despliegue multi-servicio. El foco esta en:
 
 - adquisicion de mensajes;
 - limpieza y normalizacion del texto;
 - tokenizacion;
 - deteccion de idioma;
-- preparacion de una base reutilizable para dataset, entrenamiento y evaluacion.
+- construccion de dataset;
+- preparacion del pipeline de entrenamiento y evaluacion.
 
-## Estructura minima
+## Estructura actual
 
 - `telegram_extractor.py`: extractor de mensajes con Telethon.
 - `preprocessing.py`: limpieza, tokenizacion y deteccion de idioma.
-- `main.py`: pipeline de ejemplo con modo API real o modo muestra.
+- `main.py`: pipeline de ejemplo con modo Telegram real o muestra local.
+- `scripts/build_seed_dataset.py`: genera el dataset ficticio etiquetado.
+- `scripts/validate_dataset.py`: valida schema, etiquetas y nulos.
+- `scripts/train_baseline.py`: deja preparado el entrenamiento baseline con `scikit-learn`.
+- `scripts/evaluate_baseline.py`: deja preparada la evaluacion posterior de un modelo persistido.
+- `configs/training_config.json`: parametros por defecto para la fase de entrenamiento futura.
 - `data/raw/`: entradas crudas y muestras.
 - `data/processed/`: salidas preprocesadas.
-- `docs/`: propuesta academica inicial.
-- `tests/`: pruebas de humo y unitarias.
+- `data/labeled/`: dataset ficticio de trabajo.
+- `docs/`: memoria y propuesta academica.
+- `tests/`: pruebas unitarias y de dataset.
 
-## Ejecucion minima con muestra
+## Flujo minimo actual
+
+1. Generar o refrescar datos de ejemplo:
 
 ```powershell
 python main.py --use-sample
 ```
 
-Salida esperada:
+2. Construir el dataset ficticio etiquetado:
 
-- `data/raw/extracted_messages.json`
-- `data/processed/preprocessed_messages.json`
+```powershell
+python -m scripts.build_seed_dataset
+```
+
+3. Validar el dataset:
+
+```powershell
+python -m scripts.validate_dataset --input data/labeled/fake_news_seed.csv
+```
+
+4. Comprobar la configuracion del entrenamiento sin entrenar nada:
+
+```powershell
+python -m scripts.train_baseline --dry-run
+python -m scripts.evaluate_baseline --dry-run
+```
 
 ## Ejecucion con Telegram
 
@@ -45,6 +72,16 @@ Salida esperada:
 ```powershell
 python main.py --channels canal_fake_1 canal_fake_2 --limit 20
 ```
+
+## Dataset ficticio
+
+El dataset semilla de esta entrega es deliberadamente ficticio y solo sirve para:
+
+- validar la estructura futura del dataset real;
+- probar scripts y rutas;
+- dejar preparada la siguiente fase del proyecto.
+
+No debe usarse para presentar resultados academicos finales ni para afirmar rendimiento de IA.
 
 ## Pruebas
 
