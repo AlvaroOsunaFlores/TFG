@@ -20,6 +20,10 @@ La solucion combina Telethon para la escucha de mensajes, un modelo de lenguaje 
 
 Los artefactos de evaluacion se versionan por `run_id`, lo que permite relacionar de forma coherente metricas, predicciones, matriz de confusion y evidencias de validacion con una ejecucion concreta. En la evaluacion offline del sistema, realizada sobre 100 muestras balanceadas, se obtuvo `accuracy=0.63`, `precision_pos=0.5823`, `recall_pos=0.92`, `f1_pos=0.7132`, `roc_auc=0.8684` y `average_precision=0.8951`, manteniendo `THRESHOLD=0.05` para priorizar deteccion temprana.
 
+Lo mas valioso del proyecto, visto desde Ingenieria de Computadores, es que cada fase del ciclo de vida del mensaje queda conectada con la siguiente. La entrada en Telegram, la gestion de sesion, la normalizacion, la inferencia, la escritura en MongoDB, la exposicion por API y la observabilidad en Grafana no aparecen como piezas sueltas, sino como un recorrido continuo que puede ejecutarse, auditarse y mantenerse sobre una infraestructura concreta.
+
+Aunque el entrenamiento del modelo no constituye el eje principal de esta memoria, tampoco se ha tratado la IA como una caja negra tomada al azar. El sistema se apoya en un modelo derivado de `distilbert-base-uncased`, con metadatos de entrenamiento documentados, checkpoints conservados y un pipeline previo de preparacion de datasets que combina fuentes de referencia como `malicious_phish.csv`, `phishing.csv` y `spam.csv` antes de generar los conjuntos equilibrados utilizados en la experimentacion.
+
 La principal aportacion del trabajo no es solo el modelo, sino la integracion de componentes en un flujo trazable y defendible, orientado a un escenario realista de operacion y pensado para poder desplegarse, mantenerse y auditarse como un sistema tecnico coherente.
 
 Palabras clave: Telegram, phishing, ciberseguridad, pipeline, FastAPI, MongoDB, Grafana, trazabilidad, DistilBERT.
@@ -34,6 +38,8 @@ Desde una perspectiva operacional, el problema no consiste solo en clasificar te
 
 Ademas, un analisis manual continuo resulta costoso, poco escalable y propenso a errores. En consecuencia, es razonable automatizar la primera clasificacion, siempre que el sistema deje trazabilidad tecnica suficiente para justificar la salida producida y para explicar como se ha llegado a ella.
 
+Esta forma de plantearlo ayuda tambien a diferenciar con claridad este trabajo del futuro TFG de fake news. Mientras aquel puede centrarse con mayor naturalidad en datos, preprocesado, entrenamiento, evaluacion y logica de aplicacion, aqui el peso recae en la arquitectura del pipeline, en la integracion entre modulos y en las decisiones de ejecucion, almacenamiento y observabilidad necesarias para operar el sistema.
+
 ### 1.2 Objetivos
 
 Los objetivos planteados para este trabajo son los siguientes.
@@ -41,6 +47,8 @@ Los objetivos planteados para este trabajo son los siguientes.
 Objetivo general
 
 Desarrollar un pipeline modular para capturar, procesar y clasificar mensajes de Telegram relacionados con phishing o actividad sospechosa, integrando almacenamiento, publicacion de resultados y monitorizacion tecnica para su uso en un contexto empresarial.
+
+En esta memoria, ese objetivo se entiende ademas como el diseno de un sistema desplegable y auditable. Por eso, ademas del resultado de clasificacion, resulta importante explicar como se autentica la fuente, como se encadena cada componente, que evidencias se persisten y como se supervisa el comportamiento del conjunto.
 
 Objetivos especificos
 
@@ -50,6 +58,8 @@ Objetivos especificos
 4. Versionar los artefactos de evaluacion por `run_id` para mantener coherencia entre ejecuciones, metricas y endpoints.
 5. Exponer resultados mediante una API reutilizable y visualizarlos en un dashboard web y en Grafana.
 6. Validar el sistema con pruebas de API, evaluacion offline y casos simulados de integracion.
+7. Definir una topologia de ejecucion reproducible mediante contenedores y servicios desacoplados, separando captura, persistencia, API y observabilidad.
+8. Documentar la procedencia del modelo y de los datos de entrenamiento con el suficiente detalle para justificar la integracion de la IA dentro del sistema, sin desplazar el foco principal de la memoria hacia el entrenamiento.
 
 ### 1.3 Estructura del documento
 
@@ -74,6 +84,10 @@ En este trabajo no basta con responder si un mensaje parece benigno o sospechoso
 - como se consumen los resultados desde otros componentes.
 
 Estas preguntas obligan a pensar el problema como un pipeline de sistemas. Por eso, el proyecto no se ha orientado solo a la mejora de un clasificador, sino al ensamblaje de varios modulos coordinados que permitan desplegar la solucion, validarla y operarla.
+
+Mirado asi, el mensaje deja de ser un simple texto y pasa a ser una unidad de trabajo que atraviesa varias capas tecnicas. Primero hay una capa de adquisicion, responsable de mantener la sesion con Telegram y recibir eventos `NewMessage`. Despues entra en juego una capa de transformacion, donde el contenido se normaliza, se detecta el idioma y se prepara la entrada del modelo. A continuacion actua la capa de decision, que calcula `score_1`, aplica el umbral operativo y adjunta metadatos del modelo y del dispositivo. Finalmente aparecen las capas de persistencia y explotacion, que almacenan el evento de forma pseudonimizada, lo publican mediante endpoints y lo convierten en una fuente de consulta operativa para React y Grafana.
+
+Precisamente por eso este TFG encaja mejor en Ingenieria de Computadores. El interes academico no se agota en la calidad del clasificador, sino en la capacidad de integrar comunicaciones, almacenamiento, servicios, observabilidad y controles minimos de seguridad en un sistema coherente.
 
 ### 2.3 Soluciones relacionadas y hueco del proyecto
 
@@ -138,6 +152,8 @@ La arquitectura se organiza en cinco bloques:
 
 En terminos practicos, `main.py` representa la capa de entrada operativa; `evaluate.py` desacopla la evaluacion reproducible; `api/` publica resultados; `dashboard-react/` y `grafana/` consumen la informacion; y `scripts/` automatiza la validacion integrada.
 
+Si se baja de la arquitectura logica a la infraestructura real del proyecto, esos bloques se corresponden tambien con unidades de ejecucion diferenciadas. El servicio `bot` se ocupa de la escucha e inferencia online, `mongo` conserva la traza operativa, `api` sirve como contrato de acceso a resultados y `grafana` consume esos datos a traves de la API. El frontend React actua como otra capa de explotacion, mas orientada a la inspeccion funcional, mientras que la evaluacion offline y los scripts de simulacion permiten medir el rendimiento sin depender del trafico real.
+
 ### 3.5 Flujo operativo y trazabilidad
 
 El flujo real que sigue un mensaje es el siguiente:
@@ -147,6 +163,10 @@ El flujo real que sigue un mensaje es el siguiente:
 3. El modelo calcula la probabilidad de amenaza y decide la clase final segun un umbral configurable.
 4. Se genera una traza con identificadores pseudonimizados, hash del mensaje, score, latencia y metadatos del modelo.
 5. La informacion queda disponible para consulta, auditoria y visualizacion.
+
+En la practica, este recorrido se convierte en una cadena de transformaciones muy concreta. `main.py` valida primero las variables `TELEGRAM_API_ID`, `TELEGRAM_API_HASH` y `TELEGRAM_PHONE`, construye la sesion de Telethon y espera eventos entrantes. Cuando llega un mensaje con contenido textual, `analizar_texto()` obtiene una version normalizada e intenta detectar el idioma; despues `clasificar_binario()` tokeniza el texto, ejecuta la inferencia en CPU o GPU y devuelve `pred`, `score_1` y `latency_ms`; por ultimo, `build_message_document()` empaqueta el resultado junto con `run_id`, hashes, metadatos del modelo y estado de la operacion antes de que `collection.insert_one()` persista el evento.
+
+Este comportamiento es importante porque muestra que la trazabilidad no se anade a posteriori. La evidencia tecnica se genera en el mismo recorrido del mensaje y acompana a la decision desde el instante en que el evento entra en el sistema. De ese modo, almacenamiento, evaluacion posterior y explotacion visual comparten una misma estructura de informacion.
 
 ![Figura 2. Flujo de inferencia y trazabilidad aplicado a cada mensaje procesado.](assets/figures/fig06_flujo_inferencia_trazabilidad.png)
 
@@ -170,6 +190,12 @@ El proyecto esta preparado para ejecutarse localmente mediante `docker compose`,
 
 El endurecimiento minimo introducido en `docker-compose.yml` evita la exposicion publica de MongoDB y deja la API y Grafana sujetas a controles de acceso mas razonables para un MVP defendible.
 
+La topologia definida en `docker-compose.yml` despliega cuatro servicios principales. `mongo` utiliza la imagen `mongo:7.0`, conserva datos en un volumen dedicado y publica solo `expose: 27017`, de modo que la base de datos no queda abierta al exterior por defecto. `bot` se construye a partir del `Dockerfile` del proyecto, hereda configuracion desde `.env`, depende del estado saludable de MongoDB y monta `session/`, `data/` y `reports/` para persistir sesion, datos auxiliares y artefactos. `api` reutiliza la misma imagen base, expone `8000:8000`, monta `reports/` y `docs/` y arranca `uvicorn` para servir la interfaz HTTP. Finalmente, `grafana` se apoya en un volumen propio, depende de la API y carga automaticamente su datasource y dashboards provisionados.
+
+Esta separacion aporta ventajas practicas desde la perspectiva de sistemas. Por un lado, desacopla captura, persistencia, consulta y monitorizacion, de forma que cada bloque puede arrancar o diagnosticarse con criterios propios. Por otro, obliga a pensar de manera explicita en dependencias, puertos, volumenes y variables de entorno como `MONGO_URI`, `API_KEY`, `GRAFANA_ADMIN_USER` o `GRAFANA_ADMIN_PASSWORD`. En un contexto academico, este detalle es valioso porque convierte el TFG en una arquitectura ejecutable y no solo en una descripcion conceptual.
+
+Tambien conviene destacar que la observabilidad no se resuelve unicamente con logs. El servicio de MongoDB dispone de `healthcheck`, la API incorpora un endpoint `/api/v1/health` para comprobar simultaneamente estado de Mongo y de los reportes, y Grafana consulta estadisticas agregadas a traves de la propia API. La infraestructura, por tanto, no solo ejecuta el pipeline, sino que aporta mecanismos minimos para detectar degradaciones y revisar su estado operativo.
+
 ## 4. Desarrollo e integracion del sistema
 
 ### 4.1 Ingesta y gestion de sesion con Telegram
@@ -183,6 +209,10 @@ Una vez iniciada la sesion, el cliente queda suscrito a eventos `NewMessage`. Ca
 El preprocesado actual incluye normalizacion basica del texto, reduccion de espacios, conversion a minusculas y limpieza de caracteres. Despues se ejecuta la inferencia con el modelo DistilBERT cargado desde Hugging Face y, cuando procede, desde un `state_dict` entrenado previamente.
 
 La salida principal del modelo es `score_1`, interpretado como probabilidad de amenaza. La decision binaria final se calcula aplicando `THRESHOLD`. En el estado actual del proyecto se mantiene `THRESHOLD=0.05` para priorizar recall alto y comportarse como un sistema de deteccion temprana, aunque el analisis por umbral demuestra que hay puntos de trabajo mas equilibrados para otros contextos operativos.
+
+Aunque esta memoria no desarrolla el entrenamiento con el detalle propio del TFG de Informatica, si conviene explicar de donde sale el modelo integrado. `model_loader.py` intenta cargar primero un repositorio Transformers completo y, si falla, utiliza un mecanismo de compatibilidad para descargar desde Hugging Face un `state_dict` y reconstruir el modelo sobre la base `distilbert-base-uncased`. Esta decision evita depender de un unico formato de publicacion y refuerza la robustez del sistema en despliegue.
+
+La evidencia disponible en `docs/training_metadata.json`, `scripts_experimentos/`, `datos_entrenamiento/` y `modelos_entrenados/` muestra ademas que el modelo no se ha seleccionado de forma arbitraria. El pipeline previo combina datasets como `malicious_phish.csv`, `phishing.csv` y `spam.csv`, genera `combined_cyber_dataset.csv`, equilibra clases en `combined_cyber_balanced.csv` y utiliza un conjunto de trabajo documentado como `balanced_dataset_generated.csv`. Sobre esa base, scripts como `AITrainer_distilbert_2.py` entrenan una variante de DistilBERT con cabeza de clasificacion propia, dejando checkpoints como `distilbert_best.pt` y `distilbert_fast_fixed_labels.pt`. En consecuencia, la IA que consume este pipeline debe entenderse como un componente entrenado y trazable dentro del sistema, no como una dependencia opaca tomada al azar.
 
 ### 4.3 Persistencia y minimizacion de datos
 
@@ -200,6 +230,10 @@ La coleccion MongoDB no guarda por defecto el texto original. El documento base 
 
 Esta estrategia ofrece un equilibrio util entre trazabilidad y privacidad. El sistema conserva una huella del contenido, identifica la ejecucion concreta y permite auditar la inferencia sin almacenar necesariamente texto sensible o identificadores directos.
 
+En la practica, la persistencia tambien incorpora decisiones de mantenimiento que suelen quedar fuera de una memoria centrada solo en modelos. `ensure_indexes()` crea indices para `run_id`, `msg_sha256` y `created_at_utc`, lo que mejora tanto la consulta como la trazabilidad temporal. Ademas, sobre `created_at_utc` se define un indice TTL configurado mediante `RETENTION_DAYS`, con objeto de limitar la retencion automatica de evidencias cuando asi se desee.
+
+La pseudonimizacion se realiza mediante `privacy_utils.py`, que genera `user_hash` y `chat_hash` con `sha256` y una sal configurable. Junto a ello, las variables `STORE_MSG_ORIGINAL`, `STORE_MSG_NORMALIZED` y `STORE_NLP_FEATURES` permiten activar o no campos adicionales segun el nivel de detalle que requiera la operacion. Esta parametrizacion hace visible un aspecto importante de sistemas: la persistencia no es solo un repositorio pasivo, sino un punto de equilibrio entre auditoria, privacidad, volumen de datos y coste de almacenamiento.
+
 ### 4.4 Versionado de artefactos por ejecucion
 
 Una mejora estructural importante fue dejar de tratar la evaluacion como un estado global unico. A partir de la revision, `evaluate.py` crea artefactos en `reports/runs/<run_id>/` y solo mantiene una copia rapida del ultimo resultado en la raiz de `reports/`.
@@ -210,11 +244,19 @@ Esta decision afecta a toda la capa de explotacion:
 - el dashboard React consulta datos coherentes con la ejecucion seleccionada;
 - Grafana y los scripts de validacion pueden referenciar artefactos versionados.
 
+La organizacion de artefactos en `reports/runs/<run_id>/` tiene ademas una ventaja arquitectonica clara: separa el historico canonico de la copia de conveniencia. `reporting.py` replica en la raiz de `reports/` un pequeno conjunto de ficheros recientes para compatibilidad operativa, pero conserva en cada subdirectorio la version integra de `metrics.json`, `predictions.csv`, `threshold_analysis.csv` y `confusion_matrix.csv`. A esto se suma el uso de `reports/validations/<validation_id>/` para la evidencia de validacion integrada, lo que facilita distinguir entre ejecuciones de evaluacion y ejecuciones de chequeo.
+
+En terminos de integracion, `run_id` actua como identificador comun entre el clasificador offline, la API, el dashboard web y los scripts de comprobacion. Gracias a ello, una consulta sobre thresholds, una matriz de confusion y una vista de resumen pueden referirse exactamente a la misma ejecucion sin ambiguedades. Este desacoplamiento entre historico y ultima copia visible es una decision pequena, pero muy representativa del enfoque de sistemas adoptado.
+
 ### 4.5 API y capa de consulta
 
 La API FastAPI actua como interfaz intermedia entre la persistencia y las herramientas de explotacion. Expone endpoints para salud, ejecuciones, resumen de metricas, umbrales, matriz de confusion, mensajes y metadatos de entrenamiento. Para evitar una superficie de exposicion innecesaria, todos los endpoints requieren `X-API-Key`.
 
 La aplicacion utiliza una construccion perezosa (`LazyFastAPIApp`) para evitar que la importacion falle cuando aun no se han definido ciertas variables de entorno. Esa decision mejora la robustez del proyecto y facilita las pruebas automatizadas.
+
+Mas que una lista de endpoints, la API debe entenderse como el contrato operativo del sistema. `api/app.py` centraliza autenticacion simple mediante dependencia, validacion de parametros, politicas CORS y serializacion de respuestas. `api/services.py` desacopla la logica de acceso a MongoDB y a los artefactos de `reports/`, de manera que las vistas consuman una interfaz estable aunque cambie la fuente de datos subyacente. En la practica, esto permite que `/api/v1/runs`, `/api/v1/runs/{run_id}/summary`, `/api/v1/runs/{run_id}/thresholds`, `/api/v1/runs/{run_id}/confusion-matrix`, `/api/v1/messages`, `/api/v1/messages/stats` y `/api/v1/training/metadata` funcionen como puntos de integracion reutilizables para cualquier consumidor posterior.
+
+La propia configuracion refuerza el enfoque de despliegue defendible. `api/settings.py` exige `API_KEY`, define origenes CORS concretos y resuelve rutas hacia `reports/` y `docs/training_metadata.json`. Esto significa que la API no solo expone datos: tambien codifica reglas de seguridad minima, dependencias de infraestructura y convenciones de ubicacion de artefactos. Dicho de otro modo, la capa HTTP actua como frontera controlada entre la instrumentacion interna del pipeline y la consulta externa.
 
 ### 4.6 Dashboard React y Grafana
 
@@ -229,6 +271,10 @@ Ademas del resumen ejecutivo y la vista de mensajes, el dashboard incorpora una 
 ![Figura 6. Panel de Grafana configurado para monitorizacion complementaria del MVP.](assets/figures/ui_grafana_mvp.png)
 
 La coexistencia de ambas capas refuerza la idea de pipeline explotable: la API sirve como contrato tecnico comun, React se orienta a revision funcional y Grafana a observabilidad.
+
+El dashboard React y Grafana no duplican exactamente el mismo papel. El primero permite inspeccionar ejecuciones concretas, revisar mensajes, filtrar por prediccion o score y consultar directamente la metadata de entrenamiento servida por la API. En cambio, Grafana se configura como una capa de observabilidad ligera: el datasource `marcusolsson-json-datasource` apunta a `http://api:8000`, inyecta el encabezado `X-API-Key` y consume rutas como `/api/v1/messages/stats?limit=500` para construir paneles de volumen, latencia y distribucion de scores.
+
+Este detalle de integracion es relevante porque evita el acceso directo de Grafana a MongoDB y reutiliza la misma interfaz protegida que emplea el dashboard web. La observabilidad, por tanto, queda alineada con el contrato de la API y con la politica de seguridad minima del proyecto. Desde una perspectiva de Ingenieria de Computadores, esta decision es preferible a una conexion ad hoc porque simplifica la superficie de exposicion y hace mas facil auditar que informacion sale realmente del sistema.
 
 ### 4.7 Validacion integrada
 
@@ -248,13 +294,16 @@ La observacion practica de tutoria sobre `pytest -q` frente a `python -m pytest 
 La evaluacion offline mas reciente, almacenada en `reports/metrics.json`, ofrece los siguientes resultados sobre 100 muestras balanceadas:
 
 - `accuracy = 0.63`
+- `tasa_error_prueba = 0.37`
 - `precision_pos = 0.5823`
 - `recall_pos = 0.92`
 - `f1_pos = 0.7132`
 - `roc_auc = 0.8684`
 - `average_precision = 0.8951`
 
-Estos valores muestran un comportamiento coherente con la filosofia del sistema: se acepta una precision moderada para maximizar la capacidad de deteccion temprana de amenazas reales.
+La tasa de error en datos de prueba se obtiene directamente como `1 - accuracy`, por lo que el sistema falla en 37 de cada 100 muestras del conjunto offline utilizado en la evaluacion. Este valor sigue siendo coherente con la filosofia del sistema: se acepta una precision moderada para maximizar la capacidad de deteccion temprana de amenazas reales.
+
+En cambio, no se incorpora una tasa de error de entrenamiento cerrada. El repositorio conserva hiperparametros, split, checkpoints y metadatos del proceso, pero no un artefacto final persistido que documente de forma directa y reproducible ese error de entrenamiento. Por rigor metodologico, no resulta adecuado fijar una cifra que no pueda trazarse de manera inmediata desde los artefactos finales disponibles.
 
 ![Figura 7. Analisis por umbral utilizado para comparar precision, recall, F1 y accuracy.](assets/figures/fig01_curva_umbral.png)
 
@@ -321,6 +370,10 @@ El proyecto demuestra que es posible combinar:
 
 Ademas, la revision de tutoria ha servido para mejorar aspectos esenciales de calidad tecnica: ejecucion robusta de pruebas, menor exposicion de servicios, versionado por `run_id` y control de acceso en la capa de explotacion.
 
+Ademas, la memoria permite justificar que la IA integrada responde a un proceso previo de entrenamiento documentado y no a la seleccion casual de un modelo externo. Sin embargo, ese componente se presenta aqui como parte de una arquitectura mayor: una pieza necesaria para la decision automatica, pero subordinada al diseno del pipeline, a la persistencia de evidencias, a la interfaz de consulta y a la observabilidad del sistema completo.
+
+Desde el punto de vista cuantitativo, la tasa de error de prueba del 37% confirma que el sistema no debe interpretarse como un clasificador final autonomo, sino como una primera criba sensible orientada a reducir tiempo de reaccion y a priorizar revision posterior. Precisamente por eso el recall alto y el umbral conservador tienen mas peso operativo que una accuracy maxima. Del mismo modo, la ausencia de un artefacto final con tasa de error de entrenamiento aconseja reforzar en futuras iteraciones la trazabilidad completa del entrenamiento si se desea comparar con mas detalle ajuste interno y comportamiento en prueba.
+
 Como lineas de trabajo futuro, resultaria razonable:
 
 1. explorar umbrales adaptativos o politicas por contexto;
@@ -328,7 +381,7 @@ Como lineas de trabajo futuro, resultaria razonable:
 3. mejorar observabilidad y despliegue continuo;
 4. incorporar mecanismos mas ricos de explicabilidad.
 
-En su estado actual, el TFG queda mejor diferenciado respecto al futuro TFG de fake news: aqui el peso esta en la arquitectura del pipeline, la integracion de componentes y la operacion del sistema completo.
+En su estado actual, el TFG queda mejor diferenciado respecto al futuro TFG de fake news: aqui el peso esta en la arquitectura del pipeline, la integracion de componentes, la operacion del sistema completo y su ejecucion sobre una infraestructura concreta. El otro trabajo puede reservar para si el foco principal en datos, entrenamiento, evaluacion de modelos y logica de procesamiento de la informacion. Esa separacion no solo distingue temas; tambien distingue responsabilidades tecnicas y academicas de forma coherente entre ambas titulaciones.
 
 ## Bibliografia
 
