@@ -31,6 +31,20 @@ def _metrics_files(reports_dir: Path) -> list[Path]:
     return files
 
 
+def _benchmark_files(reports_dir: Path) -> list[Path]:
+    files: list[Path] = []
+    root_summary = reports_dir / "benchmark_summary.json"
+    if root_summary.exists():
+        files.append(root_summary)
+
+    benchmarks_dir = reports_dir / "benchmarks"
+    if benchmarks_dir.exists():
+        for candidate in sorted(benchmarks_dir.glob("*/benchmark_summary.json")):
+            if candidate not in files:
+                files.append(candidate)
+    return files
+
+
 def _resolve_artifacts_dir(reports_dir: Path, payload: dict[str, Any], metrics_path: Path) -> Path:
     artifacts_dir = payload.get("artifacts_dir")
     if isinstance(artifacts_dir, str) and artifacts_dir.strip():
@@ -88,9 +102,32 @@ def load_metrics_payloads(reports_dir: Path) -> list[dict[str, Any]]:
     return payloads
 
 
+def load_benchmark_payloads(reports_dir: Path) -> list[dict[str, Any]]:
+    payloads: list[dict[str, Any]] = []
+    seen_ids: set[str] = set()
+    for file_path in _benchmark_files(reports_dir):
+        with file_path.open("r", encoding="utf-8") as fh:
+            payload = json.load(fh)
+        benchmark_id = str(payload.get("benchmark_id", "")).strip()
+        if not benchmark_id or benchmark_id in seen_ids:
+            continue
+        seen_ids.add(benchmark_id)
+        payload["_summary_path"] = str(file_path)
+        payloads.append(payload)
+    payloads.sort(key=lambda item: str(item.get("created_at_utc", "")), reverse=True)
+    return payloads
+
+
 def get_run_payload_by_id(payloads: list[dict[str, Any]], run_id: str) -> dict[str, Any] | None:
     for payload in payloads:
         if str(payload.get("run_id")) == run_id:
+            return payload
+    return None
+
+
+def get_benchmark_payload_by_id(payloads: list[dict[str, Any]], benchmark_id: str) -> dict[str, Any] | None:
+    for payload in payloads:
+        if str(payload.get("benchmark_id")) == benchmark_id:
             return payload
     return None
 
@@ -105,6 +142,18 @@ def run_summary_from_payload(payload: dict[str, Any]) -> dict[str, Any]:
         "num_samples": payload.get("num_samples"),
         "label_distribution": payload.get("label_distribution", {}),
         "metrics": payload.get("metrics", {}),
+    }
+
+
+def benchmark_summary_from_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "benchmark_id": payload.get("benchmark_id"),
+        "created_at_utc": payload.get("created_at_utc"),
+        "duration_seconds_per_scenario": payload.get("duration_seconds_per_scenario"),
+        "write_mongo": bool(payload.get("write_mongo", False)),
+        "artifacts_dir": payload.get("artifacts_dir"),
+        "scenarios": payload.get("scenarios", []),
+        "artifacts": payload.get("artifacts", {}),
     }
 
 
@@ -188,7 +237,12 @@ def fetch_messages(
     projection = {
         "_id": 0,
         "created_at_utc": 1,
+        "persisted_at_utc": 1,
+        "source_received_at_utc": 1,
+        "queued_at_utc": 1,
         "run_id": 1,
+        "source": 1,
+        "channel": 1,
         "chat_hash": 1,
         "user_hash": 1,
         "message_id": 1,
@@ -196,6 +250,16 @@ def fetch_messages(
         "pred": 1,
         "score_1": 1,
         "latency_ms": 1,
+        "preprocess_latency_ms": 1,
+        "inference_latency_ms": 1,
+        "db_write_latency_ms": 1,
+        "queue_wait_latency_ms": 1,
+        "end_to_end_latency_ms": 1,
+        "queue_depth": 1,
+        "cpu_percent": 1,
+        "rss_bytes": 1,
+        "vms_bytes": 1,
+        "gpu_memory_bytes": 1,
         "ok": 1,
         "error": 1,
     }
@@ -213,6 +277,9 @@ def fetch_messages(
                 {
                     **doc,
                     "created_at_utc": _serialize_datetime(doc.get("created_at_utc")),
+                    "persisted_at_utc": _serialize_datetime(doc.get("persisted_at_utc")),
+                    "source_received_at_utc": _serialize_datetime(doc.get("source_received_at_utc")),
+                    "queued_at_utc": _serialize_datetime(doc.get("queued_at_utc")),
                 }
             )
 
@@ -251,6 +318,10 @@ def _percentile(values: list[float], percentile: float) -> float | None:
     return float(lower_value + (upper_value - lower_value) * weight)
 
 
+def _values(rows: list[dict[str, Any]], key: str) -> list[float]:
+    return [float(row[key]) for row in rows if isinstance(row.get(key), (int, float))]
+
+
 def fetch_message_stats(
     settings: Settings,
     *,
@@ -273,9 +344,20 @@ def fetch_message_stats(
 
     projection = {
         "_id": 0,
+        "created_at_utc": 1,
         "pred": 1,
         "score_1": 1,
         "latency_ms": 1,
+        "preprocess_latency_ms": 1,
+        "inference_latency_ms": 1,
+        "db_write_latency_ms": 1,
+        "end_to_end_latency_ms": 1,
+        "queue_wait_latency_ms": 1,
+        "queue_depth": 1,
+        "cpu_percent": 1,
+        "rss_bytes": 1,
+        "vms_bytes": 1,
+        "gpu_memory_bytes": 1,
         "ok": 1,
     }
 
@@ -291,11 +373,28 @@ def fetch_message_stats(
         threat_count = sum(1 for row in rows if row.get("pred") == 1)
         error_count = sum(1 for row in rows if row.get("ok") is False)
 
-        latencies = [float(row["latency_ms"]) for row in rows if isinstance(row.get("latency_ms"), (int, float))]
-        scores = [float(row["score_1"]) for row in rows if isinstance(row.get("score_1"), (int, float))]
+        latencies = _values(rows, "latency_ms")
+        preprocess_latencies = _values(rows, "preprocess_latency_ms")
+        inference_latencies = _values(rows, "inference_latency_ms")
+        db_latencies = _values(rows, "db_write_latency_ms")
+        end_to_end_latencies = _values(rows, "end_to_end_latency_ms")
+        queue_wait_latencies = _values(rows, "queue_wait_latency_ms")
+        queue_depth_values = _values(rows, "queue_depth")
+        scores = _values(rows, "score_1")
+        cpu_values = _values(rows, "cpu_percent")
+        rss_values = _values(rows, "rss_bytes")
+        vms_values = _values(rows, "vms_bytes")
+        gpu_values = _values(rows, "gpu_memory_bytes")
 
-        latency_avg = float(sum(latencies) / len(latencies)) if latencies else None
-        score_avg = float(sum(scores) / len(scores)) if scores else None
+        created_times = [
+            row["created_at_utc"].astimezone().timestamp()
+            for row in rows
+            if isinstance(row.get("created_at_utc"), datetime)
+        ]
+        throughput = None
+        if len(created_times) >= 2:
+            window_seconds = max(max(created_times) - min(created_times), 0.001)
+            throughput = round(total / window_seconds, 3)
 
         return {
             "source": "mongo",
@@ -304,11 +403,28 @@ def fetch_message_stats(
             "threat_count": threat_count,
             "error_count": error_count,
             "error_rate": float(error_count / total) if total else 0.0,
-            "latency_avg_ms": latency_avg,
+            "latency_avg_ms": float(sum(latencies) / len(latencies)) if latencies else None,
             "latency_p95_ms": _percentile(latencies, 0.95),
-            "score_avg": score_avg,
+            "preprocess_latency_avg_ms": float(sum(preprocess_latencies) / len(preprocess_latencies)) if preprocess_latencies else None,
+            "preprocess_latency_p95_ms": _percentile(preprocess_latencies, 0.95),
+            "inference_latency_avg_ms": float(sum(inference_latencies) / len(inference_latencies)) if inference_latencies else None,
+            "inference_latency_p95_ms": _percentile(inference_latencies, 0.95),
+            "db_write_latency_avg_ms": float(sum(db_latencies) / len(db_latencies)) if db_latencies else None,
+            "db_write_latency_p95_ms": _percentile(db_latencies, 0.95),
+            "end_to_end_latency_avg_ms": float(sum(end_to_end_latencies) / len(end_to_end_latencies)) if end_to_end_latencies else None,
+            "end_to_end_latency_p95_ms": _percentile(end_to_end_latencies, 0.95),
+            "queue_wait_latency_avg_ms": float(sum(queue_wait_latencies) / len(queue_wait_latencies)) if queue_wait_latencies else None,
+            "queue_wait_latency_p95_ms": _percentile(queue_wait_latencies, 0.95),
+            "queue_depth_avg": float(sum(queue_depth_values) / len(queue_depth_values)) if queue_depth_values else None,
+            "queue_depth_p95": _percentile(queue_depth_values, 0.95),
+            "score_avg": float(sum(scores) / len(scores)) if scores else None,
             "score_p50": _percentile(scores, 0.50),
             "score_p95": _percentile(scores, 0.95),
+            "cpu_avg_percent": float(sum(cpu_values) / len(cpu_values)) if cpu_values else None,
+            "rss_avg_bytes": float(sum(rss_values) / len(rss_values)) if rss_values else None,
+            "vms_avg_bytes": float(sum(vms_values) / len(vms_values)) if vms_values else None,
+            "gpu_memory_avg_bytes": float(sum(gpu_values) / len(gpu_values)) if gpu_values else None,
+            "throughput_messages_per_second": throughput,
             "warning": None,
         }
     except Exception as exc:  # pragma: no cover - defensive for infra envs
@@ -321,9 +437,26 @@ def fetch_message_stats(
             "error_rate": 0.0,
             "latency_avg_ms": None,
             "latency_p95_ms": None,
+            "preprocess_latency_avg_ms": None,
+            "preprocess_latency_p95_ms": None,
+            "inference_latency_avg_ms": None,
+            "inference_latency_p95_ms": None,
+            "db_write_latency_avg_ms": None,
+            "db_write_latency_p95_ms": None,
+            "end_to_end_latency_avg_ms": None,
+            "end_to_end_latency_p95_ms": None,
+            "queue_wait_latency_avg_ms": None,
+            "queue_wait_latency_p95_ms": None,
+            "queue_depth_avg": None,
+            "queue_depth_p95": None,
             "score_avg": None,
             "score_p50": None,
             "score_p95": None,
+            "cpu_avg_percent": None,
+            "rss_avg_bytes": None,
+            "vms_avg_bytes": None,
+            "gpu_memory_avg_bytes": None,
+            "throughput_messages_per_second": None,
             "warning": str(exc),
         }
 

@@ -46,11 +46,44 @@ def _build_run(reports_dir: Path, run_id: str, precision: float, matrix_rows: tu
     )
 
 
+def _build_benchmark(reports_dir: Path) -> None:
+    benchmark_dir = reports_dir / "benchmarks" / "bench-test-001"
+    benchmark_dir.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "benchmark_id": "bench-test-001",
+        "created_at_utc": "2026-04-02T18:00:00+00:00",
+        "duration_seconds_per_scenario": 5,
+        "write_mongo": False,
+        "artifacts_dir": "benchmarks/bench-test-001",
+        "scenarios": [
+            {
+                "scenario": "1msg_s",
+                "target_rate_mps": 1,
+                "planned_messages": 5,
+                "processed_messages": 5,
+                "throughput_mps": 1.0,
+                "latency_avg_ms": 12.0,
+                "latency_p95_ms": 15.0,
+                "cpu_avg_percent": 10.0,
+                "ram_avg_bytes": 1024.0,
+                "vms_avg_bytes": 2048.0,
+                "error_rate": 0.0,
+            }
+        ],
+        "artifacts": {
+            "summary_json": "benchmarks/bench-test-001/benchmark_summary.json",
+        },
+    }
+    (benchmark_dir / "benchmark_summary.json").write_text(json.dumps(payload), encoding="utf-8")
+    (reports_dir / "benchmark_summary.json").write_text(json.dumps(payload), encoding="utf-8")
+
+
 def _build_reports(base_dir: Path) -> Path:
     reports_dir = base_dir / "reports"
     reports_dir.mkdir(parents=True, exist_ok=True)
     _build_run(reports_dir, "run-test-001", 0.58, ((31, 19), (4, 46)))
     _build_run(reports_dir, "run-test-002", 0.91, ((40, 10), (8, 42)))
+    _build_benchmark(reports_dir)
     return reports_dir
 
 
@@ -96,6 +129,13 @@ def test_requires_api_key(tmp_path: Path) -> None:
     client = _client(tmp_path)
     response = client.get("/api/v1/health")
     assert response.status_code == 401
+
+
+def test_metrics_endpoint_is_public(tmp_path: Path) -> None:
+    client = _client(tmp_path)
+    response = client.get("/metrics")
+    assert response.status_code == 200
+    assert "tfg_api_requests_total" in response.text
 
 
 def test_health_endpoint(tmp_path: Path) -> None:
@@ -144,6 +184,18 @@ def test_training_metadata(tmp_path: Path) -> None:
     assert payload["metadata"]["script"] == "AITrainer_distilbert_2.py"
 
 
+def test_benchmarks_endpoint(tmp_path: Path) -> None:
+    client = _client(tmp_path)
+    response = client.get("/api/v1/benchmarks", headers=_auth_headers())
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["benchmarks"][0]["benchmark_id"] == "bench-test-001"
+
+    detail = client.get("/api/v1/benchmarks/bench-test-001", headers=_auth_headers())
+    assert detail.status_code == 200
+    assert detail.json()["scenarios"][0]["target_rate_mps"] == 1
+
+
 def test_messages_endpoint_when_mongo_unavailable(tmp_path: Path) -> None:
     client = _client(tmp_path)
     response = client.get("/api/v1/messages", params={"run_id": "run-test-001", "limit": 10}, headers=_auth_headers())
@@ -161,3 +213,4 @@ def test_message_stats_endpoint_when_mongo_unavailable(tmp_path: Path) -> None:
     assert payload["source"] == "mongo_unavailable"
     assert payload["total"] == 0
     assert payload["error_rate"] == 0.0
+    assert payload["end_to_end_latency_avg_ms"] is None

@@ -35,6 +35,7 @@ def main() -> None:
     parser.add_argument("--threshold", default="0.05")
     parser.add_argument("--outdir", default="reports")
     parser.add_argument("--skip-evaluate", action="store_true")
+    parser.add_argument("--skip-benchmark", action="store_true")
     parser.add_argument("--write-mongo", action="store_true")
     args = parser.parse_args()
 
@@ -58,6 +59,25 @@ def main() -> None:
         sim_cmd.append("--write-mongo")
     steps.append(run_command(sim_cmd, env, reports_dir))
 
+    if not args.skip_benchmark:
+        benchmark_cmd = [
+            sys.executable,
+            "-m",
+            "scripts.benchmark_pipeline",
+            "--outdir",
+            str(reports_dir),
+            "--duration-seconds",
+            "5",
+            "--rates",
+            "1",
+            "5",
+            "10",
+            "20",
+        ]
+        if args.write_mongo:
+            benchmark_cmd.append("--write-mongo")
+        steps.append(run_command(benchmark_cmd, env, reports_dir))
+
     expected_files = [
         reports_dir / "metrics.json",
         reports_dir / "confusion_matrix.csv",
@@ -65,6 +85,7 @@ def main() -> None:
         reports_dir / "threshold_analysis.csv",
         reports_dir / "simulated_cases_results.csv",
         reports_dir / "e2e_evidence.json",
+        reports_dir / "benchmark_summary.json",
     ]
     files_status = {relative_report_path(path, reports_dir): path.exists() for path in expected_files}
 

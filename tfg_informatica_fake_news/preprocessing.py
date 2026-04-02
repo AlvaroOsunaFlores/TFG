@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 import html
+import os
 import re
 from typing import Any, Iterable
 
@@ -13,8 +14,10 @@ DetectorFactory.seed = 0
 URL_RE = re.compile(r"https?://\S+", re.IGNORECASE)
 MENTION_RE = re.compile(r"@\w+")
 HASHTAG_RE = re.compile(r"#(\w+)")
+EMOJI_RE = re.compile(r"[\U00010000-\U0010ffff]", re.UNICODE)
 MULTISPACE_RE = re.compile(r"\s+")
 TOKEN_RE = re.compile(r"[a-z0-9áéíóúüñ]+", re.IGNORECASE)
+DEFAULT_STOPWORDS = {"de", "la", "el", "y", "a"}
 
 
 @dataclass(frozen=True)
@@ -24,9 +27,19 @@ class PreprocessedMessage:
     language: str
     normalized_text: str
     tokens: list[str]
+    token_count: int
+    quality_flags: list[str]
+    is_usable: bool
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+
+def load_stopwords() -> set[str]:
+    raw = os.getenv("PREPROCESS_STOPWORDS", "").strip()
+    if not raw:
+        return set(DEFAULT_STOPWORDS)
+    return {item.strip().lower() for item in raw.split(",") if item.strip()}
 
 
 def clean_text(text: str) -> str:
@@ -35,6 +48,7 @@ def clean_text(text: str) -> str:
     cleaned = URL_RE.sub(" url ", cleaned)
     cleaned = MENTION_RE.sub(" usuario ", cleaned)
     cleaned = HASHTAG_RE.sub(r" \1 ", cleaned)
+    cleaned = EMOJI_RE.sub(" ", cleaned)
     cleaned = re.sub(r"[^a-z0-9áéíóúüñ\s\.\,\!\?\:\;\(\)\-]", " ", cleaned, flags=re.IGNORECASE)
     cleaned = MULTISPACE_RE.sub(" ", cleaned)
     return cleaned.strip()
@@ -56,13 +70,28 @@ def detect_language(text: str) -> str:
 def preprocess_record(record: dict[str, Any]) -> PreprocessedMessage:
     normalized = clean_text(str(record.get("text", "")))
     tokens = tokenize_text(normalized)
+    filtered_tokens = [token for token in tokens if token not in load_stopwords()]
     language = detect_language(normalized)
+
+    min_tokens = int(os.getenv("PREPROCESS_MIN_TOKENS", "3"))
+    quality_flags: list[str] = []
+    if not normalized:
+        quality_flags.append("empty_text")
+    if len(filtered_tokens) < min_tokens:
+        quality_flags.append("too_short")
+    if language == "unknown":
+        quality_flags.append("unknown_language")
+
+    normalized_text = " ".join(filtered_tokens) if filtered_tokens else normalized
     return PreprocessedMessage(
         message_id=int(record.get("message_id", 0)),
         channel=str(record.get("channel", "")),
         language=language,
-        normalized_text=normalized,
-        tokens=tokens,
+        normalized_text=normalized_text,
+        tokens=filtered_tokens,
+        token_count=len(filtered_tokens),
+        quality_flags=quality_flags,
+        is_usable="too_short" not in quality_flags and "empty_text" not in quality_flags,
     )
 
 

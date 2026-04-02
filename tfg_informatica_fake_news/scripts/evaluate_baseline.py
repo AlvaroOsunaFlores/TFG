@@ -10,6 +10,7 @@ import joblib
 import pandas as pd
 from sklearn.metrics import accuracy_score, classification_report, f1_score, precision_score, recall_score
 
+from experiment_registry import ensure_run_dir
 from scripts.validate_dataset import validate_dataframe
 
 
@@ -46,6 +47,13 @@ def parse_args() -> argparse.Namespace:
 def _load_manifest(manifest_path: Path) -> dict[str, Any]:
     with manifest_path.open("r", encoding="utf-8") as fh:
         return json.load(fh)
+
+
+def _display_path(path: Path) -> str:
+    try:
+        return path.relative_to(PROJECT_ROOT).as_posix()
+    except ValueError:
+        return str(path)
 
 
 def main() -> None:
@@ -91,9 +99,9 @@ def main() -> None:
     metrics = compute_metrics(df[label_column].astype(int), predictions)
     report = classification_report(df[label_column].astype(int), predictions, output_dict=True, zero_division=0)
 
-    outdir.mkdir(parents=True, exist_ok=True)
+    _run_id, run_dir = ensure_run_dir(outdir, "evaluation")
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    predictions_path = outdir / f"evaluation_predictions_{stamp}.csv"
+    predictions_path = run_dir / f"evaluation_predictions_{stamp}.csv"
     pd.DataFrame(
         {
             "text": df[text_column],
@@ -110,10 +118,10 @@ def main() -> None:
         "classification_report": report,
         "predictions_path": str(predictions_path),
     }
-    summary_path = outdir / f"evaluation_summary_{stamp}.json"
+    summary_path = run_dir / f"evaluation_summary_{stamp}.json"
     summary_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    print(f"OK evaluation -> {summary_path.relative_to(PROJECT_ROOT).as_posix()}")
+    print(f"OK evaluation -> {_display_path(summary_path)}")
 
 
 if __name__ == "__main__":

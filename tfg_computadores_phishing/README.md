@@ -1,60 +1,70 @@
 # TFG de Ingenieria de Computadores - Deteccion de Phishing en Telegram
 
-Este directorio contiene la version final del TFG de Ingenieria de Computadores orientado a sistemas e integracion. El foco principal no esta solo en la clasificacion, sino en el pipeline operativo completo:
+Este directorio contiene la version del TFG de Ingenieria de Computadores orientada a sistemas, integracion y observabilidad. El foco academico ya no esta solo en clasificar mensajes, sino en defender un pipeline desacoplado y medible:
 
-- ingesta de mensajes de Telegram;
-- preprocesamiento e inferencia;
-- persistencia trazable en MongoDB;
-- evaluacion offline reproducible;
-- exposicion de resultados por API;
-- visualizacion y monitorizacion en React y Grafana;
-- validacion extremo a extremo de la integracion.
+- producer de Telegram;
+- cola RabbitMQ para desacoplar ingesta e inferencia;
+- worker de inferencia y persistencia en MongoDB;
+- API FastAPI para consulta y trazabilidad;
+- frontend React para inspeccion funcional;
+- Prometheus + Grafana para observabilidad operativa;
+- benchmark controlado para estudiar latencia, throughput y uso de recursos.
 
 ## Enfoque academico
 
-El proyecto se presenta como un sistema modular para la deteccion de phishing y mensajes sospechosos, poniendo el peso en:
+El peso del TFG esta en:
 
-- arquitectura del pipeline extremo a extremo;
-- integracion entre componentes;
-- ejecucion sobre infraestructura local o contenerizada;
-- observabilidad y trazabilidad operativa;
-- endurecimiento minimo de seguridad en la explotacion.
+- arquitectura de pipeline extremo a extremo;
+- integracion entre componentes desacoplados;
+- observabilidad real con metricas exportables;
+- benchmark controlado y defendible;
+- decisiones de despliegue y trade-offs de sistemas.
+
+La clasificacion forma parte del sistema, pero no es el centro academico del trabajo. Lo relevante es como se conectan cola, worker, persistencia, API y monitorizacion para construir un flujo operable y justificable.
 
 ## Componentes principales
 
-- `main.py`: escucha de Telegram, preprocesado, inferencia y persistencia.
-- `evaluate.py`: evaluacion offline y generacion de metricas por `run_id`.
-- `api/`: API FastAPI protegida por `X-API-Key`.
+- `producer.py`: escucha Telegram y publica eventos en RabbitMQ.
+- `worker.py`: consume la cola, ejecuta inferencia y persiste evidencia tecnica en MongoDB.
+- `main.py`: entry point compatible con modos `legacy`, `producer` y `worker`.
+- `pipeline.py`: logica comun de preprocesado, inferencia, trazabilidad y latencias por etapa.
+- `messaging.py`: adaptador RabbitMQ.
+- `observability.py`: metricas Prometheus y snapshots de recursos con `psutil`.
+- `api/`: API FastAPI con endpoints de runs, mensajes, stats, benchmarks y `/metrics`.
 - `dashboard-react/`: dashboard operativo servido en Compose como `frontend`.
-- `grafana/`: monitorizacion complementaria.
+- `prometheus/`: configuracion de scraping para API y worker.
+- `grafana/`: dashboards Prometheus para rendimiento, cola y benchmark.
 - `scripts/simulate_cases.py`: simulacion E2E de casos operativos.
+- `scripts/benchmark_pipeline.py`: benchmark controlado para 1, 5, 10 y 20 mensajes/segundo.
 - `scripts/run_phase5_checks.py`: runner de validacion integrada.
-- `docs/`: memoria final, contrato API, metadatos y figuras incluidas en la documentacion.
+- `docs/`: memoria, contrato API y metadatos tecnicos.
 
-## Alcance para la entrega funcional
+## Arquitectura del despliegue
 
-- obligatorio: `mongo + api + frontend`
-- opcional: `grafana`
-- avanzado: `bot`
+Flujo base:
 
-El servicio `bot` queda como escenario avanzado porque requiere credenciales reales de Telegram (`TELEGRAM_API_ID`, `TELEGRAM_API_HASH` y `TELEGRAM_PHONE`) para arrancar correctamente.
+`rabbitmq + mongo + worker + api + frontend`
+
+Flujo avanzado:
+
+`producer -> rabbitmq -> worker -> mongo -> api -> frontend`
+
+Observabilidad:
+
+`worker/api -> Prometheus -> Grafana`
 
 ## Instalacion local y validacion
 
-Desde esta carpeta, el flujo recomendado es crear o activar un entorno virtual y despues instalar dependencias antes de lanzar pruebas.
+Desde esta carpeta, instala dependencias y ejecuta pruebas:
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 python -m pytest -q
-python evaluate.py
+python -m scripts.benchmark_pipeline --dry-run
 ```
 
-El comando canonico de validacion es `python -m pytest -q`.
-
-Si `python -m pytest -q` falla con un error de dependencia como `pymongo`, el problema no esta en el proyecto sino en no haber ejecutado antes `python -m pip install -r requirements.txt`.
+El comando canonico de validacion automatizada sigue siendo `python -m pytest -q`.
 
 ## Ejecucion funcional con Docker Compose
 
@@ -64,72 +74,65 @@ Si `python -m pytest -q` falla con un error de dependencia como `pymongo`, el pr
 Copy-Item .env.example .env
 ```
 
-Para la correccion funcional minima, revisa al menos estas variables en `.env`:
+Revisa al menos:
 
 - `API_KEY`
 - `MONGO_URI`
 - `MONGO_DB`
 - `MONGO_COLLECTION`
-- `TRAINING_METADATA_PATH`
+- `RABBITMQ_URL`
+- `RABBITMQ_QUEUE`
 - `REPORTS_DIR`
+- `TRAINING_METADATA_PATH`
 
-### 2. Levantar el stack obligatorio
+### 2. Levantar el stack base
 
 ```powershell
 docker compose up --build
 ```
 
-Por defecto este comando levanta solo el flujo obligatorio de la entrega: MongoDB, API y dashboard React.
+Este comando levanta:
 
-### 3. Acceder a los servicios
+- MongoDB;
+- RabbitMQ;
+- worker;
+- API;
+- dashboard React.
 
-- frontend React: `http://localhost:5173`
-- API FastAPI: `http://localhost:8000`
-
-Todos los endpoints protegidos de la API requieren la cabecera:
-
-```text
-X-API-Key: <API_KEY>
-```
-
-## Servicios opcionales y avanzados
-
-Para anadir Grafana a la ejecucion:
+### 3. Observabilidad completa
 
 ```powershell
 docker compose --profile observability up --build
 ```
 
-Para anadir el bot de Telegram al despliegue:
+Anade:
+
+- Prometheus en `http://localhost:9090`
+- Grafana en `http://localhost:3000`
+
+### 4. Productor real de Telegram
 
 ```powershell
 docker compose --profile advanced up --build
 ```
 
-Antes de usar el perfil `advanced`, completa en `.env` estas credenciales reales:
+Antes de usarlo, completa credenciales reales:
 
 - `TELEGRAM_API_ID`
 - `TELEGRAM_API_HASH`
 - `TELEGRAM_PHONE`
 
-## Variables por escenario
-
-- flujo obligatorio `mongo + api + frontend`: `API_KEY`, `MONGO_URI`, `MONGO_DB`, `MONGO_COLLECTION`, `TRAINING_METADATA_PATH`, `REPORTS_DIR`
-- grafana opcional: `GRAFANA_ADMIN_USER`, `GRAFANA_ADMIN_PASSWORD`
-- bot avanzado: `TELEGRAM_API_ID`, `TELEGRAM_API_HASH`, `TELEGRAM_PHONE`
-- privacidad opcional: `PII_SALT`, `STORE_MSG_ORIGINAL`, `STORE_MSG_NORMALIZED`, `STORE_NLP_FEATURES`, `RETENTION_DAYS`
-
-El servicio `frontend` recibe `VITE_API_BASE_URL=http://localhost:8000` y `VITE_API_KEY=${API_KEY}` desde Compose para consumir la API publicada en el host.
-
 ## Puertos y accesos
 
 | Servicio | Puerto | Acceso |
 | --- | --- | --- |
-| frontend React | `5173` | publico en `http://localhost:5173` |
-| API FastAPI | `8000` | publico en `http://localhost:8000` |
-| Grafana | `3000` | publico en `http://localhost:3000` cuando se activa el perfil `observability` |
-| MongoDB | `27017` | solo interno en la red de Compose, sin publicacion al host |
-| bot | sin puerto | proceso interno, sin endpoint HTTP publico |
+| frontend React | `5173` | `http://localhost:5173` |
+| API FastAPI | `8000` | `http://localhost:8000` |
+| RabbitMQ Management | `15672` | `http://localhost:15672` |
+| Prometheus | `9090` | `http://localhost:9090` |
+| Grafana | `3000` | `http://localhost:3000` |
+| MongoDB | interno | solo red de Compose |
+| worker metrics | interno `9108` | scrapeado por Prometheus |
 
 ## Endpoints principales
 
@@ -140,14 +143,47 @@ El servicio `frontend` recibe `VITE_API_BASE_URL=http://localhost:8000` y `VITE_
 - `GET /api/v1/runs/{run_id}/confusion-matrix`
 - `GET /api/v1/messages`
 - `GET /api/v1/messages/stats`
+- `GET /api/v1/benchmarks`
+- `GET /api/v1/benchmarks/{benchmark_id}`
 - `GET /api/v1/training/metadata`
+- `GET /metrics`
+
+## Latencias y observabilidad
+
+Cada mensaje puede exponer:
+
+- `preprocess_latency_ms`
+- `inference_latency_ms`
+- `db_write_latency_ms`
+- `queue_wait_latency_ms`
+- `end_to_end_latency_ms`
+- `cpu_percent`
+- `rss_bytes`
+- `vms_bytes`
+- `queue_depth`
+
+Se mantiene `latency_ms` por compatibilidad, equivalente a la latencia de inferencia.
+
+## Benchmark controlado
+
+Benchmark rapido:
+
+```powershell
+python -m scripts.benchmark_pipeline --duration-seconds 5 --rates 1 5 10 20
+```
+
+El benchmark guarda artefactos en `reports/benchmarks/<benchmark_id>/` con:
+
+- throughput real;
+- latencia media y p95;
+- CPU media;
+- RAM media;
+- tasa de errores.
 
 ## Artefactos
 
-Los artefactos tecnicos viven en `reports/runs/<run_id>/`, mientras que la raiz de `reports/` mantiene una copia rapida del ultimo estado para compatibilidad operativa.
+- evaluacion offline: `reports/runs/<run_id>/`
+- validacion integrada: `reports/validations/<validation_id>/`
+- benchmark controlado: `reports/benchmarks/<benchmark_id>/`
 
-## Memoria
-
-- memoria editable: `docs/MEMORIA_TFG_ETSII_APA7.docx`
-- memoria en PDF: `docs/MEMORIA_TFG_ETSII_APA7.pdf`
-- fuente de trabajo: `docs/MEMORIA_TFG_ETSII_APA7.md`
+La raiz de `reports/` mantiene copias rapidas del ultimo estado para consumo operativo.

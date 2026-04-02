@@ -23,6 +23,7 @@ class TelegramConfig:
     api_id: int
     api_hash: str
     session_name: str
+    max_retries: int
 
 
 @dataclass(frozen=True)
@@ -39,6 +40,18 @@ class TelegramMessage:
         return asdict(self)
 
 
+@dataclass(frozen=True)
+class ExtractionResult:
+    messages: list[TelegramMessage]
+    failed_channels: list[dict[str, str]]
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "messages": [message.to_dict() for message in self.messages],
+            "failed_channels": self.failed_channels,
+        }
+
+
 def _required_env(name: str) -> str:
     value = os.getenv(name, "").strip()
     if not value:
@@ -51,6 +64,7 @@ def load_config_from_env() -> TelegramConfig:
         api_id=int(_required_env("TELEGRAM_API_ID")),
         api_hash=_required_env("TELEGRAM_API_HASH"),
         session_name=os.getenv("TELEGRAM_SESSION_NAME", "session/fake_news_session"),
+        max_retries=int(os.getenv("TELEGRAM_MAX_RETRIES", "2")),
     )
 
 
@@ -63,13 +77,13 @@ def _normalize_text(value: Any) -> str:
     return str(value or "").strip()
 
 
-async def extract_messages_async(
+async def extract_messages_with_report_async(
     config: TelegramConfig,
     channels: Sequence[str],
     *,
     limit: int = 25,
     client_factory: Any = TelegramClient,
-) -> list[TelegramMessage]:
+) -> ExtractionResult:
     if not channels:
         raise ValueError("Debes indicar al menos un canal o grupo de Telegram.")
 
@@ -78,39 +92,56 @@ async def extract_messages_async(
 
     client = client_factory(str(session_path), config.api_id, config.api_hash)
     messages: list[TelegramMessage] = []
+    failed_channels: list[dict[str, str]] = []
 
     await client.start()
     try:
         for channel in channels:
-            entity = await client.get_entity(channel)
-            async for message in client.iter_messages(entity, limit=limit):
-                text = _normalize_text(getattr(message, "message", ""))
-                if not text:
-                    continue
+            entity = None
+            last_error = ""
+            for _attempt in range(max(config.max_retries, 0) + 1):
+                try:
+                    entity = await client.get_entity(channel)
+                    break
+                except Exception as exc:
+                    last_error = str(exc)
+                    await asyncio.sleep(0.1)
 
-                message_date = getattr(message, "date", None)
-                if isinstance(message_date, datetime):
-                    if message_date.tzinfo is None:
-                        message_date = message_date.replace(tzinfo=timezone.utc)
-                    message_date_utc = message_date.astimezone(timezone.utc).isoformat()
-                else:
-                    message_date_utc = datetime.now(timezone.utc).isoformat()
+            if entity is None:
+                failed_channels.append({"channel": channel, "error": last_error or "entity_resolution_failed"})
+                continue
 
-                messages.append(
-                    TelegramMessage(
-                        message_id=int(getattr(message, "id", 0)),
-                        chat_id=getattr(entity, "id", None),
-                        chat_title=getattr(entity, "title", None),
-                        channel=channel,
-                        sender_id=getattr(message, "sender_id", None),
-                        date_utc=message_date_utc,
-                        text=text,
+            try:
+                async for message in client.iter_messages(entity, limit=limit):
+                    text = _normalize_text(getattr(message, "message", ""))
+                    if not text:
+                        continue
+
+                    message_date = getattr(message, "date", None)
+                    if isinstance(message_date, datetime):
+                        if message_date.tzinfo is None:
+                            message_date = message_date.replace(tzinfo=timezone.utc)
+                        message_date_utc = message_date.astimezone(timezone.utc).isoformat()
+                    else:
+                        message_date_utc = datetime.now(timezone.utc).isoformat()
+
+                    messages.append(
+                        TelegramMessage(
+                            message_id=int(getattr(message, "id", 0)),
+                            chat_id=getattr(entity, "id", None),
+                            chat_title=getattr(entity, "title", None),
+                            channel=channel,
+                            sender_id=getattr(message, "sender_id", None),
+                            date_utc=message_date_utc,
+                            text=text,
+                        )
                     )
-                )
+            except Exception as exc:
+                failed_channels.append({"channel": channel, "error": str(exc)})
     finally:
         await client.disconnect()
 
-    return messages
+    return ExtractionResult(messages=messages, failed_channels=failed_channels)
 
 
 def extract_messages(
@@ -120,7 +151,21 @@ def extract_messages(
     limit: int = 25,
     client_factory: Any = TelegramClient,
 ) -> list[TelegramMessage]:
-    return asyncio.run(extract_messages_async(config, channels, limit=limit, client_factory=client_factory))
+    return asyncio.run(
+        extract_messages_with_report_async(config, channels, limit=limit, client_factory=client_factory)
+    ).messages
+
+
+def extract_messages_with_report(
+    config: TelegramConfig,
+    channels: Sequence[str],
+    *,
+    limit: int = 25,
+    client_factory: Any = TelegramClient,
+) -> ExtractionResult:
+    return asyncio.run(
+        extract_messages_with_report_async(config, channels, limit=limit, client_factory=client_factory)
+    )
 
 
 def write_messages(messages: Iterable[TelegramMessage], output_path: Path) -> Path:

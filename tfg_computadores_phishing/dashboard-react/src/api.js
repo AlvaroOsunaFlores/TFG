@@ -34,8 +34,19 @@ export function getRunConfusion(runId) {
   return fetchJson(`/api/v1/runs/${runId}/confusion-matrix`);
 }
 
+export function getBenchmarks() {
+  return fetchJson("/api/v1/benchmarks");
+}
+
 export function getTrainingMetadata() {
   return fetchJson("/api/v1/training/metadata");
+}
+
+export function getMessageStats({ runId, limit = 500 }) {
+  const params = new URLSearchParams();
+  if (runId) params.set("run_id", runId);
+  params.set("limit", String(limit));
+  return fetchJson(`/api/v1/messages/stats?${params.toString()}`);
 }
 
 export function getMessages({ runId, limit = 100, offset = 0, pred = "", scoreMin = "" }) {

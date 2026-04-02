@@ -6,7 +6,7 @@
   "random_state": 42,
   "selection_metric": "macro_f1",
   "reports_dir": "reports/training_runs",
-  "model_output_dir": "../../modelos_entrenados/tfg_informatica_fake_news",
+  "model_output_dir": "models/training_runs",
   "candidate_models": [
     {
       "name": "logistic_regression",

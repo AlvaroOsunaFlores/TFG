@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timezone
 
-from telegram_extractor import TelegramConfig, extract_messages
+from telegram_extractor import TelegramConfig, extract_messages, extract_messages_with_report
 
 
 @dataclass
@@ -46,7 +46,7 @@ class _FakeClient:
 
 
 def test_extract_messages_returns_structured_messages() -> None:
-    config = TelegramConfig(api_id=1, api_hash="hash", session_name="session/test")
+    config = TelegramConfig(api_id=1, api_hash="hash", session_name="session/test", max_retries=0)
     messages = extract_messages(config, ["canal-demo"], limit=2, client_factory=_FakeClient)
 
     assert len(messages) == 2
@@ -56,10 +56,18 @@ def test_extract_messages_returns_structured_messages() -> None:
 
 
 def test_extract_messages_requires_channels() -> None:
-    config = TelegramConfig(api_id=1, api_hash="hash", session_name="session/test")
+    config = TelegramConfig(api_id=1, api_hash="hash", session_name="session/test", max_retries=0)
     try:
         extract_messages(config, [], client_factory=_FakeClient)
     except ValueError as exc:
         assert "al menos un canal" in str(exc)
     else:
         raise AssertionError("Se esperaba ValueError si no hay canales")
+
+
+def test_extract_messages_with_report_has_empty_failures_when_ok() -> None:
+    config = TelegramConfig(api_id=1, api_hash="hash", session_name="session/test", max_retries=0)
+    extraction = extract_messages_with_report(config, ["canal-demo"], limit=1, client_factory=_FakeClient)
+
+    assert len(extraction.messages) == 1
+    assert extraction.failed_channels == []

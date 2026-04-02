@@ -1,5 +1,6 @@
 telethon
 pymongo
+pika
 langdetect
 spacy
 torch
@@ -12,6 +13,8 @@ pandas
 scikit-learn
 fastapi
 uvicorn[standard]
+prometheus-client
+psutil
 pytest
 httpx
 pypandoc

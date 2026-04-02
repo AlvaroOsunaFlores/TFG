@@ -1,7 +1,7 @@
 services:
   mongo:
     image: mongo:7.0
-    container_name: mongo
+    container_name: tfg_mongo
     restart: always
     expose:
       - "27017"
@@ -13,20 +13,66 @@ services:
       timeout: 5s
       retries: 5
 
-  bot:
-    profiles: ["advanced"]
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: tfg_rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
+    ports:
+      - "15672:15672"
+    expose:
+      - "5672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  worker:
     build: .
-    container_name: telegram_bot
+    container_name: tfg_worker
     restart: always
     env_file:
       - .env
     depends_on:
       mongo:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      MONGO_URI: mongodb://mongo:27017/
+      RABBITMQ_URL: ${RABBITMQ_URL_DOCKER:-amqp://guest:guest@rabbitmq:5672/%2F}
+    command: ["python", "worker.py"]
     volumes:
+      - ./reports:/app/reports
+      - ./docs:/app/docs
       - ./session:/app/session
       - ./data:/app/data
+    expose:
+      - "9108"
+
+  producer:
+    profiles: ["advanced"]
+    build: .
+    container_name: tfg_producer
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      RABBITMQ_URL: ${RABBITMQ_URL_DOCKER:-amqp://guest:guest@rabbitmq:5672/%2F}
+    command: ["python", "producer.py"]
+    volumes:
+      - ./session:/app/session
       - ./reports:/app/reports
+      - ./docs:/app/docs
+      - ./data:/app/data
     stdin_open: true
     tty: true
 
@@ -39,6 +85,8 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
+    environment:
+      MONGO_URI: mongodb://mongo:27017/
     volumes:
       - ./reports:/app/reports
       - ./docs:/app/docs
@@ -63,18 +111,34 @@ services:
     ports:
       - "5173:5173"
 
+  prometheus:
+    profiles: ["observability"]
+    image: prom/prometheus:v2.53.0
+    container_name: tfg_prometheus
+    restart: always
+    depends_on:
+      - api
+      - worker
+      - rabbitmq
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+
   grafana:
     profiles: ["observability"]
     image: grafana/grafana:11.2.0
     container_name: tfg_grafana
     restart: always
     depends_on:
-      - api
+      - prometheus
     environment:
-      API_KEY: ${API_KEY}
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
-      GF_INSTALL_PLUGINS: marcusolsson-json-datasource
       GF_AUTH_ANONYMOUS_ENABLED: "false"
       GF_AUTH_DISABLE_LOGIN_FORM: "false"
     ports:
@@ -86,5 +150,7 @@ services:
 
 volumes:
   mongo_data:
+  rabbitmq_data:
   grafana_data:
+  prometheus_data:
   frontend_node_modules:

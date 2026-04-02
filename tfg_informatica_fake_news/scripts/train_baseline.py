@@ -2,11 +2,9 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
-import hashlib
 import json
 from pathlib import Path
 from typing import Any
-import uuid
 
 import joblib
 import pandas as pd
@@ -17,6 +15,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.svm import LinearSVC
 
+from experiment_registry import dataset_sha256, ensure_run_dir
 from scripts.validate_dataset import validate_dataframe
 
 
@@ -82,20 +81,19 @@ def compute_metrics(y_true: pd.Series, y_pred: pd.Series) -> dict[str, float]:
     }
 
 
-def dataset_sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(8192), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Entrena baselines de texto para fake news cuando exista un dataset real.")
     parser.add_argument("--config", default=str(DEFAULT_CONFIG))
     parser.add_argument("--dataset", default=None)
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args()
+
+
+def _display_path(path: Path) -> str:
+    try:
+        return path.relative_to(PROJECT_ROOT).as_posix()
+    except ValueError:
+        return str(path)
 
 
 def main() -> None:
@@ -145,12 +143,8 @@ def main() -> None:
         stratify=df[label_column].astype(int),
     )
 
-    run_id = f"baseline-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}-{uuid.uuid4().hex[:8]}"
-    run_dir = config["reports_dir"] / run_id
-    run_dir.mkdir(parents=True, exist_ok=True)
-
-    model_dir = config["model_output_dir"] / run_id
-    model_dir.mkdir(parents=True, exist_ok=True)
+    run_id, run_dir = ensure_run_dir(config["reports_dir"], "baseline")
+    _model_run_id, model_dir = ensure_run_dir(config["model_output_dir"], "baseline-model")
 
     comparison_rows: list[dict[str, Any]] = []
     best_payload: dict[str, Any] | None = None
@@ -218,7 +212,7 @@ def main() -> None:
     manifest_path = run_dir / "training_manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    print(f"OK baseline -> {manifest_path.relative_to(PROJECT_ROOT).as_posix()}")
+    print(f"OK baseline -> {_display_path(manifest_path)}")
 
 
 if __name__ == "__main__":

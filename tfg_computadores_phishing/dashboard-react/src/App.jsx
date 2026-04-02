@@ -13,8 +13,10 @@ import {
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 
 import {
+  getBenchmarks,
   getHealth,
   getMessages,
+  getMessageStats,
   getRunConfusion,
   getRuns,
   getRunSummary,
@@ -52,12 +54,31 @@ function prettyPercent(value) {
   return `${(Number(value) * 100).toFixed(2)}%`;
 }
 
+function prettyNumber(value, digits = 2) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) return "N/A";
+  return Number(value).toFixed(digits);
+}
+
+function prettyBytes(value) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) return "N/A";
+  const units = ["B", "KB", "MB", "GB"];
+  let current = Number(value);
+  let index = 0;
+  while (current >= 1024 && index < units.length - 1) {
+    current /= 1024;
+    index += 1;
+  }
+  return `${current.toFixed(2)} ${units[index]}`;
+}
+
 export default function App() {
   const [activeTab, setActiveTab] = useState(getInitialTab);
   const [health, setHealth] = useState(null);
   const [runs, setRuns] = useState([]);
+  const [benchmarks, setBenchmarks] = useState([]);
   const [selectedRun, setSelectedRun] = useState("");
   const [summary, setSummary] = useState(null);
+  const [messageStats, setMessageStats] = useState(null);
   const [thresholds, setThresholds] = useState([]);
   const [confusion, setConfusion] = useState(null);
   const [messages, setMessages] = useState({ items: [], warning: null, source: "loading" });
@@ -71,22 +92,22 @@ export default function App() {
     async function bootstrap() {
       try {
         setLoading(true);
-        const [healthResponse, runsResponse, trainingResponse] = await Promise.all([
+        const [healthResponse, runsResponse, trainingResponse, benchmarkResponse] = await Promise.all([
           getHealth(),
           getRuns(),
           getTrainingMetadata(),
+          getBenchmarks(),
         ]);
         if (cancelled) return;
 
         const runList = runsResponse.runs || [];
         setHealth(healthResponse);
         setRuns(runList);
+        setBenchmarks(benchmarkResponse.benchmarks || []);
         setTrainingMetadata(trainingResponse.metadata);
         setSelectedRun(runList[0]?.run_id || "");
       } catch (e) {
-        if (!cancelled) {
-          setError(String(e));
-        }
+        if (!cancelled) setError(String(e));
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -102,15 +123,17 @@ export default function App() {
     async function loadRunData() {
       if (!selectedRun) return;
       try {
-        const [summaryResponse, thresholdResponse, confusionResponse] = await Promise.all([
+        const [summaryResponse, thresholdResponse, confusionResponse, statsResponse] = await Promise.all([
           getRunSummary(selectedRun),
           getRunThresholds(selectedRun),
           getRunConfusion(selectedRun),
+          getMessageStats({ runId: selectedRun, limit: 500 }),
         ]);
         if (cancelled) return;
         setSummary(summaryResponse);
         setThresholds(thresholdResponse.points || []);
         setConfusion(confusionResponse);
+        setMessageStats(statsResponse);
       } catch (e) {
         if (!cancelled) setError(String(e));
       }
@@ -142,6 +165,8 @@ export default function App() {
       cancelled = true;
     };
   }, [selectedRun, messageFilters.pred, messageFilters.scoreMin]);
+
+  const latestBenchmark = benchmarks[0] || null;
 
   const thresholdChartData = useMemo(
     () => ({
@@ -175,18 +200,17 @@ export default function App() {
 
   const confusionChartData = useMemo(() => {
     if (!confusion) return null;
-    const matrix = confusion.matrix;
     return {
       labels: ["Pred 0", "Pred 1"],
       datasets: [
         {
           label: "Real 0",
-          data: matrix[0],
+          data: confusion.matrix[0],
           backgroundColor: ["#99f6e4", "#2dd4bf"],
         },
         {
           label: "Real 1",
-          data: matrix[1],
+          data: confusion.matrix[1],
           backgroundColor: ["#fecaca", "#ef4444"],
         },
       ],
@@ -224,11 +248,11 @@ export default function App() {
   return (
     <main className="page">
       <section className="hero">
-        <p className="hero-kicker">TFG Ciberseguridad | Telegram + IA + MongoDB</p>
-        <h1>Dashboard Operativo de Deteccion</h1>
+        <p className="hero-kicker">TFG Computadores | Telegram + RabbitMQ + Prometheus</p>
+        <h1>Pipeline Operativo de Deteccion de Phishing</h1>
         <p>
-          Visualizacion de ejecuciones, ajuste de umbral orientado a recall, trazabilidad de mensajes y
-          resultados de validacion.
+          Vista integrada de ejecuciones offline, latencias por etapa, observabilidad del worker y benchmark
+          controlado del pipeline.
         </p>
       </section>
 
@@ -247,16 +271,13 @@ export default function App() {
           <span className={`status ${health?.status || "unknown"}`}>{health?.status || "unknown"}</span>
           <span>Reports: {String(health?.reports_ok)}</span>
           <span>Mongo: {String(health?.mongo_ok)}</span>
+          <span>Benchmarks: {benchmarks.length}</span>
         </div>
       </section>
 
       <nav className="tabs">
         {TABS.map((tab) => (
-          <button
-            key={tab}
-            className={tab === activeTab ? "tab active" : "tab"}
-            onClick={() => setActiveTab(tab)}
-          >
+          <button key={tab} className={tab === activeTab ? "tab active" : "tab"} onClick={() => setActiveTab(tab)}>
             {tab}
           </button>
         ))}
@@ -266,14 +287,18 @@ export default function App() {
         <section className="panel">
           <h2>KPIs Globales</h2>
           <div className="metrics-grid">
-            <MetricCard label="Accuracy" value={prettyPercent(summary.metrics?.accuracy)} />
+            <MetricCard label="Accuracy offline" value={prettyPercent(summary.metrics?.accuracy)} />
             <MetricCard label="Precision (class 1)" value={prettyPercent(summary.metrics?.precision_pos)} />
             <MetricCard label="Recall (class 1)" value={prettyPercent(summary.metrics?.recall_pos)} />
             <MetricCard label="F1 (class 1)" value={prettyPercent(summary.metrics?.f1_pos)} />
-            <MetricCard label="ROC AUC" value={summary.metrics?.roc_auc?.toFixed?.(4) || "N/A"} />
-            <MetricCard label="Average Precision" value={summary.metrics?.average_precision?.toFixed?.(4) || "N/A"} />
-            <MetricCard label="Threshold" value={summary.threshold} />
-            <MetricCard label="Samples" value={summary.num_samples} />
+            <MetricCard label="Threshold" value={summary.threshold ?? "N/A"} />
+            <MetricCard label="Samples offline" value={summary.num_samples ?? "N/A"} />
+            <MetricCard label="E2E avg (ms)" value={prettyNumber(messageStats?.end_to_end_latency_avg_ms)} />
+            <MetricCard label="E2E p95 (ms)" value={prettyNumber(messageStats?.end_to_end_latency_p95_ms)} />
+            <MetricCard label="Throughput msg/s" value={prettyNumber(messageStats?.throughput_messages_per_second)} />
+            <MetricCard label="CPU medio" value={prettyNumber(messageStats?.cpu_avg_percent)} />
+            <MetricCard label="RAM media" value={prettyBytes(messageStats?.rss_avg_bytes)} />
+            <MetricCard label="Cola media" value={prettyNumber(messageStats?.queue_depth_avg)} />
           </div>
           {predDistributionData && (
             <div className="chart-card">
@@ -286,10 +311,75 @@ export default function App() {
 
       {activeTab === "Rendimiento" && (
         <section className="panel">
-          <h2>Curva por Umbral</h2>
+          <h2>Rendimiento Operativo</h2>
           <div className="chart-card">
+            <h3>Curva por umbral</h3>
             <Line data={thresholdChartData} />
           </div>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Metrica</th>
+                <th>Media</th>
+                <th>P95</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Preprocess latency (ms)</td>
+                <td>{prettyNumber(messageStats?.preprocess_latency_avg_ms)}</td>
+                <td>{prettyNumber(messageStats?.preprocess_latency_p95_ms)}</td>
+              </tr>
+              <tr>
+                <td>Inference latency (ms)</td>
+                <td>{prettyNumber(messageStats?.inference_latency_avg_ms)}</td>
+                <td>{prettyNumber(messageStats?.inference_latency_p95_ms)}</td>
+              </tr>
+              <tr>
+                <td>DB write latency (ms)</td>
+                <td>{prettyNumber(messageStats?.db_write_latency_avg_ms)}</td>
+                <td>{prettyNumber(messageStats?.db_write_latency_p95_ms)}</td>
+              </tr>
+              <tr>
+                <td>Queue wait latency (ms)</td>
+                <td>{prettyNumber(messageStats?.queue_wait_latency_avg_ms)}</td>
+                <td>{prettyNumber(messageStats?.queue_wait_latency_p95_ms)}</td>
+              </tr>
+            </tbody>
+          </table>
+          {latestBenchmark && (
+            <>
+              <h3>Ultimo benchmark controlado</h3>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Escenario</th>
+                    <th>Target msg/s</th>
+                    <th>Throughput</th>
+                    <th>Latencia avg</th>
+                    <th>Latencia p95</th>
+                    <th>CPU medio</th>
+                    <th>RAM media</th>
+                    <th>Error rate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {latestBenchmark.scenarios.map((scenario) => (
+                    <tr key={scenario.scenario}>
+                      <td>{scenario.scenario}</td>
+                      <td>{scenario.target_rate_mps}</td>
+                      <td>{prettyNumber(scenario.throughput_mps)}</td>
+                      <td>{prettyNumber(scenario.latency_avg_ms)}</td>
+                      <td>{prettyNumber(scenario.latency_p95_ms)}</td>
+                      <td>{prettyNumber(scenario.cpu_avg_percent)}</td>
+                      <td>{prettyBytes(scenario.ram_avg_bytes)}</td>
+                      <td>{prettyPercent(scenario.error_rate)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          )}
         </section>
       )}
 
@@ -360,21 +450,27 @@ export default function App() {
               <tr>
                 <th>Fecha UTC</th>
                 <th>Pred</th>
-                <th>Score_1</th>
-                <th>Latencia (ms)</th>
-                <th>Hash</th>
-                <th>Estado</th>
+                <th>Score</th>
+                <th>Preprocess</th>
+                <th>Inference</th>
+                <th>DB</th>
+                <th>E2E</th>
+                <th>CPU</th>
+                <th>Queue</th>
               </tr>
             </thead>
             <tbody>
               {messages.items.map((msg) => (
                 <tr key={`${msg.run_id}-${msg.message_id}-${msg.msg_sha256}`}>
                   <td>{msg.created_at_utc || "-"}</td>
-                  <td>{msg.pred}</td>
+                  <td>{msg.pred ?? "-"}</td>
                   <td>{msg.score_1?.toFixed?.(4) ?? "-"}</td>
-                  <td>{msg.latency_ms ?? "-"}</td>
-                  <td className="mono">{msg.msg_sha256 || "-"}</td>
-                  <td>{String(msg.ok)}</td>
+                  <td>{msg.preprocess_latency_ms ?? "-"}</td>
+                  <td>{msg.inference_latency_ms ?? "-"}</td>
+                  <td>{msg.db_write_latency_ms ?? "-"}</td>
+                  <td>{msg.end_to_end_latency_ms ?? "-"}</td>
+                  <td>{msg.cpu_percent ?? "-"}</td>
+                  <td>{msg.queue_depth ?? "-"}</td>
                 </tr>
               ))}
             </tbody>
@@ -384,11 +480,19 @@ export default function App() {
 
       {activeTab === "Trazabilidad" && (
         <section className="panel">
-          <h2>Detalle de Ejecucion y Entrenamiento</h2>
+          <h2>Detalle Tecnico</h2>
           <div className="trace-grid">
             <article>
               <h3>Resumen de run</h3>
               <pre>{JSON.stringify(summary, null, 2)}</pre>
+            </article>
+            <article>
+              <h3>Stats operativas</h3>
+              <pre>{JSON.stringify(messageStats, null, 2)}</pre>
+            </article>
+            <article>
+              <h3>Ultimo benchmark</h3>
+              <pre>{JSON.stringify(latestBenchmark, null, 2)}</pre>
             </article>
             <article>
               <h3>Metadata de entrenamiento</h3>

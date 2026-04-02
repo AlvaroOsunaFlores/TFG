@@ -11,11 +11,9 @@ from preprocessing import preprocess_record
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-WORKSPACE_ROOT = PROJECT_ROOT.parents[2]
 
 DEFAULT_INPUT_RAW = PROJECT_ROOT / "data" / "raw" / "sample_messages.json"
 DEFAULT_OUTPUT = PROJECT_ROOT / "data" / "labeled" / "fake_news_seed.csv"
-DEFAULT_ROOT_MIRROR = WORKSPACE_ROOT / "datos_entrenamiento" / "tfg_informatica_fake_news" / "fake_news_seed.csv"
 
 FIELDNAMES = [
     "source_id",
@@ -197,8 +195,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Construye un dataset ficticio y etiquetado para la siguiente fase del TFG.")
     parser.add_argument("--input-raw", default=str(DEFAULT_INPUT_RAW))
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
-    parser.add_argument("--mirror-root", default=str(DEFAULT_ROOT_MIRROR))
-    parser.add_argument("--skip-root-mirror", action="store_true")
+    parser.add_argument("--mirror-root", default=None)
     return parser.parse_args()
 
 
@@ -206,13 +203,13 @@ def main() -> None:
     args = parse_args()
     input_raw = Path(args.input_raw)
     output = Path(args.output)
-    mirror_root = Path(args.mirror_root)
+    mirror_root = Path(args.mirror_root) if args.mirror_root else None
 
     if not input_raw.is_absolute():
         input_raw = PROJECT_ROOT / input_raw
     if not output.is_absolute():
         output = PROJECT_ROOT / output
-    if not mirror_root.is_absolute():
+    if mirror_root is not None and not mirror_root.is_absolute():
         mirror_root = PROJECT_ROOT / mirror_root
 
     rows = build_seed_rows(_load_raw_records(input_raw))
@@ -223,7 +220,7 @@ def main() -> None:
     print(f"OK dataset -> {output.relative_to(PROJECT_ROOT).as_posix()}")
     print(f"Registros: {len(rows)} | fake_news={fake_count} | verificado_o_neutro={neutral_count}")
 
-    if not args.skip_root_mirror:
+    if mirror_root is not None:
         mirror_dataset(output, mirror_root)
         print(f"OK mirror -> {mirror_root}")
 

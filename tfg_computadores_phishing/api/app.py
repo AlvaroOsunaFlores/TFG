@@ -2,13 +2,18 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from pathlib import Path
+import time
 from typing import Any, Callable
 
-from fastapi import Depends, FastAPI, Header, HTTPException, Query
+from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+
+from observability import metrics_payload, observe_api_request
 
 from . import services
 from .contracts import (
+    BenchmarkRun,
+    BenchmarksResponse,
     ConfusionMatrixResponse,
     HealthResponse,
     MessageStatsResponse,
@@ -51,8 +56,8 @@ def create_app(custom_settings: Settings | None = None) -> FastAPI:
 
     app = FastAPI(
         title="TFG Cybersecurity API",
-        version="1.1.0",
-        description="API para trazabilidad, metricas y resultados del TFG Telegram + IA + Mongo.",
+        version="2.0.0",
+        description="API para trazabilidad, metricas operativas, benchmark y resultados del TFG Telegram + IA + Mongo.",
     )
     app.state.settings = settings
 
@@ -63,6 +68,23 @@ def create_app(custom_settings: Settings | None = None) -> FastAPI:
         allow_methods=["GET"],
         allow_headers=["*"],
     )
+
+    @app.middleware("http")
+    async def _metrics_middleware(request: Request, call_next):
+        started = time.perf_counter()
+        response = await call_next(request)
+        observe_api_request(
+            path=request.url.path,
+            method=request.method,
+            status=response.status_code,
+            duration_ms=round((time.perf_counter() - started) * 1000, 3),
+        )
+        return response
+
+    @app.get("/metrics", include_in_schema=False)
+    def prometheus_metrics() -> Response:
+        payload, content_type = metrics_payload()
+        return Response(content=payload, media_type=content_type)
 
     @app.get("/api/v1/health", response_model=HealthResponse, dependencies=protected)
     def health() -> HealthResponse:
@@ -90,6 +112,12 @@ def create_app(custom_settings: Settings | None = None) -> FastAPI:
         runs = [RunSummary(**services.run_summary_from_payload(payload)) for payload in payloads]
         return RunsResponse(runs=runs)
 
+    @app.get("/api/v1/benchmarks", response_model=BenchmarksResponse, dependencies=protected)
+    def list_benchmarks() -> BenchmarksResponse:
+        payloads = services.load_benchmark_payloads(settings.reports_dir)
+        benchmarks = [BenchmarkRun(**services.benchmark_summary_from_payload(payload)) for payload in payloads]
+        return BenchmarksResponse(benchmarks=benchmarks)
+
     def _resolve_run_or_404(run_id: str) -> dict:
         payloads = services.load_metrics_payloads(settings.reports_dir)
         payload = services.get_run_payload_by_id(payloads, run_id)
@@ -97,10 +125,22 @@ def create_app(custom_settings: Settings | None = None) -> FastAPI:
             raise HTTPException(status_code=404, detail=f"run_id '{run_id}' not found")
         return payload
 
+    def _resolve_benchmark_or_404(benchmark_id: str) -> dict:
+        payloads = services.load_benchmark_payloads(settings.reports_dir)
+        payload = services.get_benchmark_payload_by_id(payloads, benchmark_id)
+        if payload is None:
+            raise HTTPException(status_code=404, detail=f"benchmark_id '{benchmark_id}' not found")
+        return payload
+
     @app.get("/api/v1/runs/{run_id}/summary", response_model=RunSummary, dependencies=protected)
     def run_summary(run_id: str) -> RunSummary:
         payload = _resolve_run_or_404(run_id)
         return RunSummary(**services.run_summary_from_payload(payload))
+
+    @app.get("/api/v1/benchmarks/{benchmark_id}", response_model=BenchmarkRun, dependencies=protected)
+    def benchmark_summary(benchmark_id: str) -> BenchmarkRun:
+        payload = _resolve_benchmark_or_404(benchmark_id)
+        return BenchmarkRun(**services.benchmark_summary_from_payload(payload))
 
     @app.get("/api/v1/runs/{run_id}/thresholds", response_model=ThresholdResponse, dependencies=protected)
     def run_thresholds(run_id: str) -> ThresholdResponse:
@@ -158,5 +198,6 @@ def create_app(custom_settings: Settings | None = None) -> FastAPI:
         return TrainingMetadataResponse(metadata=metadata)
 
     return app
+
 
 app = LazyFastAPIApp(create_app)

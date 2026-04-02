@@ -1,289 +1,175 @@
 {
   "id": null,
-  "uid": "tfg-mvp-cybersec",
-  "title": "TFG MVP - Telegram Ciberseguridad",
+  "uid": "tfg-observability",
+  "title": "TFG Observability - Telegram Phishing Pipeline",
   "timezone": "browser",
   "schemaVersion": 39,
-  "version": 2,
-  "refresh": "30s",
-  "tags": [
-    "tfg",
-    "telegram",
-    "cybersecurity",
-    "mvp"
-  ],
+  "version": 1,
+  "refresh": "15s",
+  "tags": ["tfg", "telegram", "phishing", "prometheus"],
   "panels": [
     {
       "id": 1,
-      "title": "Volumen de mensajes (total)",
+      "title": "Throughput actual (msg/s)",
       "type": "stat",
-      "datasource": {
-        "type": "marcusolsson-json-datasource",
-        "uid": "tfg_api"
-      },
+      "datasource": { "type": "prometheus", "uid": "tfg_prometheus" },
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "marcusolsson-json-datasource",
-            "uid": "tfg_api"
-          },
-          "method": "GET",
-          "queryPath": "/api/v1/messages/stats?limit=500",
-          "urlPath": "/api/v1/messages/stats?limit=500",
-          "fields": [
-            {
-              "name": "total",
-              "jsonPath": "$.total",
-              "type": "number"
-            }
-          ]
+          "expr": "sum(rate(tfg_messages_processed_total{result=\"ok\"}[5m]))",
+          "legendFormat": "ok msg/s"
         }
       ],
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
       "options": {
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        }
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 0,
-        "y": 0
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto"
       }
     },
     {
       "id": 2,
-      "title": "Proporcion benigno/amenaza",
-      "type": "table",
-      "datasource": {
-        "type": "marcusolsson-json-datasource",
-        "uid": "tfg_api"
-      },
+      "title": "Profundidad de cola",
+      "type": "stat",
+      "datasource": { "type": "prometheus", "uid": "tfg_prometheus" },
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "marcusolsson-json-datasource",
-            "uid": "tfg_api"
-          },
-          "method": "GET",
-          "queryPath": "/api/v1/messages/stats?limit=500",
-          "urlPath": "/api/v1/messages/stats?limit=500",
-          "fields": [
-            {
-              "name": "benign_count",
-              "jsonPath": "$.benign_count",
-              "type": "number"
-            },
-            {
-              "name": "threat_count",
-              "jsonPath": "$.threat_count",
-              "type": "number"
-            }
-          ]
+          "expr": "tfg_queue_depth_messages",
+          "legendFormat": "queue depth"
         }
       ],
-      "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 8,
-        "y": 0
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto"
       }
     },
     {
       "id": 3,
-      "title": "Latencia media y p95 (ms)",
-      "type": "table",
-      "datasource": {
-        "type": "marcusolsson-json-datasource",
-        "uid": "tfg_api"
-      },
+      "title": "Latencia E2E p95 (ms)",
+      "type": "stat",
+      "datasource": { "type": "prometheus", "uid": "tfg_prometheus" },
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "marcusolsson-json-datasource",
-            "uid": "tfg_api"
-          },
-          "method": "GET",
-          "queryPath": "/api/v1/messages/stats?limit=500",
-          "urlPath": "/api/v1/messages/stats?limit=500",
-          "fields": [
-            {
-              "name": "latency_avg_ms",
-              "jsonPath": "$.latency_avg_ms",
-              "type": "number"
-            },
-            {
-              "name": "latency_p95_ms",
-              "jsonPath": "$.latency_p95_ms",
-              "type": "number"
-            }
-          ]
+          "expr": "histogram_quantile(0.95, sum(rate(tfg_pipeline_stage_latency_ms_bucket{stage=\"end_to_end\"}[5m])) by (le))",
+          "legendFormat": "p95"
         }
       ],
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 0
+      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto"
       }
     },
     {
       "id": 4,
-      "title": "Tasa de errores (ok=false)",
-      "type": "table",
-      "datasource": {
-        "type": "marcusolsson-json-datasource",
-        "uid": "tfg_api"
-      },
+      "title": "Errores del worker (5m)",
+      "type": "stat",
+      "datasource": { "type": "prometheus", "uid": "tfg_prometheus" },
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "marcusolsson-json-datasource",
-            "uid": "tfg_api"
-          },
-          "method": "GET",
-          "queryPath": "/api/v1/messages/stats?limit=500",
-          "urlPath": "/api/v1/messages/stats?limit=500",
-          "fields": [
-            {
-              "name": "error_count",
-              "jsonPath": "$.error_count",
-              "type": "number"
-            },
-            {
-              "name": "error_rate",
-              "jsonPath": "$.error_rate",
-              "type": "number"
-            }
-          ]
+          "expr": "sum(rate(tfg_messages_processed_total{result=\"error\"}[5m]))",
+          "legendFormat": "errors/s"
         }
       ],
-      "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 0,
-        "y": 6
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto"
       }
     },
     {
       "id": 5,
-      "title": "Distribucion de score_1",
-      "type": "table",
-      "datasource": {
-        "type": "marcusolsson-json-datasource",
-        "uid": "tfg_api"
-      },
+      "title": "Latencias por etapa",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "tfg_prometheus" },
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "marcusolsson-json-datasource",
-            "uid": "tfg_api"
-          },
-          "method": "GET",
-          "queryPath": "/api/v1/messages/stats?limit=500",
-          "urlPath": "/api/v1/messages/stats?limit=500",
-          "fields": [
-            {
-              "name": "score_avg",
-              "jsonPath": "$.score_avg",
-              "type": "number"
-            },
-            {
-              "name": "score_p50",
-              "jsonPath": "$.score_p50",
-              "type": "number"
-            },
-            {
-              "name": "score_p95",
-              "jsonPath": "$.score_p95",
-              "type": "number"
-            }
-          ]
+          "expr": "histogram_quantile(0.95, sum(rate(tfg_pipeline_stage_latency_ms_bucket{stage=\"preprocess\"}[5m])) by (le))",
+          "legendFormat": "preprocess p95"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95, sum(rate(tfg_pipeline_stage_latency_ms_bucket{stage=\"inference\"}[5m])) by (le))",
+          "legendFormat": "inference p95"
+        },
+        {
+          "refId": "C",
+          "expr": "histogram_quantile(0.95, sum(rate(tfg_pipeline_stage_latency_ms_bucket{stage=\"db_write\"}[5m])) by (le))",
+          "legendFormat": "db write p95"
+        },
+        {
+          "refId": "D",
+          "expr": "histogram_quantile(0.95, sum(rate(tfg_pipeline_stage_latency_ms_bucket{stage=\"end_to_end\"}[5m])) by (le))",
+          "legendFormat": "e2e p95"
         }
       ],
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 6
-      }
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 6 }
     },
     {
       "id": 6,
-      "title": "Precision/Recall por ejecucion",
-      "type": "table",
-      "datasource": {
-        "type": "marcusolsson-json-datasource",
-        "uid": "tfg_api"
-      },
+      "title": "Recursos del proceso",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "tfg_prometheus" },
       "targets": [
         {
           "refId": "A",
-          "datasource": {
-            "type": "marcusolsson-json-datasource",
-            "uid": "tfg_api"
-          },
-          "method": "GET",
-          "queryPath": "/api/v1/runs",
-          "urlPath": "/api/v1/runs",
-          "fields": [
-            {
-              "name": "run_id",
-              "jsonPath": "$.runs[*].run_id",
-              "type": "string"
-            },
-            {
-              "name": "precision_pos",
-              "jsonPath": "$.runs[*].metrics.precision_pos",
-              "type": "number"
-            },
-            {
-              "name": "recall_pos",
-              "jsonPath": "$.runs[*].metrics.recall_pos",
-              "type": "number"
-            },
-            {
-              "name": "f1_pos",
-              "jsonPath": "$.runs[*].metrics.f1_pos",
-              "type": "number"
-            }
-          ]
+          "expr": "tfg_process_cpu_percent",
+          "legendFormat": "cpu %"
+        },
+        {
+          "refId": "B",
+          "expr": "tfg_process_rss_bytes",
+          "legendFormat": "rss bytes"
+        },
+        {
+          "refId": "C",
+          "expr": "tfg_process_vms_bytes",
+          "legendFormat": "vms bytes"
         }
       ],
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 8
-      }
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 6 }
+    },
+    {
+      "id": 7,
+      "title": "Benchmark throughput por escenario",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "tfg_prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "tfg_benchmark_throughput_mps",
+          "legendFormat": "{{scenario}}"
+        }
+      ],
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 }
+    },
+    {
+      "id": 8,
+      "title": "Benchmark latencia p95 por escenario",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "tfg_prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "tfg_benchmark_latency_p95_ms",
+          "legendFormat": "{{scenario}}"
+        }
+      ],
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 }
     }
   ],
-  "templating": {
-    "list": []
-  },
-  "time": {
-    "from": "now-30d",
-    "to": "now"
-  },
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
   "timepicker": {},
   "annotations": {
     "list": [
       {
         "builtIn": 1,
-        "datasource": {
-          "type": "grafana",
-          "uid": "-- Grafana --"
-        },
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",

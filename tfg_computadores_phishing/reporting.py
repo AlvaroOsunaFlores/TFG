@@ -22,6 +22,12 @@ def ensure_validation_dir(reports_dir: Path, validation_id: str) -> Path:
     return validation_dir
 
 
+def ensure_benchmark_dir(reports_dir: Path, benchmark_id: str) -> Path:
+    benchmark_dir = ensure_reports_dir(reports_dir) / "benchmarks" / benchmark_id
+    benchmark_dir.mkdir(parents=True, exist_ok=True)
+    return benchmark_dir
+
+
 def relative_report_path(path: Path, reports_dir: Path) -> str:
     return path.resolve().relative_to(reports_dir.resolve()).as_posix()
 
