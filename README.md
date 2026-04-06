@@ -81,7 +81,7 @@ Validacion minima:
 ```powershell
 Set-Location .\tfg_informatica_fake_news
 python main.py --use-sample
-python -m scripts.build_seed_dataset
+python -m scripts.validate_dataset --input data/labeled/fake_news_unified.csv.gz
 python -m scripts.train_baseline --dry-run
 python -m scripts.evaluate_baseline --dry-run
 python -m pytest -q
@@ -89,4 +89,4 @@ python -m pytest -q
 
 ## Entrega
 
-La carpeta `proyectos_principales/entrega_final` se genera como exportacion limpia para revision, manteniendo ambos TFGs separados pero coherentes dentro de una misma entrega.
+La carpeta `proyectos_principales/entrega_YYYY_MM_DD` se genera como exportacion limpia para revision, manteniendo ambos TFGs separados pero coherentes dentro de una misma entrega.

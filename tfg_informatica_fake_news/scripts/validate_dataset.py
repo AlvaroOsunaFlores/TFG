@@ -7,7 +7,7 @@ import pandas as pd
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_INPUT = PROJECT_ROOT / "data" / "labeled" / "fake_news_seed.csv"
+DEFAULT_INPUT = PROJECT_ROOT / "data" / "labeled" / "fake_news_unified.csv.gz"
 
 REQUIRED_COLUMNS = [
     "source_id",
@@ -28,7 +28,7 @@ LABEL_NAMES = {
 
 
 def load_dataset(path: Path) -> pd.DataFrame:
-    return pd.read_csv(path)
+    return pd.read_csv(path, compression="infer", keep_default_na=False)
 
 
 def validate_dataframe(df: pd.DataFrame) -> tuple[list[str], list[str]]:

@@ -11,10 +11,11 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, classification_report, f1_score, precision_score, recall_score
 
 from experiment_registry import ensure_run_dir
-from scripts.validate_dataset import validate_dataframe
+from scripts.validate_dataset import load_dataset, validate_dataframe
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_DATASET = PROJECT_ROOT / "data" / "labeled" / "fake_news_unified.csv.gz"
 
 
 def _resolve_project_path(raw_path: str | Path) -> Path:
@@ -64,7 +65,7 @@ def main() -> None:
     if manifest_path and manifest_path.exists():
         manifest_payload = _load_manifest(manifest_path)
 
-    dataset_path = _resolve_project_path(args.dataset or (manifest_payload or {}).get("dataset_path", "data/labeled/fake_news_seed.csv"))
+    dataset_path = _resolve_project_path(args.dataset or (manifest_payload or {}).get("dataset_path", DEFAULT_DATASET))
     raw_model_path = args.model or (manifest_payload or {}).get("model_path")
     model_path = _resolve_project_path(raw_model_path) if raw_model_path else None
     outdir = _resolve_project_path(args.outdir)
@@ -85,7 +86,7 @@ def main() -> None:
     if not model_path or not model_path.exists():
         raise SystemExit("Debes indicar un modelo entrenado valido o un manifest existente.")
 
-    df = pd.read_csv(dataset_path)
+    df = load_dataset(dataset_path)
     errors, _warnings = validate_dataframe(df)
     if errors:
         raise SystemExit("No se puede evaluar: el dataset no pasa la validacion previa.")

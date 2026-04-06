@@ -16,6 +16,12 @@ tfg_computadores_phishing/tmp_smoke/
 tfg_computadores_phishing/docs/assets/runtime_logs/
 
 tfg_informatica_fake_news/.env
+tfg_informatica_fake_news/.pytest_cache/
 tfg_informatica_fake_news/session/*.session
 tfg_informatica_fake_news/*.session
 tfg_informatica_fake_news/__pycache__/
+tfg_informatica_fake_news/reports/
+tfg_informatica_fake_news/models/
+tfg_informatica_fake_news/data/raw/extracted_messages.json
+tfg_informatica_fake_news/data/raw/extraction_registry.json
+tfg_informatica_fake_news/data/processed/preprocessed_messages.json

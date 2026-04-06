@@ -24,7 +24,7 @@ jobs:
       - name: Sample pipeline and dry-runs
         run: |
           python main.py --use-sample
-          python -m scripts.build_seed_dataset
+          python -m scripts.validate_dataset --input data/labeled/fake_news_unified.csv.gz
           python -m scripts.train_baseline --dry-run
           python -m scripts.evaluate_baseline --dry-run
       - name: Run tests

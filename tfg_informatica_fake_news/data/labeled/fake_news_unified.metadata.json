@@ -1,0 +1,70 @@
+{
+  "generated_at_utc": "2026-04-06T18:17:28.000590+00:00",
+  "source_root": "../../../datos_entrenamiento/tfg_informatica_fake_news",
+  "output_path": "data/labeled/fake_news_unified.csv.gz",
+  "archives_used": [
+    "archive2.zip",
+    "archive.zip"
+  ],
+  "archives_excluded": [
+    "archive3.zip"
+  ],
+  "rows_written": 50503,
+  "label_distribution": {
+    "0": 23470,
+    "1": 27033
+  },
+  "dataset_name_distribution": {
+    "archive2_news_dataset": 44898,
+    "liar_politifact": 5605
+  },
+  "archive2": {
+    "rows_written": 44898,
+    "per_label": {
+      "fake": 23481,
+      "real": 21417
+    },
+    "per_file": {
+      "News _dataset/Fake.csv": 23481,
+      "News _dataset/True.csv": 21417
+    },
+    "skipped_empty": 0
+  },
+  "liar": {
+    "rows_written": 5605,
+    "per_label": {
+      "false": 2505,
+      "true": 2053,
+      "pants-fire": 1047
+    },
+    "excluded_labels": {
+      "half-true": 2627,
+      "mostly-true": 2454,
+      "barely-true": 2103
+    },
+    "per_split": {
+      "train": 4508,
+      "valid": 548,
+      "test": 549
+    },
+    "skipped_empty": 2
+  },
+  "warnings": [],
+  "schema": [
+    "source_id",
+    "channel",
+    "date_utc",
+    "text",
+    "normalized_text",
+    "language",
+    "label",
+    "label_name",
+    "source",
+    "dataset_name",
+    "dataset_split",
+    "original_label",
+    "title",
+    "topic"
+  ],
+  "dataset_sha256": "bb054be51ec3163b5ee25ffa1ed985beaa5c42c3a778da08c3f1e51a4149b2a7"
+}

@@ -16,7 +16,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.svm import LinearSVC
 
 from experiment_registry import dataset_sha256, ensure_run_dir
-from scripts.validate_dataset import validate_dataframe
+from scripts.validate_dataset import load_dataset, validate_dataframe
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -107,7 +107,7 @@ def main() -> None:
         config["dataset_path"] = _resolve_project_path(args.dataset)
 
     dataset_path: Path = config["dataset_path"]
-    df = pd.read_csv(dataset_path)
+    df = load_dataset(dataset_path)
     errors, warnings = validate_dataframe(df)
     if errors:
         raise SystemExit("No se puede entrenar: el dataset no pasa la validacion previa.")

@@ -1,12 +1,23 @@
-# Dataset Ficticio
+# Datasets Etiquetados
 
-Esta carpeta contiene un dataset semilla ficticio para preparar la siguiente fase del TFG.
+Esta carpeta contiene dos datasets con objetivos distintos:
 
-- No es un dataset academico definitivo.
-- No debe usarse para extraer conclusiones finales sobre rendimiento de modelos.
-- Su unica funcion es validar la estructura del dataset, los scripts y el flujo futuro de entrenamiento y evaluacion.
+- `fake_news_unified.csv.gz`: dataset real unificado para entrenamiento baseline.
+- `fake_news_unified.metadata.json`: metadata reproducible del dataset real.
+- `fake_news_seed.csv`: dataset semilla ficticio para smoke tests y regresion ligera.
 
-El archivo principal es `fake_news_seed.csv` y sigue esta schema:
+## Dataset real
+
+El dataset principal combina:
+
+- `archive2.zip` con `Fake.csv` y `True.csv`;
+- `archive.zip` (LIAR) usando solo `true`, `false` y `pants-fire`.
+
+Se excluye `archive3.zip` por calidad metodologica.
+
+## Schema canonico
+
+Todos los ficheros etiquetados siguen esta schema base:
 
 - `source_id`
 - `channel`
@@ -18,7 +29,20 @@ El archivo principal es `fake_news_seed.csv` y sigue esta schema:
 - `label_name`
 - `source`
 
+Y el dataset real anade:
+
+- `dataset_name`
+- `dataset_split`
+- `original_label`
+- `title`
+- `topic`
+
 Etiquetas:
 
 - `0`: `verificado_o_neutro`
 - `1`: `fake_news`
+
+## Nota de uso
+
+- El dataset real sirve para entrenamiento reproducible de baseline.
+- El dataset semilla ficticio se conserva solo para pruebas locales y smoke checks.

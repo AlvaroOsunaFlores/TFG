@@ -16,7 +16,8 @@ MENTION_RE = re.compile(r"@\w+")
 HASHTAG_RE = re.compile(r"#(\w+)")
 EMOJI_RE = re.compile(r"[\U00010000-\U0010ffff]", re.UNICODE)
 MULTISPACE_RE = re.compile(r"\s+")
-TOKEN_RE = re.compile(r"[a-z0-9áéíóúüñ]+", re.IGNORECASE)
+LATIN_TEXT_CLASS = "a-z0-9\u00e1\u00e9\u00ed\u00f3\u00fa\u00fc\u00f1"
+TOKEN_RE = re.compile(rf"[{LATIN_TEXT_CLASS}]+", re.IGNORECASE)
 DEFAULT_STOPWORDS = {"de", "la", "el", "y", "a"}
 
 
@@ -49,7 +50,12 @@ def clean_text(text: str) -> str:
     cleaned = MENTION_RE.sub(" usuario ", cleaned)
     cleaned = HASHTAG_RE.sub(r" \1 ", cleaned)
     cleaned = EMOJI_RE.sub(" ", cleaned)
-    cleaned = re.sub(r"[^a-z0-9áéíóúüñ\s\.\,\!\?\:\;\(\)\-]", " ", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(
+        rf"[^{LATIN_TEXT_CLASS}\s\.\,\!\?\:\;\(\)\-]",
+        " ",
+        cleaned,
+        flags=re.IGNORECASE,
+    )
     cleaned = MULTISPACE_RE.sub(" ", cleaned)
     return cleaned.strip()
 
