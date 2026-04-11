@@ -10,7 +10,15 @@ import joblib
 import pandas as pd
 from sklearn.metrics import accuracy_score, classification_report, f1_score, precision_score, recall_score
 
-from experiment_registry import ensure_run_dir
+from analysis_utils import (
+    build_confusion_matrix_payload,
+    build_dataset_summary,
+    build_prediction_examples_payload,
+    extract_linear_model_terms_from_pipeline,
+    predict_with_threshold_policy,
+    resolve_prediction_policy,
+)
+from experiment_registry import ensure_run_dir, write_manifest
 from scripts.validate_dataset import load_dataset, validate_dataframe
 
 
@@ -93,34 +101,69 @@ def main() -> None:
 
     text_column = (manifest_payload or {}).get("text_column", "normalized_text")
     label_column = (manifest_payload or {}).get("label_column", "label")
+    dataset_summary = build_dataset_summary(df)
+    prediction_policy = resolve_prediction_policy((manifest_payload or {}).get("prediction_policy"))
 
     model = joblib.load(model_path)
-    predictions = model.predict(df[text_column].astype(str))
+    predictions, scores, score_kind, threshold_used = predict_with_threshold_policy(
+        model,
+        df[text_column].astype(str),
+        prediction_policy=prediction_policy,
+    )
 
-    metrics = compute_metrics(df[label_column].astype(int), predictions)
+    metrics = compute_metrics(df[label_column].astype(int), pd.Series(predictions))
     report = classification_report(df[label_column].astype(int), predictions, output_dict=True, zero_division=0)
 
     _run_id, run_dir = ensure_run_dir(outdir, "evaluation")
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     predictions_path = run_dir / f"evaluation_predictions_{stamp}.csv"
-    pd.DataFrame(
-        {
-            "text": df[text_column],
-            "label": df[label_column],
-            "pred": predictions,
-        }
-    ).to_csv(predictions_path, index=False)
+    analysis_frame = df.copy()
+    analysis_frame["label"] = df[label_column].astype(int)
+    analysis_frame["pred"] = predictions
+    analysis_frame["score"] = scores
+    analysis_frame["score_kind"] = score_kind
+    analysis_frame["score_threshold"] = threshold_used
+    analysis_frame.to_csv(predictions_path, index=False)
+
+    confusion_matrix_path = run_dir / "confusion_matrix.json"
+    write_manifest(
+        confusion_matrix_path,
+        build_confusion_matrix_payload(analysis_frame["label"], analysis_frame["pred"]),
+    )
+
+    prediction_examples_path = run_dir / "prediction_examples.json"
+    write_manifest(
+        prediction_examples_path,
+        build_prediction_examples_payload(analysis_frame, text_column=text_column),
+    )
+
+    linear_model_terms_path: str | None = None
+    terms_payload = extract_linear_model_terms_from_pipeline(
+        model,
+        model_name=str((manifest_payload or {}).get("best_model", "evaluated_model")),
+    )
+    if terms_payload is not None:
+        terms_path = run_dir / "linear_model_terms.json"
+        write_manifest(terms_path, {"models": [terms_payload]})
+        linear_model_terms_path = str(terms_path)
 
     payload = {
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "dataset_path": str(dataset_path),
         "model_path": str(model_path),
+        "prediction_policy": prediction_policy,
+        "score_kind": score_kind,
+        "threshold_used": threshold_used,
         "metrics": metrics,
+        "dataset_summary": dataset_summary,
         "classification_report": report,
         "predictions_path": str(predictions_path),
+        "confusion_matrix_path": str(confusion_matrix_path),
+        "prediction_examples_path": str(prediction_examples_path),
+        "linear_model_terms_path": linear_model_terms_path,
     }
     summary_path = run_dir / f"evaluation_summary_{stamp}.json"
-    summary_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+    write_manifest(summary_path, payload)
 
     print(f"OK evaluation -> {_display_path(summary_path)}")
 

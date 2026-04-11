@@ -87,3 +87,17 @@ def test_train_baseline_creates_manifest(tmp_path: Path) -> None:
     assert result.returncode == 0, result.stderr
     manifests = list(reports_dir.glob("baseline-*/training_manifest.json"))
     assert manifests, result.stdout
+    manifest = json.loads(manifests[0].read_text(encoding="utf-8"))
+    assert manifest["dataset_summary"]["rows"] == 8
+    assert manifest["prediction_policy"]["probability_threshold"] == 0.6
+    assert manifest["prediction_policy"]["decision_threshold"] == 0.3
+    assert manifest["best_model_score_kind"] in {"probability", "decision_function", "predict"}
+    assert Path(manifest["confusion_matrix_path"]).exists()
+    assert Path(manifest["prediction_examples_path"]).exists()
+    assert Path(manifest["linear_model_terms_path"]).exists()
+
+    run_dir = manifests[0].parent
+    assert (run_dir / "holdout_predictions.csv").exists()
+    assert (run_dir / "confusion_matrix.json").exists()
+    assert (run_dir / "prediction_examples.json").exists()
+    assert (run_dir / "linear_model_terms.json").exists()

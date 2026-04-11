@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 import subprocess
 import sys
@@ -79,3 +80,17 @@ def test_evaluate_baseline_generates_summary(tmp_path: Path) -> None:
     assert result.returncode == 0, result.stderr
     summaries = list(outdir.glob("evaluation-*/evaluation_summary_*.json"))
     assert summaries, result.stdout
+    summary = json.loads(summaries[0].read_text(encoding="utf-8"))
+    assert summary["dataset_summary"]["rows"] == 4
+    assert summary["prediction_policy"]["probability_threshold"] == 0.6
+    assert summary["prediction_policy"]["decision_threshold"] == 0.3
+    assert summary["score_kind"] in {"probability", "decision_function", "predict"}
+    assert Path(summary["confusion_matrix_path"]).exists()
+    assert Path(summary["prediction_examples_path"]).exists()
+    assert Path(summary["linear_model_terms_path"]).exists()
+
+    run_dir = summaries[0].parent
+    assert len(list(run_dir.glob("evaluation_predictions_*.csv"))) == 1
+    assert (run_dir / "confusion_matrix.json").exists()
+    assert (run_dir / "prediction_examples.json").exists()
+    assert (run_dir / "linear_model_terms.json").exists()

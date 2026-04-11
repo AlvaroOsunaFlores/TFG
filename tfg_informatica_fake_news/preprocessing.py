@@ -19,6 +19,15 @@ MULTISPACE_RE = re.compile(r"\s+")
 LATIN_TEXT_CLASS = "a-z0-9\u00e1\u00e9\u00ed\u00f3\u00fa\u00fc\u00f1"
 TOKEN_RE = re.compile(rf"[{LATIN_TEXT_CLASS}]+", re.IGNORECASE)
 DEFAULT_STOPWORDS = {"de", "la", "el", "y", "a"}
+CLEANING_RULES = [
+    "Convierte entidades HTML y normaliza el texto a minusculas.",
+    "Sustituye URLs por el token 'url' y menciones por el token 'usuario'.",
+    "Conserva el termino base de los hashtags y elimina el simbolo '#'.",
+    "Elimina emojis y caracteres fuera de la clase latina configurada.",
+    "Compacta espacios en blanco y tokeniza con una expresion regular alfanumerica.",
+    "Filtra stopwords configurables por entorno antes de reconstruir normalized_text.",
+    "Marca textos vacios, demasiado cortos o con idioma desconocido mediante quality_flags.",
+]
 
 
 @dataclass(frozen=True)
@@ -41,6 +50,10 @@ def load_stopwords() -> set[str]:
     if not raw:
         return set(DEFAULT_STOPWORDS)
     return {item.strip().lower() for item in raw.split(",") if item.strip()}
+
+
+def describe_cleaning_rules() -> list[str]:
+    return list(CLEANING_RULES)
 
 
 def clean_text(text: str) -> str:

@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-04-06T18:17:28.000590+00:00",
-  "source_root": "../../../datos_entrenamiento/tfg_informatica_fake_news",
+  "generated_at_utc": "2026-04-09T20:54:24.534124+00:00",
+  "source_root": "datos_entrenamiento/tfg_informatica_fake_news",
   "output_path": "data/labeled/fake_news_unified.csv.gz",
   "archives_used": [
     "archive2.zip",
@@ -17,6 +17,87 @@
   "dataset_name_distribution": {
     "archive2_news_dataset": 44898,
     "liar_politifact": 5605
+  },
+  "language_distribution": {
+    "af": 6,
+    "ca": 10,
+    "cy": 2,
+    "da": 10,
+    "de": 1,
+    "en": 50421,
+    "es": 7,
+    "et": 1,
+    "fr": 16,
+    "hr": 1,
+    "id": 4,
+    "it": 3,
+    "nl": 4,
+    "no": 1,
+    "ro": 9,
+    "sv": 2,
+    "tl": 5
+  },
+  "included_languages": [
+    "af",
+    "ca",
+    "cy",
+    "da",
+    "de",
+    "en",
+    "es",
+    "et",
+    "fr",
+    "hr",
+    "id",
+    "it",
+    "nl",
+    "no",
+    "ro",
+    "sv",
+    "tl"
+  ],
+  "text_length_summary": {
+    "raw_char_count": {
+      "mean": 2278.58,
+      "median": 2084.0,
+      "min": 11,
+      "max": 51893
+    },
+    "normalized_token_count": {
+      "mean": 374.76,
+      "median": 346.0,
+      "min": 2,
+      "max": 8173
+    }
+  },
+  "cleaning_rules": [
+    "Convierte entidades HTML y normaliza el texto a minusculas.",
+    "Sustituye URLs por el token 'url' y menciones por el token 'usuario'.",
+    "Conserva el termino base de los hashtags y elimina el simbolo '#'.",
+    "Elimina emojis y caracteres fuera de la clase latina configurada.",
+    "Compacta espacios en blanco y tokeniza con una expresion regular alfanumerica.",
+    "Filtra stopwords configurables por entorno antes de reconstruir normalized_text.",
+    "Marca textos vacios, demasiado cortos o con idioma desconocido mediante quality_flags."
+  ],
+  "exclusion_rules": {
+    "archives_excluded": [
+      "archive3.zip"
+    ],
+    "liar_labels_excluded": [
+      "barely-true",
+      "half-true",
+      "mostly-true"
+    ],
+    "liar_excluded_label_counts": {
+      "half-true": 2627,
+      "mostly-true": 2454,
+      "barely-true": 2103
+    },
+    "empty_rows_skipped": {
+      "archive2": 0,
+      "liar": 2,
+      "total": 2
+    }
   },
   "archive2": {
     "rows_written": 44898,
@@ -66,5 +147,5 @@
     "title",
     "topic"
   ],
-  "dataset_sha256": "bb054be51ec3163b5ee25ffa1ed985beaa5c42c3a778da08c3f1e51a4149b2a7"
+  "dataset_sha256": "cfaf1b39c0260008e9328950649c9b83de2a9eadb478f631fb9cbc68d1b0a6b1"
 }

@@ -14,8 +14,9 @@ from typing import Any
 
 import pandas as pd
 
+from analysis_utils import build_dataset_summary
 from experiment_registry import dataset_sha256
-from preprocessing import preprocess_record
+from preprocessing import describe_cleaning_rules, preprocess_record
 from scripts.validate_dataset import LABEL_NAMES, REQUIRED_COLUMNS, load_dataset, validate_dataframe
 
 
@@ -263,13 +264,15 @@ def build_real_dataset(
     if errors:
         raise ValueError(f"El dataset real generado no es valido: {errors}")
 
-    label_distribution = {
-        str(key): int(value)
-        for key, value in dataset_df["label"].value_counts().sort_index().items()
-    }
+    dataset_summary = build_dataset_summary(dataset_df)
     dataset_name_distribution = {
         str(key): int(value)
         for key, value in dataset_df["dataset_name"].value_counts().sort_index().items()
+    }
+    empty_rows_skipped = {
+        "archive2": int(archive2_meta["skipped_empty"]),
+        "liar": int(liar_meta["skipped_empty"]),
+        "total": int(archive2_meta["skipped_empty"] + liar_meta["skipped_empty"]),
     }
 
     metadata = {
@@ -279,8 +282,18 @@ def build_real_dataset(
         "archives_used": [ARCHIVE2_PATH, LIAR_PATH],
         "archives_excluded": ["archive3.zip"],
         "rows_written": int(len(dataset_df)),
-        "label_distribution": label_distribution,
+        "label_distribution": dataset_summary["label_distribution"],
         "dataset_name_distribution": dataset_name_distribution,
+        "language_distribution": dataset_summary["language_distribution"],
+        "included_languages": dataset_summary["included_languages"],
+        "text_length_summary": dataset_summary["text_length_summary"],
+        "cleaning_rules": describe_cleaning_rules(),
+        "exclusion_rules": {
+            "archives_excluded": ["archive3.zip"],
+            "liar_labels_excluded": sorted(LIAR_EXCLUDED_LABELS),
+            "liar_excluded_label_counts": liar_meta["excluded_labels"],
+            "empty_rows_skipped": empty_rows_skipped,
+        },
         "archive2": archive2_meta,
         "liar": liar_meta,
         "warnings": warnings,

@@ -5,6 +5,11 @@
   "test_size": 0.25,
   "random_state": 42,
   "selection_metric": "macro_f1",
+  "prediction_policy": {
+    "prefer_probability": true,
+    "probability_threshold": 0.6,
+    "decision_threshold": 0.3
+  },
   "reports_dir": "reports/training_runs",
   "model_output_dir": "models/training_runs",
   "candidate_models": [

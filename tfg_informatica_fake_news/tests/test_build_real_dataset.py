@@ -99,6 +99,13 @@ def test_build_real_dataset_creates_expected_gzip_and_metadata(tmp_path: Path) -
     assert metadata_file == metadata_path
     assert metadata["rows_written"] == 5
     assert metadata["liar"]["excluded_labels"]["half-true"] == 1
+    assert metadata["language_distribution"]
+    assert metadata["included_languages"]
+    assert metadata["text_length_summary"]["raw_char_count"]["max"] >= metadata["text_length_summary"]["raw_char_count"]["min"]
+    assert "cleaning_rules" in metadata
+    assert metadata["exclusion_rules"]["archives_excluded"] == ["archive3.zip"]
+    assert metadata["exclusion_rules"]["liar_labels_excluded"] == ["barely-true", "half-true", "mostly-true"]
+    assert metadata["exclusion_rules"]["empty_rows_skipped"]["total"] >= 0
 
     df = load_dataset(output_path)
     errors, warnings = validate_dataframe(df)
