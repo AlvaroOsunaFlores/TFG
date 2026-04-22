@@ -44,7 +44,7 @@ Entrada recomendada:
 
 - `tfg_computadores_phishing/README.md`
 - `tfg_computadores_phishing/docs/API_CONTRACT.md`
-- `tfg_computadores_phishing/docs/MEMORIA_TFG_ETSII_APA7.docx`
+- `tfg_computadores_phishing/docs/MEMORIA_TFG_GIC_Alvaro_Osuna_Flores.docx`
 
 Validacion minima:
 
