@@ -1,0 +1,276 @@
+{
+  "models": [
+    {
+      "model_name": "logistic_regression",
+      "feature_count": 5000,
+      "negative_class": {
+        "label": 0,
+        "label_name": "verificado_o_neutro",
+        "top_terms": [
+          {
+            "term": "reuters",
+            "weight": -19.478678
+          },
+          {
+            "term": "said",
+            "weight": -12.890881
+          },
+          {
+            "term": "washington reuters",
+            "weight": -7.748722
+          },
+          {
+            "term": "said on",
+            "weight": -5.904471
+          },
+          {
+            "term": "president donald",
+            "weight": -4.895791
+          },
+          {
+            "term": "reuters the",
+            "weight": -4.877294
+          },
+          {
+            "term": "on wednesday",
+            "weight": -4.702632
+          },
+          {
+            "term": "on tuesday",
+            "weight": -4.60435
+          },
+          {
+            "term": "washington",
+            "weight": -4.288389
+          },
+          {
+            "term": "on thursday",
+            "weight": -4.143646
+          },
+          {
+            "term": "on friday",
+            "weight": -4.092307
+          },
+          {
+            "term": "reuters president",
+            "weight": -3.791264
+          },
+          {
+            "term": "on monday",
+            "weight": -3.788427
+          },
+          {
+            "term": "said in",
+            "weight": -3.400032
+          },
+          {
+            "term": "in",
+            "weight": -3.253017
+          }
+        ]
+      },
+      "positive_class": {
+        "label": 1,
+        "label_name": "fake_news",
+        "top_terms": [
+          {
+            "term": "video",
+            "weight": 9.675016
+          },
+          {
+            "term": "via",
+            "weight": 8.976986
+          },
+          {
+            "term": "hillary",
+            "weight": 5.229643
+          },
+          {
+            "term": "read more",
+            "weight": 5.18803
+          },
+          {
+            "term": "us",
+            "weight": 5.178179
+          },
+          {
+            "term": "this",
+            "weight": 4.953706
+          },
+          {
+            "term": "president trump",
+            "weight": 4.883022
+          },
+          {
+            "term": "just",
+            "weight": 4.283664
+          },
+          {
+            "term": "gop",
+            "weight": 4.268606
+          },
+          {
+            "term": "watch",
+            "weight": 4.194584
+          },
+          {
+            "term": "image",
+            "weight": 4.12524
+          },
+          {
+            "term": "read",
+            "weight": 4.085415
+          },
+          {
+            "term": "mr",
+            "weight": 3.99982
+          },
+          {
+            "term": "the us",
+            "weight": 3.925556
+          },
+          {
+            "term": "featured image",
+            "weight": 3.91294
+          }
+        ]
+      }
+    },
+    {
+      "model_name": "linear_svc",
+      "feature_count": 5000,
+      "negative_class": {
+        "label": 0,
+        "label_name": "verificado_o_neutro",
+        "top_terms": [
+          {
+            "term": "reuters",
+            "weight": -17.699864
+          },
+          {
+            "term": "washington reuters",
+            "weight": -6.092424
+          },
+          {
+            "term": "said",
+            "weight": -4.419298
+          },
+          {
+            "term": "reuters the",
+            "weight": -3.812113
+          },
+          {
+            "term": "on tuesday",
+            "weight": -3.229798
+          },
+          {
+            "term": "president donald",
+            "weight": -3.0879
+          },
+          {
+            "term": "reuters president",
+            "weight": -3.046143
+          },
+          {
+            "term": "on wednesday",
+            "weight": -2.916184
+          },
+          {
+            "term": "on friday",
+            "weight": -2.857517
+          },
+          {
+            "term": "on monday",
+            "weight": -2.640204
+          },
+          {
+            "term": "on thursday",
+            "weight": -2.487415
+          },
+          {
+            "term": "york reuters",
+            "weight": -2.430354
+          },
+          {
+            "term": "nov",
+            "weight": -2.409269
+          },
+          {
+            "term": "said on",
+            "weight": -2.408579
+          },
+          {
+            "term": "the nov",
+            "weight": -1.960845
+          }
+        ]
+      },
+      "positive_class": {
+        "label": 1,
+        "label_name": "fake_news",
+        "top_terms": [
+          {
+            "term": "via",
+            "weight": 8.812112
+          },
+          {
+            "term": "read more",
+            "weight": 6.302467
+          },
+          {
+            "term": "video",
+            "weight": 4.863642
+          },
+          {
+            "term": "breaking",
+            "weight": 3.833543
+          },
+          {
+            "term": "president trump",
+            "weight": 3.504171
+          },
+          {
+            "term": "featured image",
+            "weight": 3.098978
+          },
+          {
+            "term": "featured",
+            "weight": 2.937541
+          },
+          {
+            "term": "hillary",
+            "weight": 2.900948
+          },
+          {
+            "term": "image",
+            "weight": 2.865284
+          },
+          {
+            "term": "getty",
+            "weight": 2.558602
+          },
+          {
+            "term": "watch",
+            "weight": 2.508425
+          },
+          {
+            "term": "getty images",
+            "weight": 2.461263
+          },
+          {
+            "term": "the us",
+            "weight": 2.432622
+          },
+          {
+            "term": "read",
+            "weight": 2.321311
+          },
+          {
+            "term": "image via",
+            "weight": 2.272288
+          }
+        ]
+      }
+    }
+  ]
+}

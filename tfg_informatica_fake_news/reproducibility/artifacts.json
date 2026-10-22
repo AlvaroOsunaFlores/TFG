@@ -1,0 +1,400 @@
+{
+  "schema_version": 1,
+  "primary_run": "robustness-1a94400d502b149f",
+  "historical_run": "baseline-20260411T145313Z-a9ea359a",
+  "archives": [
+    {
+      "archive": "reproducibility/archives/data/derived/robustness/robustness-1a94400d502b149f/exclusion_audit.csv.gz",
+      "target": "data/derived/robustness/robustness-1a94400d502b149f/exclusion_audit.csv",
+      "sha256": "604ce0fb11703f6120f25c2ebd5a38572a0c53f113ab4467312837df0afd5ad8",
+      "size_bytes": 119159087,
+      "archive_sha256": "95090437c050d0a529ed4756e9bb9524671166eb3dabfe0e9bf4c10c212400c4",
+      "archive_size_bytes": 33695066
+    },
+    {
+      "archive": "reproducibility/archives/models/robustness_runs/robustness-1a94400d502b149f/linear_svc/fold_1.joblib.gz",
+      "target": "models/robustness_runs/robustness-1a94400d502b149f/linear_svc/fold_1.joblib",
+      "sha256": "8a17ddd1122fbf31197d96746d2ceee32374f0f5e46c5d22960fc78ef2fc7cc0",
+      "size_bytes": 41376685,
+      "archive_sha256": "402214add04ca36b10c903ed91c5b306b0796d4520cbaf3eac55b7ab1a140436",
+      "archive_size_bytes": 18872486
+    },
+    {
+      "archive": "reproducibility/archives/models/robustness_runs/robustness-1a94400d502b149f/linear_svc/fold_2.joblib.gz",
+      "target": "models/robustness_runs/robustness-1a94400d502b149f/linear_svc/fold_2.joblib",
+      "sha256": "2d2557b02e4c6ba0e3a4d5fb005931d52851adb6ef6c0c9955817d2382828231",
+      "size_bytes": 41169293,
+      "archive_sha256": "3a0a2aa73122980dbbd3f6a359f3dc14841e9d1bd863ec67c2745ce8a6950f2a",
+      "archive_size_bytes": 18771250
+    },
+    {
+      "archive": "reproducibility/archives/models/robustness_runs/robustness-1a94400d502b149f/linear_svc/fold_3.joblib.gz",
+      "target": "models/robustness_runs/robustness-1a94400d502b149f/linear_svc/fold_3.joblib",
+      "sha256": "d795bdc07cd3e3dd070b30be8d2e64996523983b90708cf75a93d472bf1effbd",
+      "size_bytes": 41115821,
+      "archive_sha256": "f1b777fea24ef73cff7cbc6355749eaabb58fdb28dfac540b7d58925601e33cf",
+      "archive_size_bytes": 18750633
+    },
+    {
+      "archive": "reproducibility/archives/models/robustness_runs/robustness-1a94400d502b149f/linear_svc/fold_4.joblib.gz",
+      "target": "models/robustness_runs/robustness-1a94400d502b149f/linear_svc/fold_4.joblib",
+      "sha256": "3d177e9409991f8d4ddb45a4e3e20890898d84baf066bddab63a8b52594091c9",
+      "size_bytes": 41145373,
+      "archive_sha256": "0be25a2dced8401c03c56baa0a1f3b2111164865d2ed5be3c9efc325552ec7e7",
+      "archive_size_bytes": 18761774
+    },
+    {
+      "archive": "reproducibility/archives/models/robustness_runs/robustness-1a94400d502b149f/linear_svc/fold_5.joblib.gz",
+      "target": "models/robustness_runs/robustness-1a94400d502b149f/linear_svc/fold_5.joblib",
+      "sha256": "5cbe2f9c4fd6d827304189dda781d299e6e57093c059dc4a3434ed5f878018c4",
+      "size_bytes": 40919469,
+      "archive_sha256": "c110605b0e170bc8f3219dfd3e4425e1f933aa07d4fa6f07fd0a396a1cd7eae1",
+      "archive_size_bytes": 18660504
+    },
+    {
+      "archive": "reproducibility/archives/models/robustness_runs/robustness-1a94400d502b149f/logistic_regression/fold_1.joblib.gz",
+      "target": "models/robustness_runs/robustness-1a94400d502b149f/logistic_regression/fold_1.joblib",
+      "sha256": "d27cd3b131ea448ed67eed676c16d634ff5bc34701c47db55286549d3afab25f",
+      "size_bytes": 41376769,
+      "archive_sha256": "4e4f97d23c91839921d68e8c36b82b08723bb511ba6ea173a7ace69cdf2b9a03",
+      "archive_size_bytes": 18872585
+    },
+    {
+      "archive": "reproducibility/archives/models/robustness_runs/robustness-1a94400d502b149f/logistic_regression/fold_2.joblib.gz",
+      "target": "models/robustness_runs/robustness-1a94400d502b149f/logistic_regression/fold_2.joblib",
+      "sha256": "87dd5ca6462c4a4e2e67032f3a678ba6348027efbfaab5b8c549c9568a6b4fe5",
+      "size_bytes": 41169377,
+      "archive_sha256": "b80b5e4ec5c91158a4d2633e304a6c859e1bbb661f82485b80282e1d6824a259",
+      "archive_size_bytes": 18771324
+    },
+    {
+      "archive": "reproducibility/archives/models/robustness_runs/robustness-1a94400d502b149f/logistic_regression/fold_3.joblib.gz",
+      "target": "models/robustness_runs/robustness-1a94400d502b149f/logistic_regression/fold_3.joblib",
+      "sha256": "eb59dd302e59fc404b075289776789008d0e15a74679df6081d38211aff3e595",
+      "size_bytes": 41115905,
+      "archive_sha256": "c3c597ebd8950cc0c010410254a6c805340d153765e945edd4103c276827ae7c",
+      "archive_size_bytes": 18750700
+    },
+    {
+      "archive": "reproducibility/archives/models/robustness_runs/robustness-1a94400d502b149f/logistic_regression/fold_4.joblib.gz",
+      "target": "models/robustness_runs/robustness-1a94400d502b149f/logistic_regression/fold_4.joblib",
+      "sha256": "8a698438ccf503a08975a8dab68e572b736bf6535d606b5f505ca37e796d234f",
+      "size_bytes": 41145457,
+      "archive_sha256": "16e6399eb63aeae5c13e9eb5660f15baf60ac996ac59fcf944519b4c592a8530",
+      "archive_size_bytes": 18761875
+    },
+    {
+      "archive": "reproducibility/archives/models/robustness_runs/robustness-1a94400d502b149f/logistic_regression/fold_5.joblib.gz",
+      "target": "models/robustness_runs/robustness-1a94400d502b149f/logistic_regression/fold_5.joblib",
+      "sha256": "29002483df9ca40bb854c5a8eee106fd5fb0cece98b26d5ea12d65e550868437",
+      "size_bytes": 40919569,
+      "archive_sha256": "2416ef37613a24097918548c066e83a2a72115d4777d3b8d4f0989f90336fd07",
+      "archive_size_bytes": 18660581
+    },
+    {
+      "archive": "reproducibility/archives/models/robustness_runs/robustness-1a94400d502b149f/transfer_archive2_news_dataset_to_liar_politifact_linear_svc.joblib.gz",
+      "target": "models/robustness_runs/robustness-1a94400d502b149f/transfer_archive2_news_dataset_to_liar_politifact_linear_svc.joblib",
+      "sha256": "56aef009e75c9684ed3e453b5f5bf78a7996f48fcb718906e7f1919c60e968f8",
+      "size_bytes": 47617293,
+      "archive_sha256": "343941b6223ba720c3aed5a2aefa77cab9d4aa9e5752624b474109f178ecafe9",
+      "archive_size_bytes": 21762889
+    },
+    {
+      "archive": "reproducibility/archives/models/robustness_runs/robustness-1a94400d502b149f/transfer_archive2_news_dataset_to_liar_politifact_logistic_regression.joblib.gz",
+      "target": "models/robustness_runs/robustness-1a94400d502b149f/transfer_archive2_news_dataset_to_liar_politifact_logistic_regression.joblib",
+      "sha256": "4a1e16287e859ce21e10c9d8ce8379edbfb5b5eab1fa8e904914a2524ce93a90",
+      "size_bytes": 47617377,
+      "archive_sha256": "11d03678ba5460571305e7ae31232b965f610cc75ef7b3849df39e9ae3148af6",
+      "archive_size_bytes": 21763015
+    },
+    {
+      "archive": "reproducibility/archives/models/robustness_runs/robustness-1a94400d502b149f/transfer_liar_politifact_to_archive2_news_dataset_linear_svc.joblib.gz",
+      "target": "models/robustness_runs/robustness-1a94400d502b149f/transfer_liar_politifact_to_archive2_news_dataset_linear_svc.joblib",
+      "sha256": "4e56920bdaaac936e1cd26f5ccb16b91b3be0dc4abaa91dc2176469f7396d90f",
+      "size_bytes": 1049757,
+      "archive_sha256": "ad8d61f05a6a601a6a96ad8059af0075eeaedb2e9ab3597b7bee5fedbef07cfc",
+      "archive_size_bytes": 436757
+    },
+    {
+      "archive": "reproducibility/archives/models/robustness_runs/robustness-1a94400d502b149f/transfer_liar_politifact_to_archive2_news_dataset_logistic_regression.joblib.gz",
+      "target": "models/robustness_runs/robustness-1a94400d502b149f/transfer_liar_politifact_to_archive2_news_dataset_logistic_regression.joblib",
+      "sha256": "8e67ac9229592d8c1dab306501ea2c4d1773db1a52ecd3884eb9212d18440fc0",
+      "size_bytes": 1049857,
+      "archive_sha256": "52cf09e478444d7889b2b5288ef3f418d9df6423f8ad823026f62f5705c84385",
+      "archive_size_bytes": 436807
+    },
+    {
+      "archive": "reproducibility/archives/models/training_runs/baseline-model-20260411T145313Z-6102815d/baseline_pipeline.joblib.gz",
+      "target": "models/training_runs/baseline-model-20260411T145313Z-6102815d/baseline_pipeline.joblib",
+      "sha256": "e960ad7cc3cc43831cfe53d92e6facacbe7c9319f1e37234bc7ed6b5e31b3313",
+      "size_bytes": 229040,
+      "archive_sha256": "877386f21a6521e44c54235bfc7c7537246a7c9c6d42d90370b99e384deacd2d",
+      "archive_size_bytes": 105447
+    },
+    {
+      "archive": "reproducibility/archives/reports/training_runs/baseline-20260411T145313Z-a9ea359a/holdout_predictions.csv.gz",
+      "target": "reports/training_runs/baseline-20260411T145313Z-a9ea359a/holdout_predictions.csv",
+      "sha256": "2552b271ba2a44f154eadc77037887ef7e271d2cc4375d0d7d2dfc34fed636c4",
+      "size_bytes": 60167670,
+      "archive_sha256": "07678cf94bcc40149a9bb74340b9e5e7e9c90f4f63349ee7cfb8c929e8cfda9b",
+      "archive_size_bytes": 16706034
+    }
+  ],
+  "files": [
+    {
+      "path": "analysis_utils.py",
+      "sha256": "b05666dcd26834839a0ad8085b05dcfd08440690f9459152de79669bee1f7c72",
+      "size_bytes": 8434
+    },
+    {
+      "path": "configs/robustness_config.json",
+      "sha256": "98ab0ed4887bca0fa5274bd782ff32776c5dfd638b79eed882b1917a8a81787e",
+      "size_bytes": 1069
+    },
+    {
+      "path": "configs/robustness_protocol.md",
+      "sha256": "cfbd13560ed8f5e7de54c68acd66062d4cbc405ee4dd65fe1842b5404567f9a4",
+      "size_bytes": 3603
+    },
+    {
+      "path": "configs/training_config.json",
+      "sha256": "6926e957157f50ee25a83f33361d39f35a373ec1b3c8bdc43d5e6f6813dd33ca",
+      "size_bytes": 1070
+    },
+    {
+      "path": "data/derived/robustness/robustness-1a94400d502b149f/derived_corpus.csv.gz",
+      "sha256": "184c707840a4bcff72dbef5e75e179152b630395c5f63f072db969bc1e79ea4e",
+      "size_bytes": 52959284
+    },
+    {
+      "path": "data/labeled/fake_news_unified.csv.gz",
+      "sha256": "cfaf1b39c0260008e9328950649c9b83de2a9eadb478f631fb9cbc68d1b0a6b1",
+      "size_bytes": 62259683
+    },
+    {
+      "path": "data/labeled/fake_news_unified.metadata.json",
+      "sha256": "c89d05403b670e29cf8a6437f4feef39af9273a9e06271a664ba6e6ad737b0a6",
+      "size_bytes": 3285
+    },
+    {
+      "path": "preprocessing.py",
+      "sha256": "a110762d94f1c4f37207328ac4579296ff65e99299844243faf25c5e048e6a89",
+      "size_bytes": 3859
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/fold_assignments.csv",
+      "sha256": "d76f629d977a9235bb8588ee0bccbe6b2c63467828bcfc7d55d996cc90c734a4",
+      "size_bytes": 2986542
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/linear_svc_fold_1.json",
+      "sha256": "e4e90d29ec518bf55de448d5ed1f51e20601d14902d9cf3b0d598a6d94342c82",
+      "size_bytes": 724
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/linear_svc_fold_1_predictions.csv",
+      "sha256": "2c9415749b175aa4621d53ec67700ada84e933f850997445c9da0c83c0cde5bb",
+      "size_bytes": 981781
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/linear_svc_fold_2.json",
+      "sha256": "89e51b14986e053cd0fdd4c199d92ac71f4ff1676602d34fe472c79c4fa20fd9",
+      "size_bytes": 727
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/linear_svc_fold_2_predictions.csv",
+      "sha256": "752c14b0dc4d77116ba8686b05f69fb0ce81affa6a7fb55aaff78859ab99db9d",
+      "size_bytes": 981715
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/linear_svc_fold_3.json",
+      "sha256": "e33b3f07a9b2f797350b6a5def0ff654b9b15ca4640906a7f04a35569a890317",
+      "size_bytes": 728
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/linear_svc_fold_3_predictions.csv",
+      "sha256": "86f5ff95062624a62611dd11e93a07c54570c714dabe95149cf94af55755730b",
+      "size_bytes": 982387
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/linear_svc_fold_4.json",
+      "sha256": "3fbd98aec7efd2f7fd28fc58c3d64d30e6ac2900883e839813d44e88068df014",
+      "size_bytes": 729
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/linear_svc_fold_4_predictions.csv",
+      "sha256": "3272097466c731442381a08ea19ab7cbcf2b5e4be7f5f234a77387816e767dc1",
+      "size_bytes": 981905
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/linear_svc_fold_5.json",
+      "sha256": "d53bc58a930e2a39a6bf6a3af7b63e5c06a420873bec71960c1fefefbd5c5118",
+      "size_bytes": 728
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/linear_svc_fold_5_predictions.csv",
+      "sha256": "f3e92a147d2a29a7bdb8c648423eef6e0328b32ce99a43d643d930622b85b911",
+      "size_bytes": 981903
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/linear_svc_oof_predictions.csv",
+      "sha256": "74f0cdfa53683c5868dffe26ea1753caa36cd9faf7b4a88d82e6ce8bfd9a9321",
+      "size_bytes": 4909359
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/logistic_regression_fold_1.json",
+      "sha256": "5da2164de6ccf4008407c610a9ef366ed629862f15fd74e2689a3ab60a84bf59",
+      "size_bytes": 667
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/logistic_regression_fold_1_predictions.csv",
+      "sha256": "b9d62459f8a0bb9e6b02b89bd05f5b5370a3f3d47aab02fce3063426ded5b78a",
+      "size_bytes": 931772
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/logistic_regression_fold_2.json",
+      "sha256": "e450e36ee35f7a736676fe7044c8cbd312b37cce66282890121e521d87f54af9",
+      "size_bytes": 668
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/logistic_regression_fold_2_predictions.csv",
+      "sha256": "41c985ae22bc7cab34d9cf314886ae1b8921f977021650b54dd343798db5e42d",
+      "size_bytes": 931430
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/logistic_regression_fold_3.json",
+      "sha256": "a76c8c6109fa30d37155894cc50e4fc1812f83aa74159655ea74d7c8d2658a0d",
+      "size_bytes": 665
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/logistic_regression_fold_3_predictions.csv",
+      "sha256": "8e2007257caa41e7775a2bf8fbd2cc36ba90864295041f66de012395778458cc",
+      "size_bytes": 932074
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/logistic_regression_fold_4.json",
+      "sha256": "920d4e9a8a7b1026c22615f5881af6e23f3122e8b217a9aef3229422f9aa59b1",
+      "size_bytes": 668
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/logistic_regression_fold_4_predictions.csv",
+      "sha256": "ce9b3e58e7c7223a86ea1310d16f63fe0c97f8a2b82900c16a621549a23325c9",
+      "size_bytes": 931700
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/logistic_regression_fold_5.json",
+      "sha256": "d8be7857f18ff45ab195fe0548a09c6489da1cace8a2f3f989a3e119cb70aef2",
+      "size_bytes": 666
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/logistic_regression_fold_5_predictions.csv",
+      "sha256": "406f5a2f5699ecc75bc51354c98abe3f218c5fb19ef8290606e039b53b274c61",
+      "size_bytes": 931691
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/logistic_regression_oof_predictions.csv",
+      "sha256": "700a331705394b9daf073bd3ab3451a2e9993ff9d273a4c81973cc20b810a060",
+      "size_bytes": 4658335
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/preparation.json",
+      "sha256": "919329adf72c84cfa612771acf6f5ce01c878224693ddfb984a32870ddbf8227",
+      "size_bytes": 991
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/protocol.json",
+      "sha256": "11c09ba81c2ae2eee431636c6201db820266e09f1eb94ea5469d529b93e22c49",
+      "size_bytes": 1605
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/pytest_junit.xml",
+      "sha256": "4401584c0d801cbdcfa857542240fd4099bbf146c8af9fc37750fd8b312adf94",
+      "size_bytes": 3737
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/robustness_manifest.json",
+      "sha256": "1911721c846713b44a1e74b08626d96c8cc870b91a09f1bbb5b8156689c50528",
+      "size_bytes": 17875
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/run_state.json",
+      "sha256": "254dd297780cc5fa29df93a2e48087b04dfde2bbc4eacea730e725ea185e4b6b",
+      "size_bytes": 2830
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/transfer_archive2_news_dataset_to_liar_politifact_linear_svc.json",
+      "sha256": "ca1333db4543baaeae4d029218ceddd1a5a31d47f44554b65878a5c651e333c4",
+      "size_bytes": 927
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/transfer_archive2_news_dataset_to_liar_politifact_linear_svc_predictions.csv",
+      "sha256": "9042c75bc10de89247b63718796a6bfb2416a5e20147f444df50ef4bca6ce55e",
+      "size_bytes": 537893
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/transfer_archive2_news_dataset_to_liar_politifact_logistic_regression.json",
+      "sha256": "364691436eeba882877ed84c1288725aa53b1f4fd8dc49f9403ddf8aaa9c0400",
+      "size_bytes": 865
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/transfer_archive2_news_dataset_to_liar_politifact_logistic_regression_predictions.csv",
+      "sha256": "616ff98590e9d12c56da492bf50852654f8df43aa12457d83a99c46de77985c6",
+      "size_bytes": 502677
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/transfer_liar_politifact_to_archive2_news_dataset_linear_svc.json",
+      "sha256": "ac36c785b170ae0a332c92a9ce149c2d3f60c50acf4c52edbe30e1aca363fa21",
+      "size_bytes": 931
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/transfer_liar_politifact_to_archive2_news_dataset_linear_svc_predictions.csv",
+      "sha256": "5e32308e636039be46821cb2f3652416b76407d4d0b89a0a9a5de7b88b0d0010",
+      "size_bytes": 4306834
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/transfer_liar_politifact_to_archive2_news_dataset_logistic_regression.json",
+      "sha256": "9631a04fa5d9d586f37dc4a20cde97366d522640ce793faf43755d7c3a9376f4",
+      "size_bytes": 868
+    },
+    {
+      "path": "reports/robustness_runs/robustness-1a94400d502b149f/transfer_liar_politifact_to_archive2_news_dataset_logistic_regression_predictions.csv",
+      "sha256": "6078be2d9035164c9b9fc878364a16a9bde45a31f3d91b8e5768ff8898a0d865",
+      "size_bytes": 4044754
+    },
+    {
+      "path": "reports/training_runs/baseline-20260411T145313Z-a9ea359a/classification_report.json",
+      "sha256": "ce2dc8f4addf52a2bb0c776a0dd15650d211a4c7dcae2829088ce88421529f70",
+      "size_bytes": 651
+    },
+    {
+      "path": "reports/training_runs/baseline-20260411T145313Z-a9ea359a/comparison.json",
+      "sha256": "218b012f8751f351ca42161aa9a7acbed42bfffd11a505872fbc05a2d963b041",
+      "size_bytes": 612
+    },
+    {
+      "path": "reports/training_runs/baseline-20260411T145313Z-a9ea359a/confusion_matrix.json",
+      "sha256": "2d43b6ed39b53f172e473fe71a5764776af593bae004c91271eb4e2d9386c8d6",
+      "size_bytes": 474
+    },
+    {
+      "path": "reports/training_runs/baseline-20260411T145313Z-a9ea359a/linear_model_terms.json",
+      "sha256": "890735fd2e93e1eab686b4ef3740f22148126c477a070039549de0e7d997634e",
+      "size_bytes": 6294
+    },
+    {
+      "path": "reports/training_runs/baseline-20260411T145313Z-a9ea359a/prediction_examples.json",
+      "sha256": "67c66f400c9cf5ba4a0dbffeaa9100ee9d8e1d9b2c6d97b3e3b9d0c89d03f498",
+      "size_bytes": 51298
+    },
+    {
+      "path": "reports/training_runs/baseline-20260411T145313Z-a9ea359a/training_manifest.json",
+      "sha256": "35c2b7e50f4533c679b8d64de03e4aad40b7539873c49a0e8eed4a01b1d775a4",
+      "size_bytes": 3482
+    },
+    {
+      "path": "scripts/run_robustness_experiments.py",
+      "sha256": "83569de79e512e50957d65babdfe82379888b4b51cbd7cec79cba58950e934e8",
+      "size_bytes": 32229
+    }
+  ]
+}

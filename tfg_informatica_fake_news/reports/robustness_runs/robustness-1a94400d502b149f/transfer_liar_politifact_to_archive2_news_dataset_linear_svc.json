@@ -1,0 +1,37 @@
+{
+  "metrics": {
+    "train_source": "liar_politifact",
+    "test_source": "archive2_news_dataset",
+    "train_rows": 5582,
+    "test_rows": 38826,
+    "metrics": {
+      "accuracy": 0.5525678668933189,
+      "precision_macro": 0.5439254177230994,
+      "recall_macro": 0.5356153180374366,
+      "macro_f1": 0.5203264337723963
+    },
+    "confusion_matrix": [
+      [
+        15760,
+        5166
+      ],
+      [
+        12206,
+        5694
+      ]
+    ],
+    "score_kind": "decision_function",
+    "threshold": 0.3,
+    "duration_seconds": 0.2616959000006318,
+    "n_iter": 51,
+    "warnings": [],
+    "solver": {
+      "name": "liblinear",
+      "dual": true,
+      "tol": 0.0001,
+      "max_iter": 1000
+    }
+  },
+  "predictions_sha256": "5e32308e636039be46821cb2f3652416b76407d4d0b89a0a9a5de7b88b0d0010",
+  "model_sha256": "4e56920bdaaac936e1cd26f5ccb16b91b3be0dc4abaa91dc2176469f7396d90f"
+}

@@ -1,0 +1,60 @@
+{
+  "protocol_status": "fixed before this run; not a retrospective preregistration",
+  "config": {
+    "source_dataset_path": "data/labeled/fake_news_unified.csv.gz",
+    "derived_dataset_dir": "data/derived/robustness",
+    "reports_dir": "reports/robustness_runs",
+    "models_dir": "models/robustness_runs",
+    "text_column": "normalized_text",
+    "label_column": "label",
+    "random_state": 42,
+    "n_splits": 5,
+    "minhash_permutations": 128,
+    "lsh_bands": 32,
+    "signature_batch_size": 256,
+    "shingle_size": 5,
+    "near_duplicate_jaccard": 0.9,
+    "prediction_policy": {
+      "prefer_probability": true,
+      "probability_threshold": 0.6,
+      "decision_threshold": 0.3
+    },
+    "candidate_models": [
+      {
+        "name": "logistic_regression",
+        "classifier": "logistic_regression",
+        "solver": "lbfgs",
+        "tfidf": {
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 1,
+          "max_features": 5000
+        },
+        "params": {
+          "C": 1.0,
+          "max_iter": 1000,
+          "class_weight": "balanced"
+        }
+      },
+      {
+        "name": "linear_svc",
+        "classifier": "linear_svc",
+        "tfidf": {
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 1,
+          "max_features": 5000
+        },
+        "params": {
+          "C": 1.0,
+          "class_weight": "balanced"
+        }
+      }
+    ]
+  },
+  "identity_sha256": "1a94400d502b149f3ff05522d1ef3239fc0f5d54a90d556d24a38f571707ab10"
+}

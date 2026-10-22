@@ -1,0 +1,78 @@
+{
+  "run_id": "robustness-1a94400d502b149f",
+  "models_loaded": 14,
+  "sample_predictions_checked": 42,
+  "training_performed": false,
+  "checks": [
+    {
+      "model": "logistic_regression:fold:1",
+      "checked_predictions": 3,
+      "predictions_and_scores_match": true
+    },
+    {
+      "model": "logistic_regression:fold:2",
+      "checked_predictions": 3,
+      "predictions_and_scores_match": true
+    },
+    {
+      "model": "logistic_regression:fold:3",
+      "checked_predictions": 3,
+      "predictions_and_scores_match": true
+    },
+    {
+      "model": "logistic_regression:fold:4",
+      "checked_predictions": 3,
+      "predictions_and_scores_match": true
+    },
+    {
+      "model": "logistic_regression:fold:5",
+      "checked_predictions": 3,
+      "predictions_and_scores_match": true
+    },
+    {
+      "model": "linear_svc:fold:1",
+      "checked_predictions": 3,
+      "predictions_and_scores_match": true
+    },
+    {
+      "model": "linear_svc:fold:2",
+      "checked_predictions": 3,
+      "predictions_and_scores_match": true
+    },
+    {
+      "model": "linear_svc:fold:3",
+      "checked_predictions": 3,
+      "predictions_and_scores_match": true
+    },
+    {
+      "model": "linear_svc:fold:4",
+      "checked_predictions": 3,
+      "predictions_and_scores_match": true
+    },
+    {
+      "model": "linear_svc:fold:5",
+      "checked_predictions": 3,
+      "predictions_and_scores_match": true
+    },
+    {
+      "model": "transfer_archive2_news_dataset_to_liar_politifact_logistic_regression",
+      "checked_predictions": 3,
+      "predictions_and_scores_match": true
+    },
+    {
+      "model": "transfer_archive2_news_dataset_to_liar_politifact_linear_svc",
+      "checked_predictions": 3,
+      "predictions_and_scores_match": true
+    },
+    {
+      "model": "transfer_liar_politifact_to_archive2_news_dataset_logistic_regression",
+      "checked_predictions": 3,
+      "predictions_and_scores_match": true
+    },
+    {
+      "model": "transfer_liar_politifact_to_archive2_news_dataset_linear_svc",
+      "checked_predictions": 3,
+      "predictions_and_scores_match": true
+    }
+  ]
+}

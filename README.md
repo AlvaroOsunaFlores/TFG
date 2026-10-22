@@ -59,32 +59,35 @@ python -m scripts.benchmark_pipeline --duration-seconds 5 --rates 1 5 10 20
 
 Pipeline actual:
 
-`Telegram/sample -> deduplicacion persistente -> preprocessing -> dataset -> train/eval`
+`archive2 + LIAR -> corpus auditado -> cinco folds agrupados -> TF-IDF + modelos lineales -> evaluacion y transferencia`
+
+Telegram es un modulo complementario independiente; sus mensajes no participan en el entrenamiento ni en la evaluacion de este TFG.
 
 Incluye:
 
-- extractor con reintentos y trazabilidad de canales fallidos;
-- deduplicacion persistente por `source_id`;
-- control basico de calidad textual;
-- manifiestos reproducibles para pipeline, entrenamiento y evaluacion;
-- tests para scripts principales y CI en GitHub Actions.
+- corpus canonico y derivado, auditoria de duplicados y particiones por grupo;
+- regresion logistica y Linear SVC, con transferencia entre fuentes en ambas direcciones;
+- predicciones, metricas, modelos comprimidos y hashes del experimento documentado;
+- dependencias fijadas, restauracion verificable y guia de reproduccion;
+- pruebas de componentes y CI en GitHub Actions.
 
 Entrada recomendada:
 
 - `tfg_informatica_fake_news/README.md`
-- `tfg_informatica_fake_news/main.py`
-- `tfg_informatica_fake_news/scripts/train_baseline.py`
-- `tfg_informatica_fake_news/scripts/evaluate_baseline.py`
+- `tfg_informatica_fake_news/docs/REPRODUCIBILIDAD.md`
+- `tfg_informatica_fake_news/scripts/run_robustness_experiments.py`
+- `tfg_informatica_fake_news/reports/robustness_runs/robustness-1a94400d502b149f/robustness_manifest.json`
 
 Validacion minima:
 
 ```powershell
 Set-Location .\tfg_informatica_fake_news
-python main.py --use-sample
-python -m scripts.validate_dataset --input data/labeled/fake_news_unified.csv.gz
-python -m scripts.train_baseline --dry-run
-python -m scripts.evaluate_baseline --dry-run
-python -m pytest -q
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-reproducible.txt
+.\.venv\Scripts\python.exe -m scripts.restore_artifacts
+.\.venv\Scripts\python.exe -m scripts.verify_reproducibility --check-results
+.\.venv\Scripts\python.exe -m scripts.run_robustness_experiments --config configs/robustness_reproduction.json --dry-run
+.\.venv\Scripts\python.exe -m pytest -q
 ```
 
 ## Entrega

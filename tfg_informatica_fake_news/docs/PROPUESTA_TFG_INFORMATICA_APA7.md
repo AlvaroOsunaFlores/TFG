@@ -1,3 +1,5 @@
+> Propuesta histórica. El alcance y los resultados actuales se describen en la memoria de revisión enlazada desde el README del proyecto; este archivo se conserva como antecedente.
+
 ESCUELA TECNICA SUPERIOR DE INGENIERIA INFORMATICA
 
 DOBLE GRADO EN INGENIERIA INFORMATICA E INGENIERIA DE COMPUTADORES

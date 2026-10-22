@@ -1,0 +1,26 @@
+# Validation environment, 2026-10-22, Python 3.11.9.
+# NumPy, pandas and scikit-learn match the versions recorded in the main run.
+# The remaining pins describe this verification environment, not a historical freeze.
+cloudpickle==3.1.2
+colorama==0.4.6
+iniconfig==2.3.1
+joblib==1.6.0
+langdetect==1.0.9
+numpy==1.26.4
+packaging==26.3
+pandas==2.2.3
+pluggy==1.7.0
+pyaes==1.6.1
+pyasn1==0.6.4
+Pygments==2.21.0
+pytest==8.4.2
+python-dateutil==3.0.0
+python-dotenv==1.2.4
+pytz==2026.5
+rsa==4.9.1
+scikit-learn==1.4.2
+scipy==1.13.1
+six==1.17.0
+Telethon==1.45.0
+threadpoolctl==3.7.0
+tzdata==2026.5

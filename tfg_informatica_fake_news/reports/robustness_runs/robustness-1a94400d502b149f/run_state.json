@@ -1,0 +1,49 @@
+{
+  "run_id": "robustness-1a94400d502b149f",
+  "identity_sha256": "1a94400d502b149f3ff05522d1ef3239fc0f5d54a90d556d24a38f571707ab10",
+  "source_sha256": "cfaf1b39c0260008e9328950649c9b83de2a9eadb478f631fb9cbc68d1b0a6b1",
+  "config_sha256": "98ab0ed4887bca0fa5274bd782ff32776c5dfd638b79eed882b1917a8a81787e",
+  "code_sha256": "83569de79e512e50957d65babdfe82379888b4b51cbd7cec79cba58950e934e8",
+  "versions": {
+    "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "numpy": "1.26.4",
+    "pandas": "2.2.3",
+    "scikit_learn": "1.4.2"
+  },
+  "status": "completed",
+  "started_at_utc": "2026-09-24T17:49:08.383115+00:00",
+  "completed_folds": {
+    "logistic_regression:1": "f9b10587d6897ae879f3407f93f912f8bb90af7c6e9a3594d3b34d950615b11a",
+    "logistic_regression:2": "58a472af699262f4fcdfbf7dbc2eead7053143c293d9e61214f86b51509dadee",
+    "logistic_regression:3": "9aa9a4a0a58c81175a7ddc9a3fdcfbbcb461c49c2135b8f852b270d130611a38",
+    "logistic_regression:4": "54dc19aaf4ad3fcf2430277e465d61090fe33c7dc10ccce69a36c500e65b75b4",
+    "logistic_regression:5": "58e8a48de20e3dbaa7d770d0e2b72702b92126c68195ea6bb7a30cf0a09214a6",
+    "linear_svc:1": "b15edf676fa14d658fe7dfe313ca0a805139df69046dbe769b19245cd553e07c",
+    "linear_svc:2": "d03d11715e56d197cc28cdc97b1eca99257928aee8876b70f74097e779d644b0",
+    "linear_svc:3": "7851fd6a604e72af8fadb7fddb13a04e5e44e0f50203a18a5bed64de8cb6fb82",
+    "linear_svc:4": "aff3563266269d85f2c8b85ce3bb253c4e08993d525a35bb1c655ffee05070ec",
+    "linear_svc:5": "ba40cb6088d9f3d52f666801437761084e3f59234ae604042ddaba5b29e9993b"
+  },
+  "completed_transfers": {
+    "transfer_archive2_news_dataset_to_liar_politifact_logistic_regression": "e46f2be6d7c9eeacd4824f857c5c41c150d66f5a9229df561df80ab5811e857d",
+    "transfer_archive2_news_dataset_to_liar_politifact_linear_svc": "8c7beb544210d979ab9cf81dd2a5d749046155b4929bddc703251f33610a8256",
+    "transfer_liar_politifact_to_archive2_news_dataset_logistic_regression": "9ad99d753e80b746225d91e25e047ea656a1464193f6c3b3cb8525a716dfc865",
+    "transfer_liar_politifact_to_archive2_news_dataset_linear_svc": "1bd6fbdbe887e74de502ee87ce5a383d6a2b8635e537f5cde54d45ec83e4b3f9"
+  },
+  "stages": {
+    "preparation": {
+      "status": "completed",
+      "derived_sha256": "184c707840a4bcff72dbef5e75e179152b630395c5f63f072db969bc1e79ea4e",
+      "audit_sha256": "604ce0fb11703f6120f25c2ebd5a38572a0c53f113ab4467312837df0afd5ad8"
+    },
+    "cross_validation": {
+      "status": "completed"
+    },
+    "transfer": {
+      "status": "completed"
+    }
+  },
+  "fold_assignments_sha256": "d76f629d977a9235bb8588ee0bccbe6b2c63467828bcfc7d55d996cc90c734a4",
+  "completed_at_utc": "2026-09-24T17:59:46.521737+00:00"
+}

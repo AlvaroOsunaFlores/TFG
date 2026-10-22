@@ -1,0 +1,25 @@
+{
+  "metrics": {
+    "fold": 1,
+    "train_rows": 35527,
+    "test_rows": 8881,
+    "metrics": {
+      "accuracy": 0.9380700371579777,
+      "precision_macro": 0.9380696492225928,
+      "recall_macro": 0.9378410892095103,
+      "macro_f1": 0.9379472844043056
+    },
+    "score_kind": "probability",
+    "threshold": 0.6,
+    "duration_seconds": 32.73164009989705,
+    "n_iter": [
+      17
+    ],
+    "warnings": [],
+    "solver": {
+      "name": "lbfgs"
+    }
+  },
+  "predictions_sha256": "b9d62459f8a0bb9e6b02b89bd05f5b5370a3f3d47aab02fce3063426ded5b78a",
+  "model_sha256": "d27cd3b131ea448ed67eed676c16d634ff5bc34701c47db55286549d3afab25f"
+}

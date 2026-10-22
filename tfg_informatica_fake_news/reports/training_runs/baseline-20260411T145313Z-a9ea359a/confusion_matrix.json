@@ -1,0 +1,32 @@
+{
+  "labels": [
+    {
+      "label": 0,
+      "label_name": "verificado_o_neutro"
+    },
+    {
+      "label": 1,
+      "label_name": "fake_news"
+    }
+  ],
+  "matrix": [
+    [
+      5648,
+      220
+    ],
+    [
+      505,
+      6253
+    ]
+  ],
+  "by_actual": {
+    "verificado_o_neutro": {
+      "verificado_o_neutro": 5648,
+      "fake_news": 220
+    },
+    "fake_news": {
+      "verificado_o_neutro": 505,
+      "fake_news": 6253
+    }
+  }
+}

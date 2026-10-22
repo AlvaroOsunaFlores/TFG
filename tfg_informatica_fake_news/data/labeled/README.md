@@ -1,5 +1,7 @@
 # Datasets Etiquetados
 
+> Este directorio conserva el corpus canónico histórico, entrada del experimento agrupado. Sus etiquetas originales se preservan; el corpus derivado usa `no_fake` para la clase 0. La memoria vigente y las instrucciones actuales están enlazadas en el README principal y en `docs/REPRODUCIBILIDAD.md`.
+
 Esta carpeta contiene dos datasets con objetivos distintos:
 
 - `fake_news_unified.csv.gz`: dataset real unificado para entrenamiento baseline.
@@ -44,5 +46,5 @@ Etiquetas:
 
 ## Nota de uso
 
-- El dataset real sirve para entrenamiento reproducible de baseline.
+- El dataset real es la entrada preservada del baseline histórico y de la preparación derivada; el experimento principal utiliza esta última.
 - El dataset semilla ficticio se conserva solo para pruebas locales y smoke checks.

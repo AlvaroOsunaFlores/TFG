@@ -1,0 +1,92 @@
+{
+  "run_id": "baseline-20260411T145313Z-a9ea359a",
+  "created_at_utc": "2026-04-11T14:55:05.542736+00:00",
+  "dataset_path": "C:\\Users\\Alvaro\\Desktop\\TFGs\\proyectos_principales\\proyecto_principal_repo\\tfg_informatica_fake_news\\data\\labeled\\fake_news_unified.csv.gz",
+  "dataset_sha256": "cfaf1b39c0260008e9328950649c9b83de2a9eadb478f631fb9cbc68d1b0a6b1",
+  "text_column": "normalized_text",
+  "label_column": "label",
+  "selection_metric": "macro_f1",
+  "prediction_policy": {
+    "prefer_probability": true,
+    "probability_threshold": 0.6,
+    "decision_threshold": 0.3
+  },
+  "best_model": "linear_svc",
+  "best_model_score_kind": "decision_function",
+  "best_model_threshold_used": 0.3,
+  "metrics": {
+    "accuracy": 0.9425788056391573,
+    "precision_macro": 0.941969441430052,
+    "recall_macro": 0.9438911352103987,
+    "macro_f1": 0.9424466609528606,
+    "weighted_f1": 0.9426410556153466
+  },
+  "dataset_summary": {
+    "rows": 50503,
+    "label_distribution": {
+      "0": 23470,
+      "1": 27033
+    },
+    "language_distribution": {
+      "af": 6,
+      "ca": 10,
+      "cy": 2,
+      "da": 10,
+      "de": 1,
+      "en": 50421,
+      "es": 7,
+      "et": 1,
+      "fr": 16,
+      "hr": 1,
+      "id": 4,
+      "it": 3,
+      "nl": 4,
+      "no": 1,
+      "ro": 9,
+      "sv": 2,
+      "tl": 5
+    },
+    "included_languages": [
+      "af",
+      "ca",
+      "cy",
+      "da",
+      "de",
+      "en",
+      "es",
+      "et",
+      "fr",
+      "hr",
+      "id",
+      "it",
+      "nl",
+      "no",
+      "ro",
+      "sv",
+      "tl"
+    ],
+    "text_length_summary": {
+      "raw_char_count": {
+        "mean": 2278.58,
+        "median": 2084.0,
+        "min": 11,
+        "max": 51893
+      },
+      "normalized_token_count": {
+        "mean": 374.76,
+        "median": 346.0,
+        "min": 2,
+        "max": 8173
+      }
+    }
+  },
+  "train_rows": 37877,
+  "holdout_rows": 12626,
+  "model_path": "C:\\Users\\Alvaro\\Desktop\\TFGs\\proyectos_principales\\proyecto_principal_repo\\tfg_informatica_fake_news\\models\\training_runs\\baseline-model-20260411T145313Z-6102815d\\baseline_pipeline.joblib",
+  "predictions_path": "C:\\Users\\Alvaro\\Desktop\\TFGs\\proyectos_principales\\proyecto_principal_repo\\tfg_informatica_fake_news\\reports\\training_runs\\baseline-20260411T145313Z-a9ea359a\\holdout_predictions.csv",
+  "report_path": "C:\\Users\\Alvaro\\Desktop\\TFGs\\proyectos_principales\\proyecto_principal_repo\\tfg_informatica_fake_news\\reports\\training_runs\\baseline-20260411T145313Z-a9ea359a\\classification_report.json",
+  "confusion_matrix_path": "C:\\Users\\Alvaro\\Desktop\\TFGs\\proyectos_principales\\proyecto_principal_repo\\tfg_informatica_fake_news\\reports\\training_runs\\baseline-20260411T145313Z-a9ea359a\\confusion_matrix.json",
+  "prediction_examples_path": "C:\\Users\\Alvaro\\Desktop\\TFGs\\proyectos_principales\\proyecto_principal_repo\\tfg_informatica_fake_news\\reports\\training_runs\\baseline-20260411T145313Z-a9ea359a\\prediction_examples.json",
+  "linear_model_terms_path": "C:\\Users\\Alvaro\\Desktop\\TFGs\\proyectos_principales\\proyecto_principal_repo\\tfg_informatica_fake_news\\reports\\training_runs\\baseline-20260411T145313Z-a9ea359a\\linear_model_terms.json",
+  "config_path": "C:\\Users\\Alvaro\\Desktop\\TFGs\\proyectos_principales\\proyecto_principal_repo\\tfg_informatica_fake_news\\configs\\training_config.json"
+}

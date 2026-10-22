@@ -1,0 +1,22 @@
+[
+  {
+    "name": "logistic_regression",
+    "score_kind": "probability",
+    "threshold_used": 0.6,
+    "accuracy": 0.940994772691272,
+    "precision_macro": 0.9402944797885653,
+    "recall_macro": 0.9416595655874438,
+    "macro_f1": 0.9408028053558453,
+    "weighted_f1": 0.9410404283440647
+  },
+  {
+    "name": "linear_svc",
+    "score_kind": "decision_function",
+    "threshold_used": 0.3,
+    "accuracy": 0.9425788056391573,
+    "precision_macro": 0.941969441430052,
+    "recall_macro": 0.9438911352103987,
+    "macro_f1": 0.9424466609528606,
+    "weighted_f1": 0.9426410556153466
+  }
+]

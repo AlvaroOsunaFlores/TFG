@@ -1,3 +1,5 @@
+> Borrador histórico. La memoria vigente es `TFG_GII_Alvaro_Osuna_Flores_Pipeline_Fake_News_Memoria_REVISION.docx` y su PDF. Los resultados y las instrucciones actuales están en el README del proyecto y en `REPRODUCIBILIDAD.md`.
+
 ESCUELA TECNICA SUPERIOR DE INGENIERIA INFORMATICA
 
 DOBLE GRADO EN INGENIERIA INFORMATICA E INGENIERIA DE COMPUTADORES

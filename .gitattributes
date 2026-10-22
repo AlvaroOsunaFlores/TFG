@@ -1,0 +1,13 @@
+# Preserve the original bytes used by the documented experiment's SHA-256 identity.
+tfg_informatica_fake_news/scripts/run_robustness_experiments.py -text
+tfg_informatica_fake_news/configs/robustness_config.json -text
+tfg_informatica_fake_news/configs/robustness_reproduction.json -text
+tfg_informatica_fake_news/configs/robustness_protocol.md -text
+tfg_informatica_fake_news/configs/training_config.json -text
+tfg_informatica_fake_news/analysis_utils.py -text
+tfg_informatica_fake_news/preprocessing.py -text
+tfg_informatica_fake_news/data/labeled/fake_news_unified.metadata.json -text
+tfg_informatica_fake_news/reports/robustness_runs/robustness-1a94400d502b149f/** -text whitespace=cr-at-eol
+tfg_informatica_fake_news/reports/training_runs/baseline-20260411T145313Z-a9ea359a/** -text whitespace=cr-at-eol
+tfg_informatica_fake_news/reproducibility/archives/** binary
+tfg_informatica_fake_news/data/derived/robustness/robustness-1a94400d502b149f/*.gz binary

@@ -1,0 +1,26 @@
+{
+  "metrics": {
+    "fold": 5,
+    "train_rows": 35527,
+    "test_rows": 8881,
+    "metrics": {
+      "accuracy": 0.9373944375633375,
+      "precision_macro": 0.9389331319476133,
+      "recall_macro": 0.9364758221021494,
+      "macro_f1": 0.9371748902521608
+    },
+    "score_kind": "decision_function",
+    "threshold": 0.3,
+    "duration_seconds": 30.1406426000176,
+    "n_iter": 48,
+    "warnings": [],
+    "solver": {
+      "name": "liblinear",
+      "dual": true,
+      "tol": 0.0001,
+      "max_iter": 1000
+    }
+  },
+  "predictions_sha256": "f3e92a147d2a29a7bdb8c648423eef6e0328b32ce99a43d643d930622b85b911",
+  "model_sha256": "5cbe2f9c4fd6d827304189dda781d299e6e57093c059dc4a3434ed5f878018c4"
+}

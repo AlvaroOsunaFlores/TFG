@@ -1,0 +1,21 @@
+{
+  "inventory": {
+    "direct_files": 51,
+    "restored_archives": 17
+  },
+  "results": {
+    "run_id": "robustness-1a94400d502b149f",
+    "derived_rows": 44408,
+    "audit_rows": 50503,
+    "models": 2,
+    "grouped_fits": 10,
+    "transfer_fits": 4,
+    "group_leakage": false,
+    "audit_states": {
+      "retained_representative": 44408,
+      "deduplicated_exact": 6090,
+      "excluded_conflicting_duplicate_group": 5
+    },
+    "saved_metrics_match": true
+  }
+}

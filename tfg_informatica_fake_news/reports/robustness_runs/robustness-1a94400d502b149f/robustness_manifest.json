@@ -1,0 +1,596 @@
+{
+  "run_id": "robustness-1a94400d502b149f",
+  "identity_sha256": "1a94400d502b149f3ff05522d1ef3239fc0f5d54a90d556d24a38f571707ab10",
+  "created_at_utc": "2026-09-24T17:49:08.383115+00:00",
+  "completed_at_utc": "2026-09-24T17:59:46.521737+00:00",
+  "status": "completed",
+  "source_sha256": "cfaf1b39c0260008e9328950649c9b83de2a9eadb478f631fb9cbc68d1b0a6b1",
+  "config_sha256": "98ab0ed4887bca0fa5274bd782ff32776c5dfd638b79eed882b1917a8a81787e",
+  "code_sha256": "83569de79e512e50957d65babdfe82379888b4b51cbd7cec79cba58950e934e8",
+  "versions": {
+    "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "numpy": "1.26.4",
+    "pandas": "2.2.3",
+    "scikit_learn": "1.4.2"
+  },
+  "effective_config": {
+    "source_dataset_path": "data/labeled/fake_news_unified.csv.gz",
+    "derived_dataset_dir": "data/derived/robustness",
+    "reports_dir": "reports/robustness_runs",
+    "models_dir": "models/robustness_runs",
+    "text_column": "normalized_text",
+    "label_column": "label",
+    "random_state": 42,
+    "n_splits": 5,
+    "minhash_permutations": 128,
+    "lsh_bands": 32,
+    "signature_batch_size": 256,
+    "shingle_size": 5,
+    "near_duplicate_jaccard": 0.9,
+    "prediction_policy": {
+      "prefer_probability": true,
+      "probability_threshold": 0.6,
+      "decision_threshold": 0.3
+    },
+    "candidate_models": [
+      {
+        "name": "logistic_regression",
+        "classifier": "logistic_regression",
+        "solver": "lbfgs",
+        "tfidf": {
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 1,
+          "max_features": 5000
+        },
+        "params": {
+          "C": 1.0,
+          "max_iter": 1000,
+          "class_weight": "balanced"
+        }
+      },
+      {
+        "name": "linear_svc",
+        "classifier": "linear_svc",
+        "tfidf": {
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 1,
+          "max_features": 5000
+        },
+        "params": {
+          "C": 1.0,
+          "class_weight": "balanced"
+        }
+      }
+    ]
+  },
+  "preparation": {
+    "source_rows": 50503,
+    "derived_rows": 44408,
+    "exact_duplicate_rows_collapsed": 6092,
+    "exact_conflicting_groups_excluded": 1,
+    "exact_conflicting_rows_excluded": 3,
+    "near_duplicate_groups": 42,
+    "near_duplicate_edges_confirmed": 45,
+    "conflicting_groups_excluded": 2,
+    "conflicting_rows_excluded": 5,
+    "cross_source_groups": 0,
+    "cross_source_rows_excluded_from_transfer": 0,
+    "minhash_permutations": 128,
+    "random_state": 42,
+    "lsh_bands": 32,
+    "shingle_size": 5,
+    "signature_batch_size": 256,
+    "near_duplicate_jaccard": 0.9,
+    "candidate_pairs": 1435,
+    "caveat": "MinHash LSH is an approximate candidate search and may miss paraphrases or near duplicates that share no LSH band.",
+    "source_sha256": "cfaf1b39c0260008e9328950649c9b83de2a9eadb478f631fb9cbc68d1b0a6b1",
+    "derived_sha256": "184c707840a4bcff72dbef5e75e179152b630395c5f63f072db969bc1e79ea4e",
+    "audit_sha256": "604ce0fb11703f6120f25c2ebd5a38572a0c53f113ab4467312837df0afd5ad8"
+  },
+  "cross_validation": {
+    "models": {
+      "logistic_regression": {
+        "folds": [
+          {
+            "fold": 1,
+            "train_rows": 35527,
+            "test_rows": 8881,
+            "metrics": {
+              "accuracy": 0.9380700371579777,
+              "precision_macro": 0.9380696492225928,
+              "recall_macro": 0.9378410892095103,
+              "macro_f1": 0.9379472844043056
+            },
+            "score_kind": "probability",
+            "threshold": 0.6,
+            "duration_seconds": 32.73164009989705,
+            "n_iter": [
+              17
+            ],
+            "warnings": [],
+            "solver": {
+              "name": "lbfgs"
+            }
+          },
+          {
+            "fold": 2,
+            "train_rows": 35528,
+            "test_rows": 8880,
+            "metrics": {
+              "accuracy": 0.9396396396396396,
+              "precision_macro": 0.9399818187145164,
+              "recall_macro": 0.9392554972292702,
+              "macro_f1": 0.9395300682558319
+            },
+            "score_kind": "probability",
+            "threshold": 0.6,
+            "duration_seconds": 32.670547000016086,
+            "n_iter": [
+              29
+            ],
+            "warnings": [],
+            "solver": {
+              "name": "lbfgs"
+            }
+          },
+          {
+            "fold": 3,
+            "train_rows": 35523,
+            "test_rows": 8885,
+            "metrics": {
+              "accuracy": 0.9413618458075408,
+              "precision_macro": 0.9415253360789206,
+              "recall_macro": 0.94103983259617,
+              "macro_f1": 0.9412463110335256
+            },
+            "score_kind": "probability",
+            "threshold": 0.6,
+            "duration_seconds": 31.84923739999067,
+            "n_iter": [
+              22
+            ],
+            "warnings": [],
+            "solver": {
+              "name": "lbfgs"
+            }
+          },
+          {
+            "fold": 4,
+            "train_rows": 35527,
+            "test_rows": 8881,
+            "metrics": {
+              "accuracy": 0.9391960364823781,
+              "precision_macro": 0.9398338672189165,
+              "recall_macro": 0.9387761316098049,
+              "macro_f1": 0.9390965171885144
+            },
+            "score_kind": "probability",
+            "threshold": 0.6,
+            "duration_seconds": 31.803533499944024,
+            "n_iter": [
+              18
+            ],
+            "warnings": [],
+            "solver": {
+              "name": "lbfgs"
+            }
+          },
+          {
+            "fold": 5,
+            "train_rows": 35527,
+            "test_rows": 8881,
+            "metrics": {
+              "accuracy": 0.9385204368877379,
+              "precision_macro": 0.9388405182323297,
+              "recall_macro": 0.9381150906956166,
+              "macro_f1": 0.938397337254743
+            },
+            "score_kind": "probability",
+            "threshold": 0.6,
+            "duration_seconds": 30.33352390001528,
+            "n_iter": [
+              19
+            ],
+            "warnings": [],
+            "solver": {
+              "name": "lbfgs"
+            }
+          }
+        ],
+        "mean": {
+          "accuracy": 0.9393575991950549,
+          "precision_macro": 0.9396502378934551,
+          "recall_macro": 0.9390055282680745,
+          "macro_f1": 0.9392435036273842
+        },
+        "sample_std": {
+          "accuracy": 0.001272920906251149,
+          "precision_macro": 0.0013051403421923964,
+          "recall_macro": 0.0012651382137190718,
+          "macro_f1": 0.0012758471313260042
+        },
+        "global": {
+          "accuracy": 0.9393577733741668,
+          "precision_macro": 0.9396404256830565,
+          "recall_macro": 0.9389862966949108,
+          "macro_f1": 0.9392438464398712
+        },
+        "confusion_matrix": [
+          [
+            21819,
+            1156
+          ],
+          [
+            1537,
+            19896
+          ]
+        ],
+        "by_source": {
+          "archive2_news_dataset": {
+            "metrics": {
+              "accuracy": 0.9846237057641787,
+              "precision_macro": 0.9855188192962059,
+              "recall_macro": 0.9837077501619167,
+              "macro_f1": 0.9845025448069478
+            },
+            "confusion_matrix": [
+              [
+                20831,
+                95
+              ],
+              [
+                502,
+                17398
+              ]
+            ]
+          },
+          "liar_politifact": {
+            "metrics": {
+              "accuracy": 0.624507345037621,
+              "precision_macro": 0.5951330700040293,
+              "recall_macro": 0.5946171335537194,
+              "macro_f1": 0.5948604753467478
+            },
+            "confusion_matrix": [
+              [
+                988,
+                1061
+              ],
+              [
+                1035,
+                2498
+              ]
+            ]
+          }
+        },
+        "oof_predictions_sha256": "700a331705394b9daf073bd3ab3451a2e9993ff9d273a4c81973cc20b810a060"
+      },
+      "linear_svc": {
+        "folds": [
+          {
+            "fold": 1,
+            "train_rows": 35527,
+            "test_rows": 8881,
+            "metrics": {
+              "accuracy": 0.941785834928499,
+              "precision_macro": 0.94280712242349,
+              "recall_macro": 0.9409493751270066,
+              "macro_f1": 0.9415809063332328
+            },
+            "score_kind": "decision_function",
+            "threshold": 0.3,
+            "duration_seconds": 30.529714699951,
+            "n_iter": 47,
+            "warnings": [],
+            "solver": {
+              "name": "liblinear",
+              "dual": true,
+              "tol": 0.0001,
+              "max_iter": 1000
+            }
+          },
+          {
+            "fold": 2,
+            "train_rows": 35528,
+            "test_rows": 8880,
+            "metrics": {
+              "accuracy": 0.9369369369369369,
+              "precision_macro": 0.9385617021433077,
+              "recall_macro": 0.9360531261889175,
+              "macro_f1": 0.936726590467132
+            },
+            "score_kind": "decision_function",
+            "threshold": 0.3,
+            "duration_seconds": 30.2816147999838,
+            "n_iter": 48,
+            "warnings": [],
+            "solver": {
+              "name": "liblinear",
+              "dual": true,
+              "tol": 0.0001,
+              "max_iter": 1000
+            }
+          },
+          {
+            "fold": 3,
+            "train_rows": 35523,
+            "test_rows": 8885,
+            "metrics": {
+              "accuracy": 0.939786156443444,
+              "precision_macro": 0.9414418526150188,
+              "recall_macro": 0.9387737683662457,
+              "macro_f1": 0.9395511429713722
+            },
+            "score_kind": "decision_function",
+            "threshold": 0.3,
+            "duration_seconds": 30.45237569999881,
+            "n_iter": 48,
+            "warnings": [],
+            "solver": {
+              "name": "liblinear",
+              "dual": true,
+              "tol": 0.0001,
+              "max_iter": 1000
+            }
+          },
+          {
+            "fold": 4,
+            "train_rows": 35527,
+            "test_rows": 8881,
+            "metrics": {
+              "accuracy": 0.938970836617498,
+              "precision_macro": 0.9408521812895849,
+              "recall_macro": 0.9382167095539148,
+              "macro_f1": 0.9387957531912149
+            },
+            "score_kind": "decision_function",
+            "threshold": 0.3,
+            "duration_seconds": 30.257358000031672,
+            "n_iter": 48,
+            "warnings": [],
+            "solver": {
+              "name": "liblinear",
+              "dual": true,
+              "tol": 0.0001,
+              "max_iter": 1000
+            }
+          },
+          {
+            "fold": 5,
+            "train_rows": 35527,
+            "test_rows": 8881,
+            "metrics": {
+              "accuracy": 0.9373944375633375,
+              "precision_macro": 0.9389331319476133,
+              "recall_macro": 0.9364758221021494,
+              "macro_f1": 0.9371748902521608
+            },
+            "score_kind": "decision_function",
+            "threshold": 0.3,
+            "duration_seconds": 30.1406426000176,
+            "n_iter": 48,
+            "warnings": [],
+            "solver": {
+              "name": "liblinear",
+              "dual": true,
+              "tol": 0.0001,
+              "max_iter": 1000
+            }
+          }
+        ],
+        "mean": {
+          "accuracy": 0.9389748404979432,
+          "precision_macro": 0.940519198083803,
+          "recall_macro": 0.9380937602676468,
+          "macro_f1": 0.9387658566430226
+        },
+        "sample_std": {
+          "accuracy": 0.0019500425407392068,
+          "precision_macro": 0.0017708870043611738,
+          "recall_macro": 0.00196303178252385,
+          "macro_f1": 0.0019514003800106022
+        },
+        "global": {
+          "accuracy": 0.9389749594667628,
+          "precision_macro": 0.9405139854818723,
+          "recall_macro": 0.9380792851595581,
+          "macro_f1": 0.9387663482165027
+        },
+        "confusion_matrix": [
+          [
+            22145,
+            830
+          ],
+          [
+            1880,
+            19553
+          ]
+        ],
+        "by_source": {
+          "archive2_news_dataset": {
+            "metrics": {
+              "accuracy": 0.986606912893422,
+              "precision_macro": 0.9875910814064579,
+              "recall_macro": 0.9856566261425603,
+              "macro_f1": 0.98649994890721
+            },
+            "confusion_matrix": [
+              [
+                20881,
+                45
+              ],
+              [
+                475,
+                17425
+              ]
+            ]
+          },
+          "liar_politifact": {
+            "metrics": {
+              "accuracy": 0.6076675026872089,
+              "precision_macro": 0.6020519892673725,
+              "recall_macro": 0.6096036298349647,
+              "macro_f1": 0.5980373420849008
+            },
+            "confusion_matrix": [
+              [
+                1264,
+                785
+              ],
+              [
+                1405,
+                2128
+              ]
+            ]
+          }
+        },
+        "oof_predictions_sha256": "74f0cdfa53683c5868dffe26ea1753caa36cd9faf7b4a88d82e6ce8bfd9a9321"
+      }
+    }
+  },
+  "transfer": {
+    "archive2_news_dataset_to_liar_politifact": {
+      "logistic_regression": {
+        "train_source": "archive2_news_dataset",
+        "test_source": "liar_politifact",
+        "train_rows": 38826,
+        "test_rows": 5582,
+        "metrics": {
+          "accuracy": 0.5884987459691867,
+          "precision_macro": 0.5223994101074133,
+          "recall_macro": 0.5168691844599279,
+          "macro_f1": 0.5068761029984559
+        },
+        "confusion_matrix": [
+          [
+            507,
+            1542
+          ],
+          [
+            755,
+            2778
+          ]
+        ],
+        "score_kind": "probability",
+        "threshold": 0.6,
+        "duration_seconds": 37.272142199915834,
+        "n_iter": [
+          12
+        ],
+        "warnings": [],
+        "solver": {
+          "name": "lbfgs"
+        }
+      },
+      "linear_svc": {
+        "train_source": "archive2_news_dataset",
+        "test_source": "liar_politifact",
+        "train_rows": 38826,
+        "test_rows": 5582,
+        "metrics": {
+          "accuracy": 0.5739878179863848,
+          "precision_macro": 0.5141033063566962,
+          "recall_macro": 0.5117607575620065,
+          "macro_f1": 0.5063661456771436
+        },
+        "confusion_matrix": [
+          [
+            569,
+            1480
+          ],
+          [
+            898,
+            2635
+          ]
+        ],
+        "score_kind": "decision_function",
+        "threshold": 0.3,
+        "duration_seconds": 37.279492900008336,
+        "n_iter": 43,
+        "warnings": [],
+        "solver": {
+          "name": "liblinear",
+          "dual": true,
+          "tol": 0.0001,
+          "max_iter": 1000
+        }
+      }
+    },
+    "liar_politifact_to_archive2_news_dataset": {
+      "logistic_regression": {
+        "train_source": "liar_politifact",
+        "test_source": "archive2_news_dataset",
+        "train_rows": 5582,
+        "test_rows": 38826,
+        "metrics": {
+          "accuracy": 0.542626075310359,
+          "precision_macro": 0.5299526902378267,
+          "recall_macro": 0.5176393084009254,
+          "macro_f1": 0.47411338107382045
+        },
+        "confusion_matrix": [
+          [
+            17541,
+            3385
+          ],
+          [
+            14373,
+            3527
+          ]
+        ],
+        "score_kind": "probability",
+        "threshold": 0.6,
+        "duration_seconds": 0.2566668000072241,
+        "n_iter": [
+          9
+        ],
+        "warnings": [],
+        "solver": {
+          "name": "lbfgs"
+        }
+      },
+      "linear_svc": {
+        "train_source": "liar_politifact",
+        "test_source": "archive2_news_dataset",
+        "train_rows": 5582,
+        "test_rows": 38826,
+        "metrics": {
+          "accuracy": 0.5525678668933189,
+          "precision_macro": 0.5439254177230994,
+          "recall_macro": 0.5356153180374366,
+          "macro_f1": 0.5203264337723963
+        },
+        "confusion_matrix": [
+          [
+            15760,
+            5166
+          ],
+          [
+            12206,
+            5694
+          ]
+        ],
+        "score_kind": "decision_function",
+        "threshold": 0.3,
+        "duration_seconds": 0.2616959000006318,
+        "n_iter": 51,
+        "warnings": [],
+        "solver": {
+          "name": "liblinear",
+          "dual": true,
+          "tol": 0.0001,
+          "max_iter": 1000
+        }
+      }
+    }
+  },
+  "model_selected_by_mean_macro_f1": "logistic_regression",
+  "comparison_caveat": "The five-fold mean is an internal model comparison, not an independent estimate after model selection."
+}

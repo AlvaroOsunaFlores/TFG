@@ -20,8 +20,35 @@ tfg_informatica_fake_news/.pytest_cache/
 tfg_informatica_fake_news/session/*.session
 tfg_informatica_fake_news/*.session
 tfg_informatica_fake_news/__pycache__/
-tfg_informatica_fake_news/reports/
+tfg_informatica_fake_news/reports/*
+!tfg_informatica_fake_news/reports/robustness_runs/
+tfg_informatica_fake_news/reports/robustness_runs/*
+!tfg_informatica_fake_news/reports/robustness_runs/robustness-1a94400d502b149f/
+!tfg_informatica_fake_news/reports/training_runs/
+tfg_informatica_fake_news/reports/training_runs/*
+!tfg_informatica_fake_news/reports/training_runs/baseline-20260411T145313Z-a9ea359a/
+tfg_informatica_fake_news/reports/training_runs/baseline-20260411T145313Z-a9ea359a/holdout_predictions.csv
+!tfg_informatica_fake_news/reports/repository_validation/
 tfg_informatica_fake_news/models/
 tfg_informatica_fake_news/data/raw/extracted_messages.json
 tfg_informatica_fake_news/data/raw/extraction_registry.json
 tfg_informatica_fake_news/data/processed/preprocessed_messages.json
+
+# Keep the documented derived corpus; other runs stay local.
+tfg_informatica_fake_news/data/derived/*
+!tfg_informatica_fake_news/data/derived/robustness/
+tfg_informatica_fake_news/data/derived/robustness/*
+!tfg_informatica_fake_news/data/derived/robustness/robustness-1a94400d502b149f/
+tfg_informatica_fake_news/data/derived/robustness/robustness-1a94400d502b149f/*
+!tfg_informatica_fake_news/data/derived/robustness/robustness-1a94400d502b149f/derived_corpus.csv.gz
+
+# Local working copies, raw recordings and Telegram credentials are not deliverables.
+tfg_informatica_fake_news.zip
+tfg_informatica_fake_news/tmp/
+tfg_informatica_fake_news/tmp_demo/
+tfg_informatica_fake_news/session/
+tfg_informatica_fake_news/*.session*
+tfg_informatica_fake_news/.env.*
+!tfg_informatica_fake_news/.env.example
+tfg_informatica_fake_news/docs/~$*
+tfg_informatica_fake_news/docs/Defensa/*.mkv
