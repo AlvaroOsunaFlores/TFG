@@ -1,6 +1,6 @@
 # Datasets Etiquetados
 
-> Este directorio conserva el corpus canónico histórico, entrada del experimento agrupado. Sus etiquetas originales se preservan; el corpus derivado usa `no_fake` para la clase 0. La memoria vigente y las instrucciones actuales están enlazadas en el README principal y en `docs/REPRODUCIBILIDAD.md`.
+> Este directorio conserva el corpus canónico histórico, entrada del experimento agrupado. Sus etiquetas originales se preservan; el corpus derivado usa `no_fake` para la clase 0. El procedimiento de reproducción se documenta en la [guía técnica](../../reproducibility/README.md).
 
 Esta carpeta contiene dos datasets con objetivos distintos:
 

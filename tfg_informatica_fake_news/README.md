@@ -6,7 +6,7 @@ La entrega incluye código, configuraciones, datos de entrada, corpus derivado, 
 
 ## Empezar
 
-La [guía de reproducción](docs/REPRODUCIBILIDAD.md) explica instalación, comprobación, ejecución completa y recuperación. El entorno de referencia usa Python 3.11.9.
+La [guía de reproducción](reproducibility/README.md) explica instalación, comprobación, ejecución completa y recuperación. El entorno de referencia usa Python 3.11.9.
 
 Desde esta carpeta, en PowerShell:
 
@@ -74,9 +74,6 @@ El run `baseline-20260411T145313Z-a9ea359a` obtuvo macro F1 0,9424 con Linear SV
 | `reports/robustness_runs/robustness-1a94400d502b149f/` | Manifiesto, estado, particiones, métricas, matrices, predicciones y transferencias. |
 | `reproducibility/artifacts.json` y `reproducibility/archives/` | Inventario, hashes y compresión reversible de 14 modelos principales y evidencias adicionales. |
 | `reports/repository_validation/` | Evidencia de comprobación del repositorio, separada del experimento. |
-| `docs/CAMBIOS_REALIZADOS.md` | Historial editorial y resolución de comentarios. |
-
-Memoria vigente: [DOCX](docs/TFG_GII_Alvaro_Osuna_Flores_Pipeline_Fake_News_Memoria_REVISION.docx) y [PDF](docs/TFG_GII_Alvaro_Osuna_Flores_Pipeline_Fake_News_Memoria_REVISION.pdf). Los Markdown anteriores de memoria y propuesta son históricos. `docs/Defensa/` reúne las presentaciones y vídeos disponibles, incluida la presentación v2; la versión que se utilice en la defensa debe contrastarse con el experimento principal.
 
 ## Pruebas y Telegram
 

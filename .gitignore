@@ -50,5 +50,13 @@ tfg_informatica_fake_news/session/
 tfg_informatica_fake_news/*.session*
 tfg_informatica_fake_news/.env.*
 !tfg_informatica_fake_news/.env.example
-tfg_informatica_fake_news/docs/~$*
-tfg_informatica_fake_news/docs/Defensa/*.mkv
+
+# Editorial documents, thesis revisions and AI working instructions stay local.
+tfg_informatica_fake_news/docs/
+tfg_informatica_fake_news/**/CAMBIOS_REALIZADOS.md
+tfg_informatica_fake_news/**/INSTRUCCIONES_MEMORIA_TFG/
+tfg_informatica_fake_news/**/AGENTS.md
+tfg_informatica_fake_news/**/CLAUDE.md
+tfg_informatica_fake_news/**/GEMINI.md
+tfg_informatica_fake_news/**/MEMORIA*.md
+tfg_informatica_fake_news/**/PROPUESTA_TFG*.md

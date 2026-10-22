@@ -43,8 +43,6 @@ Incluye:
 Entrada recomendada:
 
 - `tfg_computadores_phishing/README.md`
-- `tfg_computadores_phishing/docs/API_CONTRACT.md`
-- `tfg_computadores_phishing/docs/MEMORIA_TFG_GIC_Alvaro_Osuna_Flores.docx`
 
 Validacion minima:
 
@@ -74,7 +72,7 @@ Incluye:
 Entrada recomendada:
 
 - `tfg_informatica_fake_news/README.md`
-- `tfg_informatica_fake_news/docs/REPRODUCIBILIDAD.md`
+- `tfg_informatica_fake_news/reproducibility/README.md`
 - `tfg_informatica_fake_news/scripts/run_robustness_experiments.py`
 - `tfg_informatica_fake_news/reports/robustness_runs/robustness-1a94400d502b149f/robustness_manifest.json`
 
