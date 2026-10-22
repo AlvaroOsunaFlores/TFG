@@ -7,6 +7,6 @@
 - Los archivos con el título anterior «Detección Fake News Telegram» son los originales preservados.
 - `MEMORIA_TFG_ETSII_APA7.md` y `PROPUESTA_TFG_INFORMATICA_APA7.md` son borradores anteriores.
 - `INSTRUCCIONES_MEMORIA_TFG/` conserva las instrucciones editoriales utilizadas. Cuando describen el baseline inicial o una estructura antigua, el protocolo experimental posterior y la memoria actual delimitan su alcance.
-- `Defensa/` conserva una presentación y vídeos de una preparación anterior; deben actualizarse al experimento agrupado antes de la defensa. Se excluyen las grabaciones brutas MKV.
+- `Defensa/` conserva las presentaciones y vídeos disponibles, incluida `Defensa TFG Fake News v2.pptx`. Su revisión editorial se realiza por separado; antes de la defensa debe comprobarse su correspondencia con el experimento agrupado. Se excluyen las grabaciones brutas MKV.
 
 Esta actuación publica código, datos y evidencia reproducible. Los binarios de Word y PDF se conservan sin modificaciones editoriales en esta actualización.

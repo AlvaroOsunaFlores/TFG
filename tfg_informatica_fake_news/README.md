@@ -76,7 +76,7 @@ El run `baseline-20260411T145313Z-a9ea359a` obtuvo macro F1 0,9424 con Linear SV
 | `reports/repository_validation/` | Evidencia de comprobación del repositorio, separada del experimento. |
 | `docs/CAMBIOS_REALIZADOS.md` | Historial editorial y resolución de comentarios. |
 
-Memoria vigente: [DOCX](docs/TFG_GII_Alvaro_Osuna_Flores_Pipeline_Fake_News_Memoria_REVISION.docx) y [PDF](docs/TFG_GII_Alvaro_Osuna_Flores_Pipeline_Fake_News_Memoria_REVISION.pdf). Los Markdown anteriores de memoria y propuesta son históricos. El material de `docs/Defensa/` procede de una preparación anterior y requiere sincronizarse con el experimento principal antes de reutilizarlo.
+Memoria vigente: [DOCX](docs/TFG_GII_Alvaro_Osuna_Flores_Pipeline_Fake_News_Memoria_REVISION.docx) y [PDF](docs/TFG_GII_Alvaro_Osuna_Flores_Pipeline_Fake_News_Memoria_REVISION.pdf). Los Markdown anteriores de memoria y propuesta son históricos. `docs/Defensa/` reúne las presentaciones y vídeos disponibles, incluida la presentación v2; la versión que se utilice en la defensa debe contrastarse con el experimento principal.
 
 ## Pruebas y Telegram
 
